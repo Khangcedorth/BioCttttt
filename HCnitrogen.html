@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Khi giấy quỳ tím ẩm tiếp xúc với khí ammonia thì hiện tượng gì sẽ xảy ra? ",
+                answers: [
+                    { text: "Quỳ tím chuyển sang màu đỏ", correct: false },
+                    { text: "Quỳ tím chuyển sang màu xanh ", correct: true },
+                    { text: "Quỳ tím không đổi màu ", correct: false },
+                    { text: "Quỳ tím ban đầu chuyển sang màu xanh xong mất màu chuyển sang màu đỏ ", correct: false }
+                ],
+                explanation: "số electron hóa trị là số electron lớp ngoài cùng. N có 5 elctAmmonia là một base theo thuyết Bronsted - Lowry. Do đó, khi giấy quỳ tím ẩm tiếp xúc với khí ammonia thì giấy quỳ ẩm sẽ chuyển sang màu xanh.ron hóa trị."
+            },
+            {
+                question: "Câu 2: Liên kết hoá học trong phân tử NH3 là liên kết",
+                answers: [
+                    { text: "cộng hoá trị phân cực.", correct: true },
+                    { text: "ion.", correct: false },
+                    { text: "cộng hoá trị không phân cực.", correct: false},
+                    { text: "kim loại.", correct: false }
+                ],
+                explanation: "0,4 < ∆𝛘 = 3,04 - 2,2 = 0,84 < 1,7."
+            },
+            {
+                question: "Câu 3: Có thể nhận biết muối ammonium bằng cách cho muối tác dụng với dung dịch kiềm thấy thoát ra một chất khí. Chất khí đó là",
+                answers: [
+                    { text: " NH3.", correct: true },
+                    { text: "H2.", correct: false },
+                    { text: "NO2.", correct: false},
+                    { text: "NO.", correct: false }
+                ],
+                explanation: "Dung dịch muối ammonium tác dụng với dung dịch base khi đun nóng tạo ra sản phẩm là khí ammonia. NH4+ + OH- →° NH3↑ + H2O"
+            },
+            {
+                question: "Câu 4: Đâu không phải nguyên nhân chính gây ra mưa acid",
+                answers: [
+                    { text: "Hoạt động quang hợp của cây", correct: true },
+                    { text: "Hoạt động của núi lửa", correct: false },
+                    { text: "Cháy rừng", correct: false},
+                    { text: "Tiêu thụ nhiều nguyên liệu tự nhiên như than đá, dầu mỏ…", correct: false }
+                ],
+                explanation: "Hoạt động quang hợp của cây không phải nguyên nhân chính gây ra mưa acid"
+            },
+            {
+                question: "Câu 5: Các tính chất hoá học của HNO3 là",
+                answers: [
+                    { text: "Tính oxi hóa mạnh, tính axit mạnh .", correct: true },
+                    { text: "Tính axit mạnh, tính khử mạnh", correct: false },
+                    { text: "Tính bazơ mạnh, tính oxi hóa mạnh", correct: false},
+                    { text: "Tính oxi hóa mạnh, tính axit yếu ", correct: false }
+                ],
+                explanation: "N trong HNO3 có số oxi hóa cao nhất (+5) nên HNO3 có tính oxi hóa mạnh và HNO3 là một acid mạnh"
+            },
+            {
+                question: "Câu 6: Số oxi hóa và hoá trị của nitrogen trong hợp chất nitric acid lần lượt là:",
+                answers: [
+                    { text: "+5 và V ", correct: false },
+                    { text: "+5 và IV.", correct: true },
+                    { text: "+5 và III", correct: false},
+                    { text: "+4 và IV", correct: false }
+                ],
+                explanation: "qua CTCT của HNO3,  N có cộng hóa trị là 4. Số oxi hóa của N là +5 (do trong HNO3 số oxi hóa của H là +1 và O là -2, áp dụng quy tắc xác định số oxi hoá xác định được số oxi hoá của N là +5)."
+            },
+            {
+                question: "Câu 7: Phát biểu nào sau đây đúng?",
+                answers: [
+                    { text: "Axit nitric được dùng để sản xuất phân đạm, thuốc nổ (TNT), thuốc nhuộm ", correct: true },
+                    { text: "Dung dịch HNO3 làm xanh quỳ tím và làm phenolphtalein hóa hồng", correct: false },
+                    { text: "Tỉ lệ của HNO3 và HCl trong nước cường toan là 3:1", correct: false},
+                    { text: "Thành phần mưa acid chỉ có NO2 và NO", correct: false }
+                ],
+                explanation: "HNO3 làm quỳ tím hóa đỏ, tỉ lệ nước cường toan là 3HCl với 1HNO3, thành phần mưa acid gồm SO2 và NOx"
+            },
+            {
+                question: "Câu 8: chất nào sau đây có thể làm khô khí NH3 có lẫn hơi nước ?",
+                answers: [
+                    { text: "NaOH rắn", correct:true },
+{ text: "H2SO4 đặc", correct: false },
+{ text: "P2O5", correct: false},
+{ text: "CuO bột", correct: false }
+],
+explanation: "để làm khô khí NH3 có lẫn hơi nước thì dùng chất không phản ứng với NH3 và có tính hút nước"
+},
+{
+question: "Câu 9: tính base của NH3 là do",
+answers: [
+{ text: "Phân tử có 3 liên kết cộng hóa trị phân cực", correct: false },
+{ text: "Trên nguyên tử N còn cặp electron tự do", correct: true },
+{ text: "NH3 có khả năng tan nhiều trong nước", correct: false},
+{ text: "NH3 tác dụng hoàn toàn với nước tạo ra NH4OH", correct: false }
+],
+explanation: "Do nguyên tố N trong NH3 còn cặp e tự do."
+},
+{
+question: "Câu 10: Ở trạng thái lỏng nguyên chất, phân tử chất nào sau đây tạo được liên kết hydrogen với nhau?",
+answers: [
+{ text: "Nitrogen. ", correct: false },
+{ text: "Ammonia.", correct: true },
+{ text: "Oxygen.", correct: false},
+{ text: "Hydrogen. ", correct: false }
+],
+explanation: "Các phân tử ammonia có thể tạo được liên kết hydrogen với nhau"
+},
+{
+question: "Câu 11: Trong nước, phân tử/ion nào sau đây thể hiện vai trò là acid theo thuyết Bronsted - Lowry?",
+answers: [
+{ text: "NH3", correct: false },
+{ text: "NH4+", correct: true },
+{ text: "NO3-", correct: false},
+{ text: "N2 ", correct: false }
+],
+explanation: "NH4+ có khả năng nhường proton, thể hiện vai trò là acid theo thuyết Bronsted - Lowry."
+},
+{
+question: "Câu 12: Cho phản ứng: 2NH3 + 3Cl2 → 6HCl +N2. Kết luận nào sau đây đúng?",
+answers: [
+{ text: "NH3 là chất khử.", correct: true },
+{ text: "NH3 là chất oxi hoá.", correct: false },
+{ text: "Cl2 là chất khử.", correct: false }
+],
+explanation: "Số oxi hoá của N tăng từ -3 lên 0, do đó NH3 đóng vai trò là chất khử trong phản ứng."
+},
+{
+question: "Câu 13:X là muối khi tác dụng với dung dịch NaOH dư sinh khí mùi khai, tác dụng với dung dịch BaCl2 sinh kết tủa trắng không tan trong HNO3. X là muối nào trong số các muối sau?",
+answers: [
+{ text: "(NH4)2CO3", correct: false },
+{ text: "(NH4)2SO4", correct: true },
+{ text: "(NH4)2SO3.  ", correct: false },
+{ text: "NH4HSO3", correct: false },
+],
+explanation: "(NH4)2SO4 + 2NaOH → Na2SO4 + 2NH3↑ + 2H2O; (NH4)2SO4 + BaCl2 → 2NH4Cl + BaSO4↓"
+},
+{
+question: "Câu 14: Phú dưỡng là hiện tượng xảy ra do sự gia tăng hàm lượng của nguyên tố",
+answers: [
+{ text: "Fe, Mn. ", correct: false },
+{ text: "Ca, Mg.", correct: false },
+{ text: "N, P. ", correct: true},
+{ text: "Cl, F.", correct: false }
+],
+explanation: "Phú dưỡng là hiện tượng xảy ra do sự gia tăng hàm lượng của nguyên tố nitrogen (N) và phosphorus (P)."
+},
+{
+question: "Câu 15: Kim loại không tan trong dung dịch HNO3 đặc, nguội là",
+answers: [
+{ text: "Mg.", correct: false },
+{ text: " Al.", correct: true },
+{ text: "Zn. ", correct: false},
+{ text: " Cu.", correct: false }
+],
+explanation: "Al bị thụ động hoá trong HNO3 đặc, nguội."
+},
+{
+question: "Câu 16:Cho phản ứng: Fe3O4+HNO3→Fe(NO3)3+NO(g)+ H2O Hệ số tỉ lượng của HNO3 trong phương trình hoá học trên là (biết hệ số tỉ lượng của các chất trong phản ứng là các số nguyên, tối giản)",
+answers: [
+{ text: " 4. ", correct: false },
+{ text: "28.", correct: true },
+{ text: "1. ", correct: false},
+{ text: "10.", correct: false }
+],
+explanation: "3Fe3O4 + 28HNO3→ 9Fe(NO3)3+NO(g)+ 14H2O"
+},
+{
+question: "Câu 17: Một oxide của nitrogen có công thức NOx trong đó N chiếm 30,43% về khối lượng. Công thức của oxide đó là",
+answers: [
+{ text: "NO", correct: false },
+{ text: "NO2", correct: true },
+{ text: "N2O2", correct: false},
+{ text: "N2O5", correct: false }
+],
+explanation: "MN/(Mo.x + MN) = 14/(14+16x) = 0,3043 => x =2"
+},
+{
+question: "Câu 18: Hợp chất nào của nitrogen không được tạo ra khi cho HNO3 tác dụng với kim loại?",
+answers: [
+{ text: "N2O5", correct: true },
+{ text: "NO.", correct: false },
+{ text: "NO2", correct: false},
+{ text: "NH4NO3", correct: false }
+],
+explanation: "N2O5 không được tạo ra khi cho HNO3 tác dụng với kim loại."
+},
+{
+question: "Câu 19: Cho dung dịch HNO3 tác dụng với các chất sau: NH3,CaCO3,Ag,NaOH. Số phản ứng trong đó HNO3 đóng vai trò acid theo thuyết Brønsted - Lowry là",
+answers: [
+{ text: "1", correct: false },
+{ text: "4", correct: false },
+{ text: "2  ", correct: false},
+{ text: "3", correct: true }
+],
+explanation: "HNO3 đóng vai trò acid theo thuyết Brønsted - Lowry khi phản ứng với NH3, CaCO3, NaOH."
+},
+{
+question: "Câu 20: Cho Iron(III) oxide tác dụng với nitric acid thì sản phẩm thu được là",
+answers: [
+{ text: "Fe(NO3)3 và H2O", correct: true },
+{ text: " Fe(NO3)3, NO và H2O.", correct: false },
+{ text: "Fe(NO3)3, NO2 và H2O.", correct: false},
+{ text: "Fe(NO3)3, N2 và H2O", correct: false }
+],
+explanation: "Fe2O3 + 6HNO3 -> 2Fe(NO3)3 + 3H2O  "
+}
+]; 
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

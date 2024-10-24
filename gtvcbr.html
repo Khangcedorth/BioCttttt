@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Carbohydrate là những hợp chất hữu cơ tạp chức, thường có công thức chung là",
+                answers: [
+                    { text: "CxHyOz", correct: false },
+                    { text: "Cn(H2O)m", correct: true },
+                    { text: "Cx(OH)y(CHO)z", correct: false},
+                    { text: "Cn(H2O)n", correct: false }
+                ],
+                explanation: "Carbohydrate là những hợp chất hữu cơ tạp chức và thường có công thức chung là Cn(H2O)m."
+            },
+            {
+                question: "Câu 2: Carbohydrate nào sau đây thuộc loại disaccharide?",
+                answers: [
+                    { text: "Glucose.", correct: false },
+                    { text: "Cellulose.", correct: false },
+                    { text: "Fructose.", correct: false},
+                    { text: "Sachcarose.", correct: true }
+                ],
+                explanation: "Sacchorose, maltose thuộc loại disaccharide."
+            },
+            {
+                question: "Câu 3: Carbohydrate nào sau đây thuộc loại polysaccharide",
+                answers: [
+                    { text: "Glucose.", correct: false },
+                    { text: "Tinh bột.", correct: false },
+                    { text: "Fructose.", correct: false},
+                    { text: "Maltose.", correct: false }
+                ],
+                explanation: "Tinh bột, cellulose thuộc loại polysaccharide."
+            },
+            {
+                question: "Câu 4: Trong phân tử saccharose, gốc glucose và gốc fructose liên kết với nhau bởi liên kết",
+                answers: [
+                    { text: "β-1,4-glycoside.", correct: false },
+                    { text: "α-1,2-glycoside.", correct: true },
+                    { text: "α-1,4-glycoside.", correct: false},
+                    { text: "β-1,2-glycoside.", correct: false }
+                ],
+                explanation: "Trong phân tử saccharose, gốc glucose và gốc fructose liên kết với nhau bởi liên kết α-1,2-glycoside."
+            },
+            {
+                question: "Câu 5: Các gốc α-glucose trong phân tử tinh bột tạo thành dạng mạch amylose không nhánh, liên kết với nhau bởi liên kết",
+                answers: [
+                    { text: "α-1,3-glycoside.", correct: false },
+                    { text: "α-1,4-glycoside.", correct: true },
+                    { text: "α-1,6-glycoside.", correct: false},
+                    { text: "β-1,2-glycoside.", correct: false }
+                ],
+                explanation: "Các gốc α-glucose trong phân tử tinh bột tạo thành dạng mạch amylose không nhánh, liên kết với nhau bởi liên kết α-1,4-glycoside."
+            },
+            {
+                question: "Câu 6: Trong phân tử amylopectin, gốc α-glucose ở phần mạch chính liên kết với gốc α-glucose ở phần mạch nhánh bằng liên kết",
+                answers: [
+                    { text: "α-1,3-glycoside.", correct: false },
+                    { text: "α-1,4-glycoside.", correct: false },
+                    { text: "α-1,6-glycoside.", correct: true},
+                    { text: "β-1,2-glycoside.", correct: false }
+                ],
+                explanation: "Trong phân tử amylopectin, gốc α-glucose ở phần mạch chính liên kết với gốc α-glucose ở phần mạch nhánh bằng liên kết α-1,6-glycoside."
+            },
+            {
+                question: "Câu 7: Phân tử chất nào sau đây có cấu trúc mạch xoắn và không phân nhánh?",
+                answers: [
+                    { text: "Amylose.", correct: true },
+                    { text: "Amilopectin.", correct: false },
+                    { text: "Cellulose.", correct: false},
+                    { text: "Glicogen", correct: false }
+                ],
+                explanation: "Amylose là polymer dạng mạch dài, không nhánh, xoắn lại"
+            },
+            {
+                question: "Câu 8: Bệnh nhân phải tiếp đường (truyền dung dịch đường vào tĩnh mạch), đó là loại đường nào",
+                answers: [
+                    { text: "Maltose. ", correct: false },
+                    { text: "Glucose.", correct: true },
+                    { text: "Saccharose.", correct: false},
+                    { text: "Fructose.", correct: false }
+                ],
+                explanation: "Bệnh nhân phải tiếp đường (truyền dung dịch đường vào tĩnh mạch), đó là loại đường glucose."
+            },
+            {
+                question: "Câu 9: Hợp chất nào sau đây chiếm thành phần nhiều nhất trong mật ong?",
+                answers: [
+                    { text: "Maltose. ", correct: false },
+                    { text: "Glucose.", correct: false },
+                    { text: "Saccharose.", correct: false},
+                    { text: "Fructose.", correct: true }
+                ],
+                explanation: "Fructose chiếm thành phần nhiều nhất trong mật ong (40%)."
+            },
+            {
+                question: "Câu 10: Chất nào sau đây tạo độ cứng và cấu trúc ổn định cho thành tế bào thực vật?",
+                answers: [
+                    { text: "Tinh bột.", correct: false },
+                    { text: "Cellulose.", correct: true },
+                    { text: "Glucose.", correct: false},
+                    { text: "Nước.", correct: false }
+                ],
+                explanation: "Cellulose tạo độ cứng và cấu trúc ổn định cho thành tế bào thực vật."
+            },
+            {
+                question: "Câu 11: Ở điều kiện thường, chất nào sau đây dễ tan trong nước?",
+                answers: [
+                     { text: "Tinh bột.", correct: false },
+                    { text: "Cellulose.", correct: false },
+                    { text: "Glucose.", correct:true},
+                    { text: "Tristearin.", correct: false }
+                ],
+                explanation: "Ở điều kiện thường, glucose dễ tan trong nước."
+            },
+            {
+question: "Câu 12: Cellulose tan được trong hoá chất nào sau đây?",
+                answers: [
+                    { text: "Nước Schweizer.", correct: true },
+                    { text: "Nước nóng.", correct: false },
+                    { text: "Benzene.", correct: false},
+                    { text: "Ether.", correct: false }
+                ],
+                explanation: "Cellulose tan được trong nước Schweizer."
+            },
+            {
+question: "Câu 13: Tinh bột trong gạo nếp chứa khoảng 98% là",
+                answers: [
+                    { text: "amylose.", correct: false },
+                    { text: "glycerol.", correct: false },
+                    { text: "amylopectin.", correct: true},
+                    { text: "aniline.", correct: false }
+                ],
+                explanation: "Tinh bột trong gạo nếp chứa khoảng 98% là amylopectin."
+            },
+            {
+question: "Câu 14: Carbohydrate nào sau đây kém tan trong nước lạnh nhưng tan được trong nước nóng tạo dung dịch keo, nhớt?",
+                answers: [
+                    { text: "Glucose.", correct: false },
+                    { text: "Cellulose.", correct: false},
+                    { text: "Tinh bột.", correct: true },
+                    { text: "Saccharose.", correct: false }
+                ],
+                explanation: "Tinh bột kém tan trong nước lạnh nhưng tan được trong nước nóng tạo dung dịch keo, nhớt."
+            },
+            {
+question: "Câu 15: Tinh bột thuộc loại polysaccharide, là một trong những chất dinh dưỡng cơ bản của người và động vật. Phân tử tinh bột được tạo thành từ nhiều gốc",
+                answers: [
+                    { text: "α-fructose.", correct: false },
+                    { text: "β-fructose.", correct: false },
+                    { text: "β-glucose.", correct: false},
+                    { text: "α-glucose.", correct: true }
+                ],
+                explanation: "Tinh bột thuộc loại polysaccharide, là một trong những chất dinh dưỡng cơ bản của người và động vật. Phân tử tinh bột được tạo thành từ nhiều gốc α-glucose."
+            },
+            {
+question: "Câu 16: Số nguyên tử carbon trong phân tử saccharose, maltose là",
+                answers: [
+                    { text: "6.", correct: false },
+                    { text: "11.", correct: false },
+                    { text: "10.", correct: false},
+                    { text: "12.", correct: true}
+                ],
+                explanation: "Công thức phân tử saccharose, maltose là C12H22O11."
+            },
+            {
+question: "Câu 17: Công thức cấu tạo dạng mạch hở của glucose là",
+                answers: [
+                    { text: "CH2OH(CHOH)4CHO.", correct: true },
+                    { text: "CH2OH(CHOH)3COCH2OH.", correct: false },
+                    { text: "[C6H7O2(OH)3]n.", correct: false},
+                    { text: "CH2OH(CHOH)4CH2OH.", correct:false }
+                ],
+                explanation: "Công thức cấu tạo dạng mạch hở của glucose là CH2OH(CHOH)4CHO."
+            },
+            {
+question: "Câu 18: Tinh bột không có ứng dụng nào sau đây?",
+                answers: [
+                    { text: "Sản xuất giấy viết và thuốc súng không khói.", correct: false },
+                    { text: "Dùng trong công nghiệp thực phẩm.", correct: false },
+                    { text: "Làm chất kết dính trong công nghiệp giấy, sợi. ", correct: false},
+                    { text: "Là nguồn lương thực cho con người, động vật.", correct: true}
+                ],
+                explanation: "Sản xuất giấy viết và thuốc súng không khói kà ứng dụng của cellulose."
+            },
+            {
+question: "Câu 19: Glucose không có ứng dụng nào sau đây?",
+                answers: [
+                    { text: "Tráng gương, tráng ruột phích.", correct: false },
+                    { text: "Nguyên liệu sản xuất ethyl alcohol.", correct: false },
+                    { text: "Nguyên liệu sản xuất chất dẻo PVC.", correct: true},
+                    { text: "Làm thực phẩm dinh dưỡng và thuốc tăng lực.", correct: false}
+                ],
+                explanation: "Glucose không có ứng dụng làm nguyên liệu sản xuất chất dẻo PVC."
+            },
+            {
+question: "Câu 20: Phát biểu nào sau đây không đúng?",
+                answers: [
+                    { text: "Glucose được pha làm dịch truyền cho bệnh nhân.", correct: false },
+                    { text: "Fructose dùng để chế biến bánh kẹo và nước giải khát.", correct: false },
+                    { text: "Fructose được sử dụng để cung cấp năng lượng cho cơ thể.", correct: false},
+                    { text: "Glucose là nguyên liệu chính để sản xuất chất kháng sinh.", correct: true}
+                ],
+                explanation: "Glucose, fructose, saccharose và maltose được sử dụng làm chất dinh dưỡng, cung cấp năng lượng cho cơ thể; làm nguyên liệu và chất phụ gia trong sản xuất các loại bánh, kẹo, thức uống dinh dưỡng, nước giải khát, …Glucose còn được dùng để pha dịch truyền, dùng để tráng bạc chế tạo gương, ruột phích; làm nguyên liệu trong sản xuất vitamin C; làm môi trường nuôi cấy vi sinh vật để sản xuất bột ngọt, chất kháng sinh."
+            },
+            {
+                  question: "Câu 21: Cho các phát biểu sau về ứng dụng và trạng thái tự nhiên của glucose và fructose: (a) Cả glucose và fructose đều là chất rắn, khó tan trong nước, có vị ngọt; (b) Glucose có nhiều trong quả chín (nhất là nho chín), fructose có nhiều trong mật ong; (c) Dung dịch truyền tĩnh mạch là glucose 5%; (d) Glucose và fructose chủ yếu đóng vai trò cung cấp năng lượng cho tế bào. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "4", correct: false},
+                    { text: "3", correct: true },              
+                ],
+        explanation: "Phát biểu a Sai vì cả glucose và fructose đều là chất rắn, dễ tan trong nước, có vị ngọt."
+            },
+            {
+		   question: "Câu 22: Tinh bột là polymer thiên nhiên gồm amylose và amylopectin. Amylose có mạch không nhánh, gồm nhiều α-glucose liên kết với nhau qua liên kết α-1,4-glycoside và hình thành chuỗi xoắn. Amylopectin mạch phân nhánh, gồm các chuỗi chứa nhiều đơn vị α-glucose liên kết với nhau qua các liên kết α-1,4-glycoside. Các chuỗi này liên kết với nhau qua liên kết α-1,6-glycoside tạo mạch nhánh. (a) Amylose và amylopectin đều được tạo thành từ các gốc α-glucose; (b) Các phân tử amylopectin có phân tử khối lớn hơn amylose do chúng có sự liên kết giữa các chuỗi α-glucose mạch nhánh còn amylose chỉ có các chuỗi α-glucose mạch không phân nhánh; (c) Cả amylose và amylopectin đều có công thức phân tử (C6H10O5)n; (d) Trong gạo tẻ, tinh bột ở dạng amylose chiếm thành phần chủ yếu. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "3", correct: true },
+                    { text: "2", correct: false},
+                    { text: "4", correct: false },       
+            ],
+                explanation: "Phát biểu d sai vì trong gạo tẻ, tinh bột ở dạng amylopectin chiếm thành phần chủ yếu"
+            },
+            {
+		               question: "Câu 23:Khi con người sử dụng thức ăn chứa tinh bột, enzyme α-amylase có trong nước bọt thúc đẩy quá trình thuỷ phân tinh bột thành các phân tử nhỏ hơn gồm dextrin và maltose. Quá trình này tiếp tục ở ruột non, nơi phần lớn tinh bột bị thuỷ phân thành glucose. Glucose được hấp thụ vào máu và di chuyển đến các tế bào trong khắp cơ thể. Glucose có thể được sử dụng cho nhu cầu năng lượng hoặc có thể được chuyển đổi thành glycogen lưu trữ trong gan và cơ. (a) Khi ăn cơm, nếu nhai kĩ sẽ thấy vị ngọt vì tinh bột bị thuỷ phân thành glucose; (b) Tinh bột bị thủy phân bởi enzyme α-amylase hoặc môi trường acid; (c) Glucose chủ yếu đóng vai trò cung cấp năng lượng cho tế bào; (d) Glycogen lưu trữ trong gan và cơ, khi cần thiết có thể chuyển hoá thành glucose để cung cấp năng lượng cho cơ thể. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: true },
+                    { text: "4", correct: false},       
+            ],
+                explanation: "Phát biểu a sai vì tinh bột bị thủy phân thành glucose xảy ra ở ruột non."
+            },
+            {
+ question: "Câu 24: Tinh bột và cellulose là carbohydrat, thuộc loại polysaccharide. (a) Tinh bột và cellulose là đồng phân của nhau; (b) Tinh bột không tan trong nước lạnh, trong nước nóng tạo dung dịch keo nhớt; (c) Cellulose là thành phần chính tạo nên lớp màng thực vật và là bộ khung của cây cối; (d) Trong phân tử amylopectin, các gốc α-glucose liên kết với nhau bằng liên kết α-1,4-glycoside. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "3", correct: false },
+                    { text: "2", correct: true },
+                    { text: "4", correct: false},       
+            ],                
+                explanation: "Phát biểu a sai vì  tinh bột và cellulose không phải là đồng phân của nhau. Phát biểu d sai vì trong phân tử amylopectin, các gốc α-glucose liên kết với nhau bằng liên kết α-1,6-glycoside."
+            },
+            {
+  question: "Câu 25: Carbohydrate được chia làm 3 loại: monosaccharide (glucose, frutose), disaccharide (saccharose, maltose), polysaccharide (tinh bột, cellulose). (a) Dung dịch glucose không màu, có vị ngọt; (b) Trong tự nhiên, glucose có nhiều trong quả chín, đặc biệt có nhiều trong quả nho chín;  (c) Trong công nghiệp thực phẩm, saccharose dùng để pha chế thuốc; (d) Cellulose là nguyên liệu để sản xuất thuốc súng không khói. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "3", correct: true },
+                    { text: "2", correct: false } ,
+                    { text: "4", correct: false },       
+            ], 
+                explanation: "Phát biểu c sai vì trong công nghiệp dược phẩm, saccharose dùng để pha chế thuốc. "
+            },
+            {
+   question: "Câu 26:Tinh bột là polysaccharide có trong nhiều loại hạt ngũ cốc,…(a) Được tạo thành trong cây xanh nhờ quá trình quang hợp; (b) Bị thủy phân trong môi trường acid tạo thành glucose và fructose; (c) Là polysaccharide, gồm hai dạng là amylose và amylopectin; (d) Là lương thực cơ bản cho người và động vật. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: true },
+                    { text: "4", correct: false},  
+                ],
+                explanation: "Phát biểu b sai vì tinh bột bị thủy phân trong môi trường acid tạo thành glucose."
+            },
+            {
+		       question: "Câu 27: Hợp chất carbohydrate có nhiều ứng dụng trong đời sống, sản xuất, y tế,…(a) Frutose được dùng để sản xuất siro, kẹo, mứt, nước trái cây đóng hộp,…; (b) Maltose dùng để sản xuất bia và chất tạo ngọt cho một số loại bánh kẹo; (c) Cellulose dùng làm vật liệu xây dựng gia đình; làm thành tơ, sợi, giấy viết,…(d) Saccharose được dùng để sản xuất thực phẩm như bánh, kẹo, nước giải khát và đồ uống có gas,..Số phát biểu đúng là",
+                      answers: [
+                    { text: "1", correct: false},
+                    { text: "3", correct: false },
+                    { text: "4", correct: true },
+                    { text: "2", correct: false},    
+                ],
+                explanation: "Tất cả các phát biểu trên đều đúng."
+            },
+            {
+		     question: "Câu 28:Cho các phát biểu sau: (a) Tinh bột là chất rắn, vô định hình, màu trắng, hầu như không tan trong nước lạnh; (b) Tinh bột có nhiều trong lá và thân cây ngũ cốc; (c) Sợi bông thu hoạch từ cây bông vải có thành phần chủ yếu là cellulose; (d) Cellulose là chất rắn màu trắng, không tan trong nước. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "4", correct: false },
+                    { text: "3", correct: true },
+                    { text: "2", correct: false},   
+                ],
+                explanation: "Phát biểu b sai vì tinh bột có nhiều trong hạt cây ngũ cốc."
+            },            
+        {
+question: "Câu 29: Cho dãy các chất: saccharose, fructose, amylose, amylopectin và cellulose. Có bao nhiêu chất trong dãy khi thủy phân hoàn toàn tạo thành sản phẩm duy nhất là glucose?",
+                answers: [
+                    { text: "3", correct: true },
+                    { text: "5", correct: false},
+                    { text: "4", correct: false},
+                    { text: "2", correct: false },
+                ],
+                explanation: "Amylose, amylopectin và cellulose khi thủy khi thủy phân hoàn toàn tạo thành sản phẩm duy nhất là glucose."
+            },            
+        {
+     question: "Câu 30: Cho các carbohydrate sau: glucose, fructose, saccharose và maltose. Số carbohydrate có khả năng mở vòng trong dung dịch nước là",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "3", correct: true },
+                    { text: "2", correct: false},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Glucose, fructose và maltose có khả năng mở vòng trong dung dịch nước  vì có nhóm -OH hemiacetal (hemiketal) còn saccharose  không còn nhóm -OH hemiacetal nên chỉ tổnf tại ở dạng mạch vòng. "
+            },            
+        ];
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

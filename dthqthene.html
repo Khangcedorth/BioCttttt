@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Di truyền học quần thể nghiên cứu các yếu tố nào trong một quần thể sinh vật?",
+        answers: [
+            { text: "Sự phân bố của các gene", correct: true },
+            { text: "Sự phát triển của từng cá thể", correct: false },
+            { text: "Sự tương tác giữa các quần thể", correct: false},
+            { text: "Tần số đột biến ở từng cá thể", correct: false }
+        ],
+        explanation: "Di truyền học quần thể nghiên cứu sự phân bố của các gene trong một quần thể sinh vật."
+    },
+    {
+        question: "Câu 2: Tần số allele là gì trong di truyền học quần thể?",
+        answers: [
+            { text: "Tỷ lệ của một allele nhất định trong toàn bộ quần thể", correct: true },
+            { text: "Tỷ lệ của một genotype nhất định trong toàn bộ quần thể", correct: false },
+            { text: "Số lượng allele trong một cá thể", correct: false},
+            { text: "Số lượng cá thể trong quần thể", correct: false }
+        ],
+        explanation: "Tần số allele là tỷ lệ của một allele nhất định trong toàn bộ quần thể."
+    },
+    {
+        question: "Câu 3: Định lý Hardy-Weinberg được sử dụng để phân tích điều gì trong di truyền học quần thể?",
+        answers: [
+            { text: "Sự ổn định của tần số allele trong quần thể", correct: true },
+            { text: "Sự di chuyển của các cá thể giữa các quần thể", correct: false },
+            { text: "Sự ảnh hưởng của đột biến đến quần thể", correct: false},
+            { text: "Sự tương tác giữa các quần thể", correct: false }
+        ],
+        explanation: "Định lý Hardy-Weinberg được sử dụng để phân tích sự ổn định của tần số allele trong quần thể."
+    },
+    {
+        question: "Câu 4: Để một quần thể đạt được cân bằng Hardy-Weinberg, cần có các điều kiện nào?",
+        answers: [
+            { text: "Quần thể lớn, không có di cư, không có đột biến, giao phối ngẫu nhiên, không có chọn lọc tự nhiên", correct: true },
+            { text: "Quần thể nhỏ, có di cư, có đột biến, giao phối không ngẫu nhiên, có chọn lọc tự nhiên", correct: false },
+            { text: "Quần thể lớn, có chọn lọc tự nhiên, không có di cư, không có đột biến", correct: false},
+            { text: "Quần thể nhỏ, giao phối ngẫu nhiên, có đột biến, có chọn lọc tự nhiên", correct: false }
+        ],
+        explanation: "Để một quần thể đạt được cân bằng Hardy-Weinberg, cần có quần thể lớn, không có di cư, không có đột biến, giao phối ngẫu nhiên, và không có chọn lọc tự nhiên."
+    },
+    {
+        question: "Câu 5: Nếu tần số allele A trong quần thể là 0.6, tần số allele a sẽ là bao nhiêu nếu quần thể ở trạng thái cân bằng Hardy-Weinberg?",
+        answers: [
+            { text: "0.4", correct: true },
+            { text: "0.6", correct: false },
+            { text: "0.2", correct: false},
+            { text: "0.8", correct: false }
+        ],
+        explanation: "Tần số allele a = 1 - tần số allele A = 1 - 0.6 = 0.4."
+    },
+    {
+        question: "Câu 6: Trong một quần thể lớn, tần số allele của một gene sẽ thay đổi do yếu tố nào?",
+        answers: [
+            { text: "Tự nhiên", correct: false },
+            { text: "Đột biến và chọn lọc tự nhiên", correct: true },
+            { text: "Di cư và giao phối", correct: false},
+            { text: "Chọn lọc nhân tạo và giao phối", correct: false }
+        ],
+        explanation: "Tần số allele của một gene trong một quần thể lớn sẽ thay đổi chủ yếu do đột biến và chọn lọc tự nhiên."
+    },
+    {
+        question: "Câu 7: Đột biến gen ảnh hưởng như thế nào đến di truyền học quần thể?",
+        answers: [
+            { text: "Tạo ra các allele mới và làm thay đổi tần số allele", correct: true },
+            { text: "Tạo ra các genotype mới mà không làm thay đổi tần số allele", correct: false },
+            { text: "Làm giảm số lượng cá thể trong quần thể", correct: false},
+            { text: "Làm tăng khả năng sống sót của tất cả các cá thể", correct: false }
+        ],
+        explanation: "Đột biến gen tạo ra các allele mới và làm thay đổi tần số allele trong quần thể."
+    },
+    {
+        question: "Câu 8: Trong di truyền học quần thể, chọn lọc tự nhiên có thể làm gì?",
+        answers: [
+            { text: "Tăng cường tần số của các allele có lợi", correct: true },
+            { text: "Giảm số lượng cá thể trong quần thể", correct: false },
+            { text: "Tăng cường sự đa dạng di truyền", correct: false},
+            { text: "Giảm tần số của các allele có lợi", correct: false }
+        ],
+        explanation: "Chọn lọc tự nhiên có thể làm tăng cường tần số của các allele có lợi trong quần thể."
+    },
+    {
+        question: "Câu 9: Sự di cư của các cá thể có thể ảnh hưởng đến di truyền học quần thể như thế nào?",
+        answers: [
+            { text: "Thay đổi tần số allele của quần thể", correct: true },
+            { text: "Tăng cường sự ổn định di truyền", correct: false },
+            { text: "Giảm sự đa dạng di truyền", correct: false},
+            { text: "Tăng cường khả năng sinh sản của cá thể", correct: false }
+        ],
+        explanation: "Sự di cư của các cá thể có thể thay đổi tần số allele của quần thể."
+    },
+    {
+        question: "Câu 10: Sự giao phối không ngẫu nhiên có thể dẫn đến hiện tượng gì trong quần thể?",
+        answers: [
+            { text: "Sự gia tăng tần số của các genotype đồng hợp tử", correct: true },
+            { text: "Sự giảm tần số của các allele", correct: false },
+            { text: "Sự gia tăng tần số của các allele lặn", correct: false},
+            { text: "Sự giảm sự đa dạng di truyền", correct: false }
+        ],
+        explanation: "Sự giao phối không ngẫu nhiên có thể dẫn đến sự gia tăng tần số của các genotype đồng hợp tử trong quần thể."
+    },
+    {
+        question: "Câu 11: Tỷ lệ các genotype khác nhau trong quần thể có thể được dự đoán bằng công thức nào?",
+        answers: [
+            { text: "Công thức Hardy-Weinberg", correct: true },
+            { text: "Công thức di truyền Mendel", correct: false },
+            { text: "Công thức di truyền liên kết", correct: false},
+            { text: "Công thức chọn lọc tự nhiên", correct: false }
+        ],
+        explanation: "Tỷ lệ các genotype khác nhau trong quần thể có thể được dự đoán bằng công thức Hardy-Weinberg."
+    },
+    {
+        question: "Câu 12: Điều gì xảy ra khi một quần thể bị ảnh hưởng bởi hiệu ứng chai lọ?",
+        answers: [
+            { text: "Tần số allele có thể bị thay đổi đáng kể", correct: true },
+            { text: "Sự đa dạng di truyền trong quần thể tăng lên", correct: false },
+            { text: "Tần số allele ổn định và không thay đổi", correct: false},
+            { text: "Sự gia tăng số lượng cá thể trong quần thể", correct: false }
+        ],
+        explanation: "Khi một quần thể bị ảnh hưởng bởi hiệu ứng chai lọ, tần số allele có thể bị thay đổi đáng kể."
+    },
+    {
+        question: "Câu 13: Tính di truyền của các tính trạng có thể được tính toán bằng cách sử dụng chỉ số nào trong di truyền học quần thể?",
+        answers: [
+            { text: "Chỉ số di truyền", correct: false },
+            { text: "Chỉ số tần số allele", correct: true },
+            { text: "Chỉ số genotype", correct: false},
+            { text: "Chỉ số sự đa dạng di truyền", correct: false }
+        ],
+        explanation: "Tính di truyền của các tính trạng có thể được tính toán bằng chỉ số tần số allele trong di truyền học quần thể."
+    },
+    {
+        question: "Câu 14: Để tính toán chỉ số di truyền trong một quần thể, cần biết các thông tin gì?",
+        answers: [
+            { text: "Tần số allele và tần số genotype", correct: true },
+            { text: "Số lượng cá thể và số lượng allele", correct: false },
+            { text: "Số lượng genotype và số lượng phenotype", correct: false},
+            { text: "Tần số phenotype và số lượng genotype", correct: false }
+        ],
+        explanation: "Để tính toán chỉ số di truyền trong một quần thể, cần biết tần số allele và tần số genotype."
+    },
+    {
+        question: "Câu 15: Hiệu ứng chai lọ là gì trong di truyền học quần thể?",
+        answers: [
+            { text: "Hiệu ứng giảm sự đa dạng di truyền do một sự kiện giảm số lượng cá thể trong quần thể", correct: true },
+            { text: "Hiệu ứng tăng cường tần số allele hiếm trong quần thể", correct: false },
+            { text: "Hiệu ứng làm giảm tần số allele lặn trong quần thể", correct: false},
+            { text: "Hiệu ứng làm thay đổi sự phân bố các genotype trong quần thể", correct: false }
+        ],
+        explanation: "Hiệu ứng chai lọ là hiệu ứng giảm sự đa dạng di truyền do một sự kiện giảm số lượng cá thể trong quần thể."
+    },
+    {
+        question: "Câu 16: Sự lựa chọn nhân tạo trong chọn giống có ảnh hưởng như thế nào đến di truyền học quần thể?",
+        answers: [
+            { text: "Thay đổi tần số allele theo hướng mong muốn của con người", correct: true },
+            { text: "Tăng cường sự đa dạng di truyền trong quần thể", correct: false },
+            { text: "Làm giảm sự đồng nhất của các genotype trong quần thể", correct: false},
+            { text: "Làm giảm tỷ lệ sống sót của các cá thể trong quần thể", correct: false }
+        ],
+        explanation: "Sự lựa chọn nhân tạo trong chọn giống có thể thay đổi tần số allele theo hướng mong muốn của con người."
+    },
+    {
+        question: "Câu 17: Trong di truyền học quần thể, hiện tượng nào có thể dẫn đến sự thay đổi tần số allele mà không liên quan đến chọn lọc tự nhiên?",
+        answers: [
+            { text: "Hiệu ứng di cư và hiệu ứng chai lọ", correct: true },
+            { text: "Tự giao phối và giao phối ngẫu nhiên", correct: false },
+            { text: "Tăng cường đột biến và chọn lọc nhân tạo", correct: false},
+            { text: "Thay đổi môi trường và thay đổi môi trường sống", correct: false }
+        ],
+        explanation: "Hiệu ứng di cư và hiệu ứng chai lọ có thể dẫn đến sự thay đổi tần số allele mà không liên quan đến chọn lọc tự nhiên."
+    },
+    {
+        question: "Câu 18: Tần số genotype có thể được tính toán dựa trên tần số allele sử dụng công thức nào?",
+        answers: [
+            { text: "Công thức Hardy-Weinberg", correct: true },
+            { text: "Công thức di truyền Mendel", correct: false },
+            { text: "Công thức di truyền liên kết", correct: false},
+            { text: "Công thức chọn lọc tự nhiên", correct: false }
+        ],
+        explanation: "Tần số genotype có thể được tính toán dựa trên tần số allele sử dụng công thức Hardy-Weinberg."
+    },
+    {
+        question: "Câu 19: Trong di truyền học quần thể, sự phân bố allele của một gene có thể bị ảnh hưởng bởi yếu tố nào?",
+        answers: [
+            { text: "Sự thay đổi môi trường và sự giao phối không ngẫu nhiên", correct: true },
+            { text: "Sự đột biến và sự thay đổi môi trường sống", correct: false },
+            { text: "Sự chọn lọc nhân tạo và sự thay đổi cấu trúc gene", correct: false},
+            { text: "Sự biến đổi di truyền và sự gia tăng số lượng cá thể", correct: false }
+        ],
+        explanation: "Sự phân bố allele của một gene trong di truyền học quần thể có thể bị ảnh hưởng bởi sự thay đổi môi trường và sự giao phối không ngẫu nhiên."
+    },
+    {
+        question: "Câu 20: Trong di truyền học quần thể, một quần thể có thể được coi là đạt trạng thái cân bằng Hardy-Weinberg nếu tần số allele không thay đổi trong điều kiện nào?",
+        answers: [
+            { text: "Không có đột biến, không có di cư, không có giao phối không ngẫu nhiên, không có chọn lọc tự nhiên", correct: true },
+            { text: "Có sự giao phối không ngẫu nhiên và sự thay đổi môi trường", correct: false },
+            { text: "Có sự chọn lọc tự nhiên và sự di cư của cá thể", correct: false},
+            { text: "Có sự đột biến và sự thay đổi tần số allele", correct: false }
+        ],
+        explanation: "Một quần thể có thể được coi là đạt trạng thái cân bằng Hardy-Weinberg nếu tần số allele không thay đổi trong điều kiện không có đột biến, không có di cư, không có giao phối không ngẫu nhiên, và không có chọn lọc tự nhiên."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

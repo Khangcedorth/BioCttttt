@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Nhiễm sắc thể giới tính ở người gồm những loại nào?",
+        answers: [
+            { text: "XX và XY", correct: true },
+            { text: "AA và BB", correct: false },
+            { text: "YY và XX", correct: false },
+            { text: "YY và XY", correct: false }
+        ],
+        explanation: "Nhiễm sắc thể giới tính ở người gồm XX ở nữ và XY ở nam."
+    },
+    {
+        question: "Câu 2: Bệnh máu khó đông là bệnh di truyền liên kết với nhiễm sắc thể nào?",
+        answers: [
+            { text: "Nhiễm sắc thể X", correct: true },
+            { text: "Nhiễm sắc thể Y", correct: false },
+            { text: "Nhiễm sắc thể số 21", correct: false },
+            { text: "Nhiễm sắc thể số 13", correct: false }
+        ],
+        explanation: "Bệnh máu khó đông là bệnh di truyền liên kết với nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 3: Tại sao nam giới dễ mắc các bệnh di truyền liên kết với nhiễm sắc thể X hơn nữ giới?",
+        answers: [
+            { text: "Vì nam giới chỉ có một nhiễm sắc thể X", correct: true },
+            { text: "Vì nam giới có hai nhiễm sắc thể Y", correct: false },
+            { text: "Vì nữ giới không có nhiễm sắc thể X", correct: false },
+            { text: "Vì nữ giới có hai nhiễm sắc thể X", correct: false }
+        ],
+        explanation: "Nam giới chỉ có một nhiễm sắc thể X, nên nếu gene bị đột biến nằm trên nhiễm sắc thể này thì sẽ biểu hiện ra bệnh."
+    },
+    {
+        question: "Câu 4: Bệnh nào dưới đây không phải là bệnh di truyền liên kết với giới tính?",
+        answers: [
+            { text: "Bệnh mù màu", correct: false },
+            { text: "Bệnh máu khó đông", correct: false },
+            { text: "Bệnh tiểu đường", correct: true },
+            { text: "Bệnh loạn dưỡng cơ Duchenne", correct: false }
+        ],
+        explanation: "Bệnh tiểu đường không phải là bệnh di truyền liên kết với giới tính."
+    },
+    {
+        question: "Câu 5: Bệnh mù màu được di truyền theo kiểu nào?",
+        answers: [
+            { text: "Di truyền lặn liên kết với nhiễm sắc thể X", correct: true },
+            { text: "Di truyền trội liên kết với nhiễm sắc thể X", correct: false },
+            { text: "Di truyền lặn liên kết với nhiễm sắc thể Y", correct: false },
+            { text: "Di truyền trội liên kết với nhiễm sắc thể Y", correct: false }
+        ],
+        explanation: "Bệnh mù màu được di truyền theo kiểu di truyền lặn liên kết với nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 6: Nữ giới có thể bị bệnh mù màu không? Nếu có, tỷ lệ mắc bệnh là bao nhiêu?",
+        answers: [
+            { text: "Có, tỷ lệ rất thấp", correct: true },
+            { text: "Có, tỷ lệ cao hơn nam giới", correct: false },
+            { text: "Không, nữ giới không mắc bệnh mù màu", correct: false },
+            { text: "Có, tỷ lệ bằng nam giới", correct: false }
+        ],
+        explanation: "Nữ giới có thể bị bệnh mù màu nhưng tỷ lệ rất thấp vì cần hai nhiễm sắc thể X đều mang gene đột biến."
+    },
+    {
+        question: "Câu 7: Bệnh loạn dưỡng cơ Duchenne do đột biến gene nào gây ra?",
+        answers: [
+            { text: "Gene DMD trên nhiễm sắc thể X", correct: true },
+            { text: "Gene HBB trên nhiễm sắc thể số 11", correct: false },
+            { text: "Gene CFTR trên nhiễm sắc thể số 7", correct: false },
+            { text: "Gene BRCA1 trên nhiễm sắc thể số 17", correct: false }
+        ],
+        explanation: "Bệnh loạn dưỡng cơ Duchenne do đột biến gene DMD trên nhiễm sắc thể X gây ra."
+    },
+    {
+        question: "Câu 8: Nhiễm sắc thể Y có gene nào quyết định sự phát triển giới tính nam?",
+        answers: [
+            { text: "Gene SRY", correct: true },
+            { text: "Gene TDF", correct: false },
+            { text: "Gene XIST", correct: false },
+            { text: "Gene ZFY", correct: false }
+        ],
+        explanation: "Gene SRY trên nhiễm sắc thể Y quyết định sự phát triển giới tính nam."
+    },
+    {
+        question: "Câu 9: Bệnh nào sau đây do di truyền liên kết với nhiễm sắc thể Y?",
+        answers: [
+            { text: "Bệnh hội chứng Klinefelter", correct: false },
+            { text: "Bệnh hội chứng Turner", correct: false },
+            { text: "Bệnh nam giới bị vô sinh", correct: true },
+            { text: "Bệnh máu khó đông", correct: false }
+        ],
+        explanation: "Bệnh nam giới bị vô sinh có thể do đột biến di truyền liên kết với nhiễm sắc thể Y."
+    },
+    {
+        question: "Câu 10: Ở nữ giới, nhiễm sắc thể X nào bị bất hoạt và tại sao?",
+        answers: [
+            { text: "Một trong hai nhiễm sắc thể X bị bất hoạt ngẫu nhiên", correct: true },
+            { text: "Nhiễm sắc thể X từ mẹ bị bất hoạt", correct: false },
+            { text: "Nhiễm sắc thể X từ bố bị bất hoạt", correct: false },
+            { text: "Không có nhiễm sắc thể X nào bị bất hoạt", correct: false }
+        ],
+        explanation: "Ở nữ giới, một trong hai nhiễm sắc thể X bị bất hoạt ngẫu nhiên để cân bằng liều lượng gene giữa nam và nữ."
+    },
+    {
+        question: "Câu 11: Hội chứng Turner có đặc điểm gì?",
+        answers: [
+            { text: "Chỉ có một nhiễm sắc thể X", correct: true },
+            { text: "Có ba nhiễm sắc thể X", correct: false },
+            { text: "Có một nhiễm sắc thể X và hai nhiễm sắc thể Y", correct: false },
+            { text: "Có một nhiễm sắc thể Y và hai nhiễm sắc thể X", correct: false }
+        ],
+        explanation: "Hội chứng Turner là tình trạng chỉ có một nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 12: Nữ giới mắc bệnh máu khó đông có thể sinh ra con trai mắc bệnh không?",
+        answers: [
+            { text: "Có, nếu bố không mang gene bệnh", correct: true },
+            { text: "Không, vì gene bệnh chỉ truyền từ bố", correct: false },
+            { text: "Có, nếu mẹ mang gene bệnh", correct: false },
+            { text: "Không, vì nữ giới không thể truyền gene bệnh", correct: false }
+        ],
+        explanation: "Nữ giới mắc bệnh máu khó đông có thể sinh con trai mắc bệnh nếu bố không mang gene bệnh."
+    },
+    {
+        question: "Câu 13: Ở người, nhiễm sắc thể giới tính được xác định vào thời điểm nào?",
+        answers: [
+            { text: "Khi thụ tinh", correct: true },
+            { text: "Khi phôi thai 3 tháng", correct: false },
+            { text: "Khi phôi thai 6 tháng", correct: false },
+            { text: "Khi sinh ra", correct: false }
+        ],
+        explanation: "Nhiễm sắc thể giới tính được xác định vào thời điểm thụ tinh."
+    },
+    {
+        question: "Câu 14: Bệnh nào sau đây là do đột biến gene trên nhiễm sắc thể X?",
+        answers: [
+            { text: "Bệnh loạn dưỡng cơ Duchenne", correct: true },
+            { text: "Bệnh thiếu máu hồng cầu liềm", correct: false },
+            { text: "Bệnh xơ nang", correct: false },
+            { text: "Bệnh Huntington", correct: false }
+        ],
+        explanation: "Bệnh loạn dưỡng cơ Duchenne là do đột biến gene trên nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 15: Tại sao nữ giới không mắc bệnh do đột biến gene trên nhiễm sắc thể Y?",
+        answers: [
+            { text: "Vì nữ giới không có nhiễm sắc thể Y", correct: true },
+            { text: "Vì nữ giới có hai nhiễm sắc thể X", correct: false },
+            { text: "Vì đột biến trên nhiễm sắc thể Y không gây bệnh", correct: false },
+            { text: "Vì nữ giới có cơ chế bảo vệ đặc biệt", correct: false }
+        ],
+        explanation: "Nữ giới không mắc bệnh do đột biến gene trên nhiễm sắc thể Y vì họ không có nhiễm sắc thể Y."
+    },
+    {
+        question: "Câu 16: Hội chứng Klinefelter có đặc điểm gì?",
+        answers: [
+            { text: "Có thêm một nhiễm sắc thể X (XXY)", correct: true },
+            { text: "Có thêm một nhiễm sắc thể Y (XYY)", correct: false },
+            { text: "Chỉ có một nhiễm sắc thể X", correct: false },
+            { text: "Có thêm một nhiễm sắc thể số 21", correct: false }
+        ],
+        explanation: "Hội chứng Klinefelter có đặc điểm là có thêm một nhiễm sắc thể X (XXY)."
+    },
+    {
+        question: "Câu 17: Bệnh nào sau đây là do đột biến gene trên nhiễm sắc thể Y?",
+        answers: [
+            { text: "Vô sinh ở nam giới", correct: true },
+            { text: "Hội chứng Turner", correct: false },
+            { text: "Bệnh máu khó đông", correct: false },
+            { text: "Bệnh loạn dưỡng cơ Duchenne", correct: false }
+        ],
+        explanation: "Bệnh vô sinh ở nam giới có thể do đột biến gene trên nhiễm sắc thể Y."
+    },
+    {
+        question: "Câu 18: Nữ giới có thể bị bệnh di truyền liên kết với nhiễm sắc thể Y không?",
+        answers: [
+            { text: "Không", correct: true },
+            { text: "Có, nhưng rất hiếm", correct: false },
+            { text: "Có, nếu mẹ mang gene bệnh", correct: false },
+            { text: "Có, nếu bố mang gene bệnh", correct: false }
+        ],
+        explanation: "Nữ giới không thể bị bệnh di truyền liên kết với nhiễm sắc thể Y vì họ không có nhiễm sắc thể Y."
+    },
+    {
+        question: "Câu 19: Hội chứng nào sau đây là do đột biến số lượng nhiễm sắc thể giới tính?",
+        answers: [
+            { text: "Hội chứng Turner", correct: true },
+            { text: "Hội chứng Down", correct: false },
+            { text: "Hội chứng Patau", correct: false },
+            { text: "Hội chứng Edwards", correct: false }
+        ],
+        explanation: "Hội chứng Turner là do đột biến số lượng nhiễm sắc thể giới tính (chỉ có một nhiễm sắc thể X)."
+    },
+    {
+        question: "Câu 20: Bệnh nào sau đây là do di truyền lặn liên kết với nhiễm sắc thể X?",
+        answers: [
+            { text: "Bệnh mù màu", correct: true },
+            { text: "Bệnh Huntington", correct: false },
+            { text: "Bệnh xơ nang", correct: false },
+            { text: "Bệnh thiếu máu hồng cầu liềm", correct: false }
+        ],
+        explanation: "Bệnh mù màu là do di truyền lặn liên kết với nhiễm sắc thể X."
+    }
+];
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

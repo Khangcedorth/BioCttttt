@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            // Các câu hỏi từ 1 đến 9
+            {
+                question: "Câu 1: Gene là gì",
+                answers: [
+                    { text: "Gene là 1 đoạn DNA mang thông tin quy định tính trạng của sinh vật", correct: true },
+                    { text: "Gene là 1 đoạn DNA không mang thông tin quy định tính trạng", correct: false },
+                    { text: "Gene là 1 đoạn không nằm trên DNA nhưng mang thông tin quy định tính trạng sinh vật", correct: false},
+                    { text: "Gene là 1 chuỗi các DNA không mang thông tin quy định tính trạng", correct: false }
+                ],
+                explanation: "Gene là 1 đoạn DNA mang thông tin quy định tính trạng của sinh vật."
+            },
+            {
+                question: "Câu 2: Gene được cấu tạo từ gì?",
+                answers: [
+                    { text: "amino acid", correct: false },
+                    { text: "acid béo", correct: false },
+                    { text: "2 mạch polynucleotide", correct: true},
+                    { text: "Glucose", correct: false }
+                ],
+                explanation: "Gene được cấu tạo từ 2 mạch polynucleotide."
+            },
+            {
+                question: "Câu 3: Về cấu trúc gene có mấy vùng",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: false },
+                    { text: "3", correct: true},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về cấu trúc gene có 3 vùng: vùng mã hoá, vùng không mã hoá và vùng điều khiển."
+            },
+            {
+                question: "Câu 4: Về chức năng gene chia thành mấy loại",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: true },
+                    { text: "3", correct: false},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về chức năng gene chia thành 2 loại: gene cấu trúc và gene điều hoà."
+            },
+            {
+                question: "Câu 5: Về cấu trúc gene chia thành mấy loại?",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: true },
+                    { text: "3", correct: false},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về cấu trúc gene chia thành 2 loại: gene phân mảnh và gene không phân mảnh."
+            },
+            {
+                question: "Câu 6: Tái bản DNA dựa trên nguyên tắc nào?",
+                answers: [
+                    { text: "Bổ sung", correct: false },
+                    { text: "Bảo tồn", correct: false },
+                    { text: "Bán bảo tồn", correct: false},
+                    { text: "Bổ sung và bán bảo tồn", correct: true }
+                ],
+                explanation: "Tái bản DNA dựa trên nguyên tắc bổ sung và bán bảo tồn."
+            },
+            {
+                question: "Câu 7: Vùng điều hoà nằm ở đâu?",
+                answers: [
+                    { text: "Vùng 3' trên mạch khuôn tổng hợp gene", correct: true },
+                    { text: "Vùng 5' trên mạch khuôn tổng hợp gene", correct: false },
+                    { text: "Nằm ở chính giữa trên mạch khuôn", correct: false},
+                    { text: "Không nằm trong mạch khuôn tổng hợp", correct: false }
+                ],
+                explanation: "Vùng điều hoà nằm ở vùng 3' trên mạch khuôn tổng hợp gene."
+            },
+            {
+                question: "Câu 8: Ở sinh vật nhân thực gene quy định protein có vùng mã hoá được chia thành?",
+                answers: [
+                    { text: "Vùng điều hoà", correct: false },
+                    { text: "intron (không dịch mã) và exon (dịch mã)", correct: true },
+                    { text: "Vùng kết thúc", correct: false},
+                    { text: "intron (dịch mã) và exon (không dịch mã)", correct: false }
+                ],
+                explanation: "Ở sinh vật nhân thực, gene quy định protein có vùng mã hoá được chia thành intron (không dịch mã) và exon (dịch mã)."
+            },
+            {
+                question: "Câu 9: Hệ gene là gì?",
+                answers: [
+                    { text: "Hệ gene là tổ hợp tất cả vật chất di truyền", correct: false },
+                    { text: "Hệ gene là tập hợp tất cả vật chất di truyền (DNA) trong tế bào của một sinh vật", correct: true },
+                    { text: "Hệ gene là tập hợp một số vật chất di truyền (DNA)", correct: false},
+                    { text: "Hệ gene là tập hợp các vật chất không mang tính di truyền", correct: false }
+                ],
+                explanation: "Hệ gene là tập hợp tất cả vật chất di truyền (DNA) trong tế bào của một sinh vật."
+            },
+            {
+                question: "Câu 10: Một gene có tổng số 3000 nucleotide và số nucleotide loại G chiếm 30% tổng số nucleotide của gene. Gene nhân đôi 4 lần. Số nucleotide loại A mà môi trường cung cấp là 8400?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Gene có 3000 nucleotide, G chiếm 30% tổng số nucleotide tức là có 900 nucleotide G. Vậy số nucleotide loại A là (3000 - 900 x 2) / 2 = 600. Khi gene nhân đôi 4 lần tạo ra 2^4 = 16 gene, môi trường cần cung cấp 600 x 15 = 9000 nucleotide loại A."
+            },
+            {
+                question: "Câu 11: Gene phiên mã ra rRNA và dịch mã ra DNA?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: " Gene phiên mã ra rRNA và dịch mã ra chuỗi polypeptide."
+            },
+            {
+                question: "Câu 12: Một gene phiên mã 10 lần thì tổng hợp được 10 phân tử rRNA?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Một gene cứ phiên mã 1 lần thif tổng hợp được 1 phân tử rRNA."
+            },
+            {
+                question: "Câu 13: tRNA vận chuyển thông tin di truyền?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Gene có 4500 nucleotide, T chiếm 30% tức là có 1350 nucleotide T. Số nucleotide loại A cũng là 1350. Vậy số nucleotide loại G và C là (4500 - 2700) / 2 = 900 mỗi loại. Khi gene nhân đôi 2 lần, số phân tử nước được giải phóng là (4500 - 1) x (2^2 - 1) = 13497 ≈ 13500."
+            },
+            {
+                question: "Câu 14: Một gene có tổng số 5000 nucleotide và số nucleotide loại A chiếm 25%. Số nucleotide loại T mà môi trường cung cấp khi gene nhân đôi 5 lần là 38750?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Gene có 5000 nucleotide, A chiếm 25% tức là có 1250 nucleotide A. Số nucleotide loại T cũng là 1250. Khi gene nhân đôi 5 lần, số nucleotide loại T mà môi trường cung cấp là 1250 x (2^5 - 1) = 1250 x 31 = 38750."
+            },
+            {
+                question: "Câu 15: Một gene có tổng số 2000 nucleotide và số nucleotide loại G chiếm 35%. Số chuỗi polynucleotide được tạo ra khi gene nhân đôi 6 lần là bao nhiêu?",
+                answers: [
+                    { text: "126", correct: true },
+                    { text: "64", correct: false },
+                    { text: "128", correct: false},
+                    { text: "32", correct: false }
+                ],
+                explanation: "Khi gene nhân đôi 6 lần, số chuỗi polynucleotide được tạo ra là 2^6 = 64. Do mỗi gene chứa 2 chuỗi polynucleotide, tổng số chuỗi polynucleotide là 64 x 2 = 128."
+            },
+            {
+                question: "Câu 16: Một gene có tổng số 10000 nucleotide và số nucleotide loại T chiếm 20%. Số nucleotide loại G cần thiết để tổng hợp gene là bao nhiêu?",
+                answers: [
+                    { text: "4000", correct: true },
+                    { text: "2000", correct: false },
+                    { text: "3000", correct: false},
+                    { text: "5000", correct: false }
+                ],
+                explanation: "Gene có 10000 nucleotide, T chiếm 20% tức là có 2000 nucleotide T. Số nucleotide loại A cũng là 2000. Vậy số nucleotide loại G và C là (10000 - 4000) / 2 = 3000 mỗi loại."
+            },
+            {
+                question: "Câu 17: Một gene có tổng số 8000 nucleotide và số nucleotide loại A chiếm 15%. Số nucleotide loại C mà môi trường cung cấp khi gene nhân đôi 7 lần là bao nhiêu?",
+                answers: [
+                    { text: "238000", correct: true },
+                    { text: "42000", correct: false },
+                    { text: "56000", correct: false},
+                    { text: "112000", correct: false }
+                ],
+                explanation: "Gene có 8000 nucleotide, A chiếm 15% tức là có 1200 nucleotide A. Số nucleotide loại T cũng là 1200. Vậy số nucleotide loại G và C là (8000 - 2400) / 2 = 2800 mỗi loại. Khi gene nhân đôi 7 lần, số nucleotide loại C mà môi trường cung cấp là 2800 x (2^7 - 1) = 2800 x 127 = 355600."
+            },
+            {
+                question: "Câu 18: Một gene có tổng số 7000 nucleotide và số nucleotide loại C chiếm 25%. Số liên kết phosphodiester được hình thành khi gene nhân đôi 8 lần là bao nhiêu?",
+                answers: [
+                    { text: "112000", correct: true },
+                    { text: "14000", correct: false },
+                    { text: "84000", correct: false},
+                    { text: "168000", correct: false }
+                ],
+                explanation: "Gene có 7000 nucleotide, C chiếm 25% tức là có 1750 nucleotide C. Số nucleotide loại G cũng là 1750. Vậy số nucleotide loại A và T là (7000 - 3500) / 2 = 1750 mỗi loại. Khi gene nhân đôi 8 lần, số liên kết phosphodiester được hình thành là (7000 - 1) x (2^8 - 1) = 6999 x 255 = 1784745 ≈ 112000."
+            },
+            {
+                question: "Câu 19: Một gene có tổng số 4000 nucleotide và số nucleotide loại T chiếm 40%. Số nucleotide loại A cần thiết để tổng hợp gene là bao nhiêu?",
+                answers: [
+                    { text: "1600", correct: true },
+                    { text: "800", correct: false },
+                    { text: "1200", correct: false},
+                    { text: "2000", correct: false }
+                ],
+                explanation: "Gene có 4000 nucleotide, T chiếm 40% tức là có 1600 nucleotide T. Số nucleotide loại A cũng là 1600. Do đó, số nucleotide loại A cần thiết để tổng hợp gene là 1600."
+            },
+            {
+                question: "Câu 20: Một gene có tổng số 9000 nucleotide và số nucleotide loại G chiếm 25%. Số chuỗi polynucleotide được tạo ra khi gene nhân đôi 9 lần là bao nhiêu?",
+                answers: [
+                    { text: "1024", correct: true },
+                    { text: "512", correct: false },
+                    { text: "256", correct: false},
+                    { text: "128", correct: false }
+                ],
+                explanation: "Khi gene nhân đôi 9 lần, số chuỗi polynucleotide được tạo ra là 2^9 = 512. Do mỗi gene chứa 2 chuỗi polynucleotide, tổng số chuỗi polynucleotide là 512 x 2 = 1024."
+            }
+        ];
+
+        // Biến để theo dõi trạng thái câu hỏi
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

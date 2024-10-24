@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Liên kết cộng hóa trị là gì?",
+        answers: [
+            { text: "Sự chia sẻ electron giữa hai nguyên tử để hoàn thành cấu hình electron bền vững", correct: true },
+            { text: "Sự trao đổi electron giữa hai nguyên tử để tạo ion", correct: false },
+            { text: "Sự trao đổi proton giữa hai nguyên tử để hoàn thành cấu hình electron", correct: false },
+            { text: "Sự trao đổi neutron giữa hai nguyên tử để tạo hợp chất", correct: false }
+        ],
+        explanation: "Liên kết cộng hóa trị xảy ra khi hai nguyên tử chia sẻ electron để đạt được cấu hình electron bền vững."
+    },
+    {
+        question: "Câu 2: Nguyên tử nào tham gia vào liên kết cộng hóa trị?",
+        answers: [
+            { text: "Cả nguyên tố phi kim và kim loại", correct: false },
+            { text: "Chỉ các nguyên tố phi kim", correct: true },
+            { text: "Chỉ các nguyên tố kim loại", correct: false },
+            { text: "Chỉ các nguyên tố khí hiếm", correct: false }
+        ],
+        explanation: "Chỉ có các nguyên tử phi kim tham gia vào liên kết cộng hóa trị bằng cách chia sẻ electron để hoàn thành cấu hình bền vững."
+    },
+    {
+        question: "Câu 3: Số lượng electron được chia sẻ trong liên kết đơn là bao nhiêu?",
+        answers: [
+            { text: "2 electron", correct: true },
+            { text: "1 electron", correct: false },
+            { text: "3 electron", correct: false },
+            { text: "4 electron", correct: false }
+        ],
+        explanation: "Trong liên kết đơn, hai nguyên tử chia sẻ 2 electron để đạt được cấu hình electron bền vững."
+    },
+    {
+        question: "Câu 4: Liên kết đôi được hình thành như thế nào?",
+        answers: [
+            { text: "Bằng cách chia sẻ 4 electron giữa hai nguyên tử", correct: true },
+            { text: "Bằng cách chia sẻ 2 electron giữa hai nguyên tử", correct: false },
+            { text: "Bằng cách chia sẻ 6 electron giữa hai nguyên tử", correct: false },
+            { text: "Bằng cách chia sẻ 1 electron giữa hai nguyên tử", correct: false }
+        ],
+        explanation: "Liên kết đôi xảy ra khi hai nguyên tử chia sẻ 4 electron, thường là 2 cặp electron, để đạt được cấu hình electron bền vững."
+    },
+    {
+        question: "Câu 5: Điều gì xảy ra khi hai nguyên tử có sự khác biệt về điện âm trong liên kết cộng hóa trị?",
+        answers: [
+            { text: "Một nguyên tử có năng lượng electron cao hơn và thu hút electron mạnh hơn từ nguyên tử kia", correct: true },
+            { text: "Cả hai nguyên tử chia sẻ electron một cách đều đặn", correct: false },
+            { text: "Nguyên tử nào có khối lượng lớn hơn sẽ chiếm ưu thế trong việc chia sẻ electron", correct: false },
+            { text: "Cả hai nguyên tử sẽ không thể tạo liên kết cộng hóa trị", correct: false }
+        ],
+        explanation: "Sự khác biệt về điện âm giữa hai nguyên tử trong liên kết cộng hóa trị dẫn đến một nguyên tử có năng lượng electron cao hơn và thu hút electron mạnh hơn từ nguyên tử kia."
+    },
+    {
+        question: "Câu 6: Trong phân tử H2O, liên kết giữa hydrogen và oxygen là loại liên kết gì?",
+        answers: [
+            { text: "Liên kết cộng hóa trị đơn", correct: true },
+            { text: "Liên kết ion", correct: false },
+            { text: "Liên kết kim loại", correct: false },
+            { text: "Liên kết hydrogen", correct: false }
+        ],
+        explanation: "Liên kết giữa hydrogen và oxygen trong phân tử H2O là liên kết cộng hóa trị đơn, trong đó hydrogen chia sẻ electron với oxygen."
+    },
+    {
+        question: "Câu 7: Trong phân tử CO2, mỗi nguyên tử carbon tạo liên kết với bao nhiêu nguyên tử oxygen?",
+        answers: [
+            { text: "Mỗi nguyên tử carbon tạo liên kết với hai nguyên tử oxygen", correct: true },
+            { text: "Mỗi nguyên tử carbon tạo liên kết với ba nguyên tử oxygen", correct: false },
+            { text: "Mỗi nguyên tử carbon tạo liên kết với một nguyên tử oxygen", correct: false },
+            { text: "Mỗi nguyên tử carbon không tạo liên kết với nguyên tử oxygen nào", correct: false }
+        ],
+        explanation: "Mỗi nguyên tử carbon trong phân tử CO2 tạo liên kết với hai nguyên tử oxygen bằng liên kết cộng hóa trị đơn."
+    },
+    {
+        question: "Câu 8: Tại sao liên kết đôi mạnh hơn liên kết đơn?",
+        answers: [
+            { text: "Vì liên kết đôi chia sẻ 4 electron giữa hai nguyên tử", correct: true },
+            { text: "Vì liên kết đôi chia sẻ 2 electron giữa hai nguyên tử", correct: false },
+            { text: "Vì liên kết đôi chia sẻ 6 electron giữa hai nguyên tử", correct: false },
+            { text: "Vì liên kết đôi chia sẻ 1 electron giữa hai nguyên tử", correct: false }
+        ],
+        explanation: "Liên kết đôi mạnh hơn liên kết đơn vì nó chia sẻ 4 electron, gấp đôi số electron được chia sẻ so với liên kết đơn."
+    },
+    {
+        question: "Câu 9: Liên kết đôi thường được tìm thấy trong loại phân tử nào sau đây?",
+        answers: [
+            { text: "Oxygen (O2)", correct: true },
+            { text: "Water (H2O)", correct: false },
+            { text: "Ammonia (NH3)", correct: false },
+            { text: "Methane (CH4)", correct: false }
+        ],
+        explanation: "Liên kết đôi thường được tìm thấy trong phân tử oxygen (O2), trong đó mỗi nguyên tử oxygen tạo liên kết đôi với nguyên tử oxygen khác."
+    },
+    {
+    question: "Câu 10: Liên kết pi xảy ra như thế nào trong các liên kết hóa học?",
+    answers: [
+        { text: "Liên kết pi là sự tương tác giữa các obitan không gian của các nguyên tử", correct: true },
+        { text: "Liên kết pi là sự chia sẻ electron giữa các nguyên tử", correct: false },
+        { text: "Liên kết pi là sự trao đổi electron giữa các nguyên tử", correct: false },
+        { text: "Liên kết pi là sự trao đổi proton giữa các nguyên tử", correct: false }
+    ],
+    explanation: "Liên kết pi là sự tương tác giữa các obitan không gian của các nguyên tử trong phân tử hữu cơ, không phải là sự chia sẻ hay trao đổi electron."
+},
+{
+        question: "Câu 11: Trong phân tử CH4, mỗi nguyên tử carbon tạo liên kết với bao nhiêu nguyên tử hydrogen?",
+        answers: [
+            { text: "Mỗi nguyên tử carbon tạo liên kết với bốn nguyên tử hydrogen", correct: true },
+            { text: "Mỗi nguyên tử carbon tạo liên kết với ba nguyên tử hydrogen", correct: false },
+            { text: "Mỗi nguyên tử carbon tạo liên kết với hai nguyên tử hydrogen", correct: false },
+            { text: "Mỗi nguyên tử carbon tạo liên kết với một nguyên tử hydrogen", correct: false }
+        ],
+        explanation: "Mỗi nguyên tử carbon trong phân tử CH4 tạo liên kết với bốn nguyên tử hydrogen bằng liên kết cộng hóa trị đơn."
+    },
+    {
+        question: "Câu 12: Liên kết phân tử trong chất lỏng là gì?",
+        answers: [
+            { text: "Các liên kết cộng hóa trị giữa các phân tử không cố định vị trí", correct: true },
+            { text: "Các liên kết ion giữa các phân tử", correct: false },
+            { text: "Các liên kết kim loại giữa các phân tử", correct: false },
+            { text: "Các liên kết hydrogen giữa các phân tử", correct: false }
+        ],
+        explanation: "Liên kết phân tử trong chất lỏng là các liên kết cộng hóa trị giữa các phân tử, với các phân tử không có vị trí cố định."
+    },
+    {
+        question: "Câu 13: Liên kết hóa học nào đặc trưng cho các hợp chất hữu cơ?",
+        answers: [
+            { text: "Liên kết cộng hóa trị", correct: true },
+            { text: "Liên kết ion", correct: false },
+            { text: "Liên kết kim loại", correct: false },
+            { text: "Liên kết hydrogen", correct: false }
+        ],
+        explanation: "Liên kết cộng hóa trị là loại liên kết hóa học đặc trưng cho các hợp chất hữu cơ, trong đó các nguyên tử carbon và hydrogen chủ yếu tham gia."
+    },
+    {
+        question: "Câu 14: Liên kết pi xuất hiện như thế nào trong các liên kết hóa học?",
+        answers: [
+            { text: "Liên kết pi là liên kết chung quanh phân tử", correct: true },
+            { text: "Liên kết pi là liên kết mạnh giữa các nguyên tử", correct: false },
+            { text: "Liên kết pi là liên kết ion giữa các nguyên tử", correct: false },
+            { text: "Liên kết pi là liên kết hydrogen giữa các nguyên tử", correct: false }
+        ],
+        explanation: "Liên kết pi là các liên kết chung quanh phân tử, thường là sự tương tác giữa các obitan không gian ở các nguyên tử trong phân tử hữu cơ."
+    },
+    {
+        question: "Câu 15: Cấu trúc cơ bản của một liên kết pi là gì?",
+        answers: [
+            { text: "Sự tương tác giữa các obitan không gian của các nguyên tử", correct: true },
+            { text: "Sự trao đổi electron giữa các nguyên tử", correct: false },
+            { text: "Sự chia sẻ electron giữa các nguyên tử", correct: false },
+            { text: "Sự trao đổi proton giữa các nguyên tử", correct: false }
+        ],
+        explanation: "Cấu trúc cơ bản của một liên kết pi là sự tương tác giữa các obitan không gian của các nguyên tử, không phải là sự chia sẻ electron."
+    },
+    {
+        question: "Câu 16: Liên kết pi thường được tìm thấy trong loại phân tử nào sau đây?",
+        answers: [
+            { text: "Cacbonn dioxide (CO2)", correct: false },
+            { text: "Benzene (C6H6)", correct: true },
+            { text: "Water (H2O)", correct: false },
+            { text: "Methane (CH4)", correct: false }
+        ],
+        explanation: "Liên kết pi thường được tìm thấy trong phân tử Benzene (C6H6), một hợp chất hữu cơ có cấu trúc phẳng và các liên kết pi trên vòng phân tử."
+    },
+    {
+        question: "Câu 17: Trong hợp chất hữu cơ, các liên kết pi chủ yếu xảy ra ở đâu?",
+        answers: [
+            { text: "Ở vùng không gian xung quanh phân tử", correct: true },
+            { text: "Trong vùng cơ sở của phân tử", correct: false },
+            { text: "Tại nhân của phân tử", correct: false },
+            { text: "Ở vùng không gian bên trong phân tử", correct: false }
+        ],
+        explanation: "Trong hợp chất hữu cơ, các liên kết pi chủ yếu xảy ra ở vùng không gian xung quanh phân tử, giữa các obitan không gian của các nguyên tử."
+    },
+    {
+        question: "Câu 18: Tại sao liên kết pi thường yếu hơn liên kết sigma?",
+        answers: [
+            { text: "Do obitan không gian không bền và dễ bị phá vỡ", correct: true },
+            { text: "Do liên kết pi chia sẻ electron ít hơn", correct: false },
+            { text: "Do liên kết pi có tính kiên định hơn", correct: false },
+            { text: "Do liên kết pi chia sẻ electron nhiều hơn", correct: false }
+        ],
+        explanation: "Liên kết pi thường yếu hơn liên kết sigma do obitan không gian không bền và dễ bị phá vỡ trong quá trình tương tác giữa các phân tử."
+    },
+    {
+        question: "Câu 19: Đặc điểm nào sau đây mô tả liên kết pi?",
+        answers: [
+            { text: "Liên kết có sự tương tác obitan không gian giữa các nguyên tử", correct: true },
+            { text: "Liên kết có sự chia sẻ electron giữa các nguyên tử", correct: false },
+            { text: "Liên kết có sự trao đổi electron giữa các nguyên tử", correct: false },
+            { text: "Liên kết có sự trao đổi proton giữa các nguyên tử", correct: false }
+        ],
+        explanation: "Đặc điểm của liên kết pi là sự tương tác obitan không gian giữa các nguyên tử, không phải là sự chia sẻ hay trao đổi electron."
+    },
+    {
+        question: "Câu 20: Liên kết pi phân biệt với liên kết sigma như thế nào?",
+        answers: [
+            { text: "Liên kết pi chủ yếu xảy ra trong không gian xung quanh phân tử, trong khi liên kết sigma xảy ra trực tiếp giữa hai nguyên tử", correct: true },
+            { text: "Liên kết pi chia sẻ electron nhiều hơn liên kết sigma", correct: false },
+            { text: "Liên kết pi có tính bền định hơn liên kết sigma", correct: false },
+            { text: "Liên kết pi có tính kiên định hơn liên kết sigma", correct: false }
+        ],
+        explanation: "Liên kết pi chủ yếu xảy ra trong không gian xung quanh phân tử, trong khi liên kết sigma xảy ra trực tiếp giữa hai nguyên tử, là điểm khác biệt chính giữa hai loại liên kết này."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

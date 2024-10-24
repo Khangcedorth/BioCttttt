@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Dinh dưỡng là gì?",
+                answers: [
+                    { text: "Sự hấp thụ chất dinh dưỡng từ môi trường", correct: false },
+                    { text: "Sự sử dụng chất dinh dưỡng để tạo năng lượng", correct: false },
+                    { text: "Sự cung cấp chất dinh dưỡng cho cơ thể", correct: false },
+                    { text: "Sự hấp thụ, tiêu hóa và sử dụng chất dinh dưỡng để duy trì sự sống và phát triển", correct: true }
+                ],
+                explanation: "Dinh dưỡng là quá trình hấp thụ, tiêu hóa và sử dụng chất dinh dưỡng để duy trì sự sống và phát triển."
+            },
+            {
+                question: "Câu 2: Phần nào của động vật chủ yếu hấp thụ dinh dưỡng?",
+                answers: [
+                    { text: "Da", correct: false },
+                    { text: "Ruột", correct: true },
+                    { text: "Mũi", correct: false },
+                    { text: "Lưỡi", correct: false }
+                ],
+                explanation: "Ruột là phần chủ yếu trong cơ thể động vật được sử dụng để hấp thụ chất dinh dưỡng từ thức ăn."
+            },
+            {
+                question: "Câu 3: Chất nào là nguồn cung cấp năng lượng chính cho động vật?",
+                answers: [
+                    { text: "Protein", correct: false },
+                    { text: "Carbohydrate", correct: true },
+                    { text: "Chất béo", correct: false },
+                    { text: "Vitamin", correct: false }
+                ],
+                explanation: "Carbohydrate là nguồn năng lượng chính cho động vật."
+            },
+            {
+                question: "Câu 4: Loại dinh dưỡng nào giúp xây dựng và sửa chữa cơ thể?",
+                answers: [
+                    { text: "Carbohydrate", correct: false },
+                    { text: "Chất béo", correct: false },
+                    { text: "Protein", correct: true },
+                    { text: "Vitamin", correct: false }
+                ],
+                explanation: "Protein là loại dinh dưỡng giúp xây dựng và sửa chữa cơ thể."
+            },
+            {
+                question: "Câu 5: Vitamin và khoáng chất đóng vai trò gì trong cơ thể?",
+                answers: [
+                    { text: "Cung cấp năng lượng", correct: false },
+                    { text: "Xây dựng cơ bắp", correct: false },
+                    { text: "Bảo vệ cơ thể khỏi bệnh tật", correct: true },
+                    { text: "Làm mỡ", correct: false }
+                ],
+                explanation: "Vitamin và khoáng chất giúp bảo vệ cơ thể khỏi bệnh tật và duy trì sức khỏe."
+            },
+            {
+                question: "Câu 6: Tiêu hóa là quá trình gì?",
+                answers: [
+                    { text: "Hấp thụ chất dinh dưỡng", correct: false },
+                    { text: "Phân hủy thức ăn thành dạng đơn giản", correct: true },
+                    { text: "Tạo ra năng lượng từ thức ăn", correct: false },
+                    { text: "Chuyển đổi thức ăn thành protein", correct: false }
+                ],
+                explanation: ""
+            },
+        {
+            question: "Câu 7: Bước đầu tiên trong quá trình tiêu hóa là gì?",
+            answers: [
+                { text: "Phân hủy thức ăn", correct: false },
+                { text: "Vận chuyển thức ăn qua ruột", correct: false },
+                { text: "Nhai và nghiền thức ăn", correct: true },
+                { text: "Hấp thụ chất dinh dưỡng", correct: false }
+            ],
+            explanation: "Bước đầu tiên trong quá trình tiêu hóa là nhai và nghiền thức ăn để làm cho nó dễ dàng tiêu hóa hơn."
+        },
+        {
+            question: "Câu 8: Nơi nào trong cơ thể động vật thường chứa các enzyme tiêu hóa?",
+            answers: [
+                { text: "Mắt", correct: false },
+                { text: "Dạ dày", correct: true },
+                { text: "Phổi", correct: false },
+                { text: "Thận", correct: false }
+            ],
+            explanation: "Dạ dày là nơi trong cơ thể động vật chứa các enzyme tiêu hóa để phân hủy thức ăn."
+        },
+        {
+            question: "Câu 9: Cơ chế nào của động vật giúp di chuyển thức ăn qua hệ tiêu hóa?",
+            answers: [
+                { text: "Hô hấp", correct: false },
+                { text: "Tuần hoàn máu", correct: false },
+                { text: "Nhiệt độ cơ thể", correct: false },
+                { text: "Co bóp cơ", correct: true }
+            ],
+            explanation: "Cơ chế của động vật giúp di chuyển thức ăn qua hệ tiêu hóa là co bóp cơ trong quá trình tiêu hóa."
+        },
+        {
+            question: "Câu 10: Chất gì giúp làm mềm thức ăn và giúp quá trình tiêu hóa diễn ra dễ dàng hơn?",
+            answers: [
+                { text: "Nước", correct: true },
+                { text: "Dầu", correct: false },
+                { text: "Đường", correct: false },
+                { text: "Muối", correct: false }
+            ],
+            explanation: "Nước giúp làm mềm thức ăn và giúp quá trình tiêu hóa diễn ra dễ dàng hơn."
+        },
+        {
+            question: "Câu 11: Dạ dày sản xuất chất gì để giúp tiêu hóa?",
+            answers: [
+                { text: "Acid hydrochloric", correct: true },
+                { text: "Enzyme amylase", correct: false },
+                { text: "Đường", correct: false },
+                { text: "Dầu", correct: false }
+            ],
+            explanation: "Dạ dày sản xuất acid hydrochloric để giúp phân hủy thức ăn trong quá trình tiêu hóa."
+        },
+        {
+            question: "Câu 12: Hệ tiêu hóa của động vật bao gồm những cơ quan nào?",
+            answers: [
+                { text: "Miệng, họng, dạ dày, ruột", correct:true },
+                { text: "Miệng, dạ dày, gan, ruột", correct: false },
+                { text: "Miệng, phế quản, dạ dày, ruột", correct: false},
+                { text: "Miệng, dạ dày, phổi, ruột", correct: false }
+            ],
+            explanation: "Hệ tiêu hóa của động vật bao gồm miệng, họng, dạ dày và ruột."
+        },
+        {
+            question: "Câu 13: Enzyme amylase chủ yếu phân hủy loại chất nào trong thức ăn?",
+            answers: [
+                { text: "Protein", correct: false },
+                { text: "Carbohydrate", correct: true },
+                { text: "Chất béo", correct: false},
+                { text: "Khoáng chất", correct: false }
+            ],
+            explanation: "Enzyme amylase chủ yếu phân hủy carbohydrate trong thức ăn thành đường đơn."
+        },
+        {
+            question: "Câu 14: Để tiêu hóa protein, enzyme nào được sản xuất bởi dạ dày?",
+            answers: [
+                { text: "Amylase", correct: false },
+                { text: "Protease", correct: true },
+                { text: "Lipase", correct: false},
+                { text: "Cellulase", correct: false }
+            ],
+            explanation: "Để tiêu hóa protein, dạ dày sản xuất enzyme protease."
+        },
+        {
+            question: "Câu 15: Hệ tiêu hóa của động vật thực hiện chức năng gì?",
+            answers: [
+                { text: "Hấp thụ oxy", correct: false },
+                { text: "Sản xuất năng lượng", correct: false },
+                { text: "Tiêu hóa và hấp thụ chất dinh dưỡng", correct: true},
+                { text: "Tạo ra protein", correct: false }
+            ],
+            explanation: "Hệ tiêu hóa của động vật thực hiện chức năng tiêu hóa và hấp thụ chất dinh dưỡng từ thức ăn."
+        },
+        {
+            question: "Câu 16: Loại thức ăn nào chứa nhiều protein?",
+            answers: [
+                { text: "Cỏ", correct: false },
+                { text: "Thịt", correct: true },
+                { text: "Cỏ dại", correct: false},
+                { text: "Quả", correct: false }
+],
+explanation: "Thịt là loại thức ăn chứa nhiều protein, đặc biệt là protein động vật."
+},
+{
+question: "Câu 17: Dạ dày của động vật có chức năng gì trong quá trình tiêu hóa?",
+answers: [
+{ text: "Phân hủy thức ăn", correct: false },
+{ text: "Hấp thụ chất dinh dưỡng", correct: false },
+{ text: "Tiết ra enzyme tiêu hóa", correct: true },
+{ text: "Tạo ra nước", correct: false }
+],
+explanation: "Dạ dày của động vật tiết ra enzyme tiêu hóa để phân hủy thức ăn thành dạng dễ hấp thụ."
+},
+{
+question: "Câu 18: Ruột non có chức năng gì trong hệ tiêu hóa?",
+answers: [
+{ text: "Phân hủy thức ăn", correct: false },
+{ text: "Hấp thụ chất dinh dưỡng", correct: true },
+{ text: "Tiết ra enzyme tiêu hóa", correct: false },
+{ text: "Tạo ra nước", correct: false }
+],
+explanation: "Ruột non của động vật có chức năng hấp thụ chất dinh dưỡng từ thức ăn đã được phân hủy."
+},
+{
+question: "Câu 19: Trong quá trình tiêu hóa, nơi nào hấp thụ nước từ thức ăn?",
+answers: [
+{ text: "Dạ dày", correct: false },
+{ text: "Đại tràng", correct: true },
+{ text: "Lá mắt", correct: false },
+{ text: "Phổi", correct: false }
+],
+explanation: "Trong quá trình tiêu hóa, nước được hấp thụ chủ yếu tại đại tràng."
+},
+{
+question: "Câu 20: Cơ chế nào giúp vận chuyển chất dinh dưỡng từ ruột vào máu?",
+answers: [
+{ text: "Tuần hoàn máu", correct: true },
+{ text: "Hô hấp", correct: false },
+{ text: "Điều tiết nhiệt độ", correct: false },
+{ text: "Chuyển hóa nước", correct: false }
+],
+explanation: "Cơ chế tuần hoàn máu giúp vận chuyển chất dinh dưỡng từ ruột vào máu để cung cấp cho cơ thể sử dụng."
+}
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

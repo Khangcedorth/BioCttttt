@@ -1,0 +1,85 @@
+/* Đặt lại margin và padding mặc định cho toàn bộ trang */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Sử dụng font chữ hiện đại */
+    background-color: #aeceef; /* Màu nền nhẹ nhàng, gần với màu trắng */
+}
+
+/* Thiết lập kiểu cho phần giới thiệu */
+.introduction {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Tăng độ mờ của bóng đổ */
+    max-width: 800px; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto; /* Canh giữa nội dung */
+    text-align: center; /* Canh giữa văn bản */
+}
+
+/* Thiết lập kiểu cho tiêu đề chính */
+.introduction h1 {
+    color: #003366; /* Màu xanh dương đậm cho tiêu đề */
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    letter-spacing: 1px; /* Tăng khoảng cách giữa các chữ cái */
+}
+
+/* Thiết lập kiểu cho đoạn văn bản */
+.introduction p {
+    color: #333; /* Màu chữ tối hơn để dễ đọc */
+    line-height: 1.8; /* Tăng khoảng cách dòng */
+    font-size: 1.1em;
+}
+
+/* Thiết lập kiểu cho liên kết dẫn đến bài tập */
+.exercise-link {
+    margin-top: 30px; /* Tăng khoảng cách phía trên */
+    display: flex;
+    justify-content: center; /* Canh giữa nút liên kết */
+}
+
+/* Thiết lập kiểu cho nút bấm tùy chỉnh */
+.custom-button {
+    display: inline-block;
+    padding: 12px 25px; /* Tăng kích thước padding */
+    background-color: #003366; /* Màu xanh dương đậm cho nút bấm */
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px; /* Làm tròn góc nhiều hơn */
+    font-weight: bold;
+    font-size: 1.1em; /* Tăng kích thước chữ */
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Hiệu ứng khi di chuột qua nút bấm */
+.custom-button:hover {
+    background-color: #002244; /* Màu xanh dương đậm hơn khi hover */
+    transform: translateY(-3px); /* Tạo hiệu ứng nút nhấn lên khi hover */
+}
+
+/* Thiết lập kiểu cho phần tải lên */
+.upload-section {
+    margin-top: 40px; /* Tăng khoảng cách phía trên */
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 40px auto 0 auto; /* Canh giữa và cách phần phía trên một khoảng lớn hơn */
+}
+
+/* Thiết lập kiểu cho tiêu đề phần tải lên */
+.upload-section h2 {
+    color: #003366; /* Màu xanh dương đậm cho tiêu đề */
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center; /* Canh giữa tiêu đề */
+}
+
+/* Thiết lập kiểu cho phần xem trước */
+#preview {
+    margin-top: 20px;
+    text-align: center; /* Canh giữa nội dung xem trước */
+}

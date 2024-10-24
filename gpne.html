@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quá trình nào dẫn đến sự tạo ra các tế bào con giống nhau?",
+        answers: [
+            { text: "Mitosis", correct: true },
+            { text: "Meiosis", correct: false },
+            { text: "Interphase", correct: false },
+            { text: "Cytokinesis", correct: false }
+        ],
+        explanation: "Mitosis là quá trình dẫn đến sự phân chia tế bào mẹ thành các tế bào con giống nhau, duy trì số lượng tế bào ở mức cần thiết trong cơ thể."
+    },
+    {
+        question: "Câu 2: Quá trình giảm phân diễn ra trong giai đoạn nào của sự giảm phân tế bào?",
+        answers: [
+            { text: "Meiosis I", correct: true },
+            { text: "Meiosis II", correct: false },
+            { text: "Prophase I", correct: false },
+            { text: "Anaphase II", correct: false }
+        ],
+        explanation: "Quá trình giảm phân xảy ra trong Meiosis I, khi các nhiễm sắc thể tương đồng kết hợp và phân ly để tạo ra tế bào con với nửa lượng nhiễm sắc thể."
+    },
+    {
+        question: "Câu 3: Quá trình nào dẫn đến sự tái tổ hợp di truyền và sự đa dạng di truyền?",
+        answers: [
+            { text: "Meiosis", correct: true },
+            { text: "Mitosis", correct: false },
+            { text: "Interphase", correct: false },
+            { text: "Cytokinesis", correct: false }
+        ],
+        explanation: "Meiosis dẫn đến sự tái tổ hợp di truyền và sự đa dạng di truyền thông qua việc tái tổ hợp ngẫu nhiên của nhiễm sắc thể trong quá trình giảm phân."
+    },
+    {
+        question: "Câu 4: Quá trình nào xảy ra để tạo ra gamet (tế bào sinh dục) trong sinh dục động vật?",
+        answers: [
+            { text: "Meiosis", correct: true },
+            { text: "Mitosis", correct: false },
+            { text: "Interphase", correct: false },
+            { text: "Cytokinesis", correct: false }
+        ],
+        explanation: "Meiosis xảy ra để tạo ra gamet trong sinh dục động vật, giảm nửa lượng nhiễm sắc thể để từ đó kết hợp lại khi thụ tinh để tạo ra phôi."
+    },
+    {
+        question: "Câu 5: Quá trình nào dẫn đến sự tạo ra các tế bào con có cùng số lượng nhiễm sắc thể với tế bào mẹ?",
+        answers: [
+            { text: "Mitosis", correct: true },
+            { text: "Meiosis", correct: false },
+            { text: "Interphase", correct: false },
+            { text: "Cytokinesis", correct: false }
+        ],
+        explanation: "Mitosis dẫn đến sự phân chia tế bào mẹ thành các tế bào con có cùng số lượng nhiễm sắc thể, duy trì tính chất di truyền và số lượng tế bào trong cơ thể."
+    },
+    {
+        question: "Câu 6: Quá trình nào xảy ra trong giai đoạn G1 của chu kỳ tế bào?",
+        answers: [
+            { text: "Tế bào tăng kích thước và tổng hợp protein", correct: true },
+            { text: "Tế bào chuẩn bị cho sự phân chia tế bào", correct: false },
+            { text: "Tế bào sao chép DNA", correct: false },
+            { text: "Tế bào bị dừng lại để kiểm tra lỗi", correct: false }
+        ],
+        explanation: "Trong giai đoạn G1, tế bào tăng kích thước và tổng hợp protein để chuẩn bị cho các hoạt động của chu kỳ tế bào tiếp theo."
+    },
+    {
+        question: "Câu 7: Quá trình nào xảy ra trong giai đoạn S của chu kỳ tế bào?",
+        answers: [
+            { text: "Sao chép DNA", correct: true },
+            { text: "Tế bào tăng kích thước và tổng hợp protein", correct: false },
+            { text: "Tế bào chuẩn bị cho sự phân chia tế bào", correct: false },
+            { text: "Tế bào bị dừng lại để kiểm tra lỗi", correct: false }
+        ],
+        explanation: "Trong giai đoạn S của chu kỳ tế bào, DNA được sao chép để chuẩn bị cho sự phân chia tế bào và để đảm bảo mỗi tế bào con có đủ lượng DNA."
+    },
+    {
+        question: "Câu 8: Quá trình nào xảy ra trong giai đoạn G2 của chu kỳ tế bào?",
+        answers: [
+            { text: "Tế bào chuẩn bị cho sự phân chia tế bào", correct: true },
+            { text: "Tế bào tăng kích thước và tổng hợp protein", correct: false },
+            { text: "Sao chép DNA", correct: false },
+            { text: "Tế bào bị dừng lại để kiểm tra lỗi", correct: false }
+        ],
+        explanation: "Trong giai đoạn G2, tế bào chuẩn bị cho sự phân chia tế bào bằng cách tổng hợp các protein và các cấu trúc cần thiết cho quá trình mitosis hoặc meiosis."
+    },
+    {
+        question: "Câu 9: Giai đoạn nào của mitosis xảy ra khi các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào?",
+        answers: [
+            { text: "Anaphase", correct: true },
+            { text: "Metaphase", correct: false },
+            { text: "Prophase", correct: false },
+            { text: "Telophase", correct: false }
+        ],
+        explanation: "Anaphase của mitosis xảy ra khi các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào, chuẩn bị cho việc phân bào."
+    },
+    {
+        question: "Câu 10: Giai đoạn nào của mitosis xảy ra khi các nhiễm sắc thể đã đến hai cực của tế bào và bắt đầu hình thành màng ngăn chia?",
+        answers: [
+            { text: "Telophase", correct: true },
+            { text: "Anaphase", correct: false },
+            { text: "Metaphase", correct: false },
+            { text: "Prophase", correct: false }
+        ],
+        explanation: "Telophase của mitosis xảy ra khi các nhiễm sắc thể đã đến hai cực của tế bào và bắt đầu hình thành màng ngăn chia để tách hai tế bào con ra khỏi nhau."
+    },
+    {
+    question: "Câu 11: Quá trình nào xảy ra trong giai đoạn diakinesis của prophase I trong meiosis?",
+    answers: [
+        { text: "Nhiễm sắc thể hình thành cặp tương đồng hoàn chỉnh", correct: true },
+        { text: "Sự phân ly của các nhiễm sắc thể", correct: false },
+        { text: "Sự chia đôi của nhiễm sắc thể", correct: false },
+        { text: "Sự di chuyển của các nhiễm sắc thể vào hai cực của tế bào", correct: false }
+    ],
+    explanation: "Trong giai đoạn diakinesis của prophase I trong meiosis, nhiễm sắc thể hình thành cặp tương đồng hoàn chỉnh trước khi bắt đầu quá trình phân ly."
+},
+{
+    question: "Câu 12: Quá trình nào xảy ra trong giai đoạn metaphase I của meiosis?",
+    answers: [
+        { text: "Các nhiễm sắc thể xếp thành một hàng kép", correct: true },
+        { text: "Các nhiễm sắc thể chia đôi thành hai phần", correct: false },
+        { text: "Các nhiễm sắc thể di chuyển vào hai cực của tế bào", correct: false },
+        { text: "Màng ngăn chia hình thành", correct: false }
+    ],
+    explanation: "Trong giai đoạn metaphase I của meiosis, các nhiễm sắc thể xếp thành một hàng kép ở khu vực gần mặt phẳng phân chia của tế bào."
+},
+{
+    question: "Câu 13: Quá trình nào xảy ra trong giai đoạn anaphase I của meiosis?",
+    answers: [
+        { text: "Các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào", correct: true },
+        { text: "Các nhiễm sắc thể hình thành cặp tương đồng hoàn chỉnh", correct: false },
+        { text: "Màng ngăn chia hình thành", correct: false },
+        { text: "Các nhiễm sắc thể xếp thành một hàng kép", correct: false }
+    ],
+    explanation: "Trong giai đoạn anaphase I của meiosis, các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào, tạo ra hai nhóm nhiễm sắc thể khác nhau."
+},
+{
+    question: "Câu 14: Giai đoạn nào của meiosis xảy ra sau khi hoàn thành anaphase I?",
+    answers: [
+        { text: "Telophase I", correct: true },
+        { text: "Prophase II", correct: false },
+        { text: "Metaphase II", correct: false },
+        { text: "Anaphase II", correct: false }
+    ],
+    explanation: "Telophase I của meiosis xảy ra sau khi hoàn thành anaphase I, trong đó hai nhóm nhiễm sắc thể riêng biệt bao quanh hai nhân tế bào con."
+},
+{
+    question: "Câu 15: Quá trình nào xảy ra trong giai đoạn cytokinesis của meiosis?",
+    answers: [
+        { text: "Tế bào mẹ chia thành hai tế bào con", correct: true },
+        { text: "Các nhiễm sắc thể xếp thành một hàng kép", correct: false },
+        { text: "Các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào", correct: false },
+        { text: "Màng ngăn chia hình thành", correct: false }
+    ],
+    explanation: "Trong giai đoạn cytokinesis của meiosis, tế bào mẹ chia thành hai tế bào con, mỗi tế bào con có nửa lượng nhiễm sắc thể so với tế bào mẹ."
+},
+{
+    question: "Câu 16: Quá trình nào xảy ra trong giai đoạn prophase II của meiosis?",
+    answers: [
+        { text: "Nhiễm sắc thể xếp thành một hàng kép", correct: true },
+        { text: "Các nhiễm sắc thể chia đôi thành hai phần", correct: false },
+        { text: "Các nhiễm sắc thể hình thành cặp tương đồng hoàn chỉnh", correct: false },
+        { text: "Sự phân ly của các nhiễm sắc thể", correct: false }
+    ],
+    explanation: "Trong giai đoạn prophase II của meiosis, các nhiễm sắc thể xếp thành một hàng kép để chuẩn bị cho quá trình metaphase II."
+},
+{
+    question: "Câu 17: Quá trình nào xảy ra trong giai đoạn metaphase II của meiosis?",
+    answers: [
+        { text: "Các nhiễm sắc thể xếp thành một hàng kép", correct: true },
+        { text: "Các nhiễm sắc thể chia đôi thành hai phần", correct: false },
+        { text: "Các nhiễm sắc thể hình thành cặp tương đồng hoàn chỉnh", correct: false },
+        { text: "Sự phân ly của các nhiễm sắc thể", correct: false }
+    ],
+    explanation: "Trong giai đoạn metaphase II của meiosis, các nhiễm sắc thể xếp thành một hàng kép tại mặt phẳng phân chia của tế bào."
+},
+{
+    question: "Câu 18: Giai đoạn nào của meiosis xảy ra sau khi hoàn thành anaphase II?",
+    answers: [
+        { text: "Telophase II", correct: true },
+        { text: "Prophase II", correct: false },
+        { text: "Metaphase II", correct: false },
+        { text: "Anaphase I", correct: false }
+    ],
+    explanation: "Telophase II của meiosis xảy ra sau khi hoàn thành anaphase II, trong đó hai nhóm nhiễm sắc thể riêng biệt bao quanh các nhân tế bào con."
+},
+{
+    question: "Câu 19: Quá trình nào xảy ra trong giai đoạn cytokinesis của meiosis II?",
+    answers: [
+        { text: "Tế bào mẹ chia thành bốn tế bào con", correct: true },
+        { text: "Các nhiễm sắc thể xếp thành một hàng kép", correct: false },
+        { text: "Các nhiễm sắc thể chia đôi và di chuyển đến hai cực của tế bào", correct: false },
+        { text: "Màng ngăn chia hình thành", correct: false }
+    ],
+    explanation: "Trong giai đoạn cytokinesis của meiosis II, tế bào mẹ chia thành bốn tế bào con, mỗi tế bào con có nửa lượng nhiễm sắc thể so với tế bào mẹ."
+},
+{
+    question: "Câu 20: Quá trình nào dẫn đến sự hình thành các tế bào con có nửa lượng nhiễm sắc thể so với tế bào mẹ?",
+    answers: [
+        { text: "Meiosis", correct: true },
+        { text: "Mitosis", correct: false },
+        { text: "Interphase", correct: false },
+        { text: "Cytokinesis", correct: false }
+    ],
+    explanation: "Meiosis dẫn đến sự giảm nửa lượng nhiễm sắc thể để tạo ra gamet (tế bào sinh dục) có nửa lượng nhiễm sắc thể so với tế bào mẹ."
+}
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

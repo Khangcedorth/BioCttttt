@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Dung dịch H2SO4 loãng có thể tác dụng với",
+        answers: [
+            { text: "Quỳ tím chuyển sang màu đỏ", correct: true },
+            { text: "Quỳ tím chuyển sang màu xanh", correct: false },
+            { text: "Quỳ tím không đổi màu", correct: false },
+            { text: "Quỳ tím ban đầu chuyển sang màu xanh xong mất màu chuyển sang màu đỏ", correct: false }
+        ],
+        explanation: "H2SO4 là một acid mạnh, do đó dung dịch H2SO4 làm quỳ tím chuyển sang màu đỏ."
+    },
+    {
+        question: "Câu 2: Liên kết hoá học trong phân tử H2SO4 là liên kết",
+        answers: [
+            { text: "cộng hoá trị phân cực", correct: true },
+            { text: "ion", correct: false },
+            { text: "cộng hoá trị không phân cực", correct: false },
+            { text: "kim loại", correct: false }
+        ],
+        explanation: "Các nguyên tử trong phân tử H2SO4 liên kết với nhau bằng liên kết cộng hóa trị phân cực."
+    },
+    {
+        question: "Câu 3: Có thể nhận biết muối sulfate bằng cách cho muối tác dụng với dung dịch",
+        answers: [
+            { text: "BaCl2", correct: true },
+            { text: "NaCl", correct: false },
+            { text: "KCl", correct: false },
+            { text: "CaCl2", correct: false }
+        ],
+        explanation: "Dung dịch BaCl2 tạo kết tủa trắng không tan với muối sulfate."
+    },
+    {
+        question: "Câu 4: Đâu không phải là ứng dụng của H2SO4 trong công nghiệp",
+        answers: [
+            { text: "Sản xuất phân bón", correct: false },
+            { text: "Sản xuất chất tẩy rửa", correct: false },
+            { text: "Sản xuất thuốc nổ", correct: false },
+            { text: "Làm lạnh trong hệ thống điều hòa", correct: true }
+        ],
+        explanation: "H2SO4 không được sử dụng trong hệ thống làm lạnh."
+    },
+    {
+        question: "Câu 5: Tính chất hoá học của H2SO4 là",
+        answers: [
+            { text: "Tính oxi hóa mạnh, tính axit mạnh", correct: true },
+            { text: "Tính axit mạnh, tính khử mạnh", correct: false },
+            { text: "Tính bazơ mạnh, tính oxi hóa mạnh", correct: false },
+            { text: "Tính oxi hóa mạnh, tính axit yếu", correct: false }
+        ],
+        explanation: "H2SO4 có tính axit mạnh và tính oxi hóa mạnh."
+    },
+    {
+        question: "Câu 6: Số oxi hóa của sulfur trong H2SO4 là",
+        answers: [
+            { text: "+6", correct: true },
+            { text: "+4", correct: false },
+            { text: "+2", correct: false },
+            { text: "+8", correct: false }
+        ],
+        explanation: "Trong H2SO4, sulfur có số oxi hóa là +6."
+    },
+    {
+        question: "Câu 7: Phát biểu nào sau đây đúng về H2SO4",
+        answers: [
+            { text: "H2SO4 được dùng để sản xuất phân bón, thuốc nhuộm", correct: true },
+            { text: "Dung dịch H2SO4 làm xanh quỳ tím", correct: false },
+            { text: "H2SO4 làm phenolphtalein hóa hồng", correct: false },
+            { text: "H2SO4 là một bazơ mạnh", correct: false }
+        ],
+        explanation: "H2SO4 là acid mạnh, không làm xanh quỳ tím hay làm phenolphtalein hóa hồng."
+    },
+    {
+        question: "Câu 8: Chất nào sau đây có thể làm khô khí SO2 có lẫn hơi nước?",
+        answers: [
+            { text: "CaCl2 khan", correct: true },
+            { text: "H2SO4 đặc", correct: false },
+            { text: "P2O5", correct: false },
+            { text: "NaOH rắn", correct: false }
+        ],
+        explanation: "CaCl2 khan có khả năng hút ẩm và không phản ứng với SO2."
+    },
+    {
+        question: "Câu 9: SO2 có thể tác dụng với nước tạo thành",
+        answers: [
+            { text: "H2SO4", correct: false },
+            { text: "H2SO3", correct: true },
+            { text: "H2S", correct: false },
+            { text: "SO3", correct: false }
+        ],
+        explanation: "SO2 + H2O → H2SO3."
+    },
+    {
+        question: "Câu 10: Dung dịch H2SO4 đặc có tính chất gì đặc biệt?",
+        answers: [
+            { text: "Hút nước mạnh", correct: true },
+            { text: "Làm xanh quỳ tím", correct: false },
+            { text: "Không tác dụng với kim loại", correct: false },
+            { text: "Không tan trong nước", correct: false }
+        ],
+        explanation: "H2SO4 đặc có tính chất hút nước rất mạnh."
+    },
+    {
+        question: "Câu 11: Trong nước, phân tử/ion nào sau đây thể hiện vai trò là acid theo thuyết Bronsted - Lowry?",
+        answers: [
+            { text: "H2SO4", correct: true },
+            { text: "SO4^2-", correct: false },
+            { text: "SO3^2-", correct: false },
+            { text: "S^2-", correct: false }
+        ],
+        explanation: "H2SO4 có khả năng nhường proton, thể hiện vai trò là acid theo thuyết Bronsted - Lowry."
+    },
+    {
+        question: "Câu 12: Cho phản ứng: Cu + 2H2SO4 đặc, nóng →",
+        answers: [
+            { text: "CuSO4 + 2H2O + SO2", correct: true },
+            { text: "CuSO4 + H2", correct: false },
+            { text: "CuSO4 + SO3 + H2O", correct: false },
+            { text: "CuSO4 + H2S", correct: false }
+        ],
+        explanation: "Cu + 2H2SO4 → CuSO4 + 2H2O + SO2."
+    },
+    {
+        question: "Câu 13: X là muối khi tác dụng với dung dịch BaCl2 sinh kết tủa trắng không tan trong HNO3. X là muối nào trong số các muối sau?",
+        answers: [
+            { text: "Na2SO4", correct: true },
+            { text: "Na2CO3", correct: false },
+            { text: "NaCl", correct: false },
+            { text: "NaNO3", correct: false }
+        ],
+        explanation: "Na2SO4 + BaCl2 → BaSO4 + 2NaCl, BaSO4 không tan trong HNO3."
+    },
+    {
+        question: "Câu 14: Phản ứng nào sau đây không tạo ra muối sulfate?",
+        answers: [
+            { text: "H2SO4 + NaOH", correct: false },
+            { text: "H2SO4 + Zn", correct: false },
+            { text: "H2SO4 + CaCO3", correct: false },
+            { text: "H2SO4 + Na2CO3", correct: true }
+        ],
+        explanation: "H2SO4 + Na2CO3 → Na2SO4 + CO2 + H2O, nhưng không tạo ra muối sulfate trực tiếp."
+    },
+    {
+        question: "Câu 15: Kim loại nào không tan trong dung dịch H2SO4 loãng?",
+        answers: [
+            { text: "Cu", correct: true },
+            { text: "Fe", correct: false },
+            { text: "Zn", correct: false },
+            { text: "Al", correct: false }
+        ],
+        explanation: "Cu không tan trong H2SO4 loãng do không có phản ứng hóa học."
+    },
+    {
+        question: "Câu 16: Cho phản ứng: Fe2O3 + 3H2SO4 loãng →",
+        answers: [
+            { text: "Fe2(SO4)3 + 3H2O", correct: true },
+            { text: "FeSO4 + 3H2O", correct: false },
+            { text: "FeS + SO2 + H2O", correct: false },
+            { text: "Fe2(SO4)3 + H2", correct: false }
+        ],
+        explanation: "Fe2O3 + 3H2SO4 → Fe2(SO4)3 + 3H2O."
+    },
+    {
+        question: "Câu 17: Một oxide của sulfur có công thức SOx trong đó S chiếm 40% về khối lượng. Công thức của oxide đó là",
+        answers: [
+            { text: "SO2", correct: true },
+            { text: "SO3", correct: false },
+            { text: "S2O", correct: false },
+            { text: "S2O3", correct: false }
+        ],
+        explanation: "MS/(MS + MO.x) = 32/(32+16x) = 0,4 => x = 2."
+    },
+    {
+        question: "Câu 18: Hợp chất nào của sulfur không được tạo ra khi cho H2SO4 tác dụng với kim loại?",
+        answers: [
+            { text: "SO3", correct: true },
+            { text: "SO2", correct: false },
+            { text: "H2S", correct: false },
+            { text: "S", correct: false }
+        ],
+        explanation: "SO3 không được tạo ra khi cho H2SO4 tác dụng với kim loại."
+    },
+    {
+        question: "Câu 19: Cho dung dịch H2SO4 tác dụng với các chất sau: Zn, NaOH, BaCl2, Cu. Số phản ứng trong đó H2SO4 đóng vai trò acid theo thuyết Brønsted - Lowry là",
+        answers: [
+            { text: "1", correct: false },
+            { text: "4", correct: false },
+            { text: "2", correct: false },
+            { text: "3", correct: true }
+        ],
+        explanation: "H2SO4 đóng vai trò acid theo thuyết Brønsted - Lowry khi phản ứng với Zn, NaOH, BaCl2."
+    },
+    {
+        question: "Câu 20: Cho Fe tác dụng với H2SO4 loãng thì sản phẩm thu được là",
+        answers: [
+            { text: "FeSO4 và H2", correct: true },
+            { text: "Fe2(SO4)3 và H2O", correct: false },
+            { text: "FeSO4 và H2O", correct: false },
+            { text: "FeS và H2", correct: false }
+        ],
+        explanation: "Fe + H2SO4 loãng → FeSO4 + H2."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

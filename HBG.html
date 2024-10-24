@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="stylest.css">
+</head>
+<body>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+    <audio id="introAudio">
+        <source src="hbg.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.");
+        } else {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+
+                let gender = transcript.includes('nam') ? 'Nam' : 
+                             transcript.includes('nữ') ? 'Nữ' : 
+                             'Không xác định';
+
+                let age = transcript.includes('trung niên') ? 'Người trung niên' : 
+                          transcript.includes('người già') || transcript.includes('cao tuổi') ? 'Người già' : 
+                          transcript.includes('trẻ sơ sinh') ? 'Trẻ sơ sinh' : 
+                          transcript.includes('mang thai') || transcript.includes('cho con bú') ? 'Phụ nữ mang thai hoặc đang cho con bú' : 
+                          'Không xác định';
+
+                let hbgMatch = transcript.match(/\d+(\.\d+)?/);
+                let hbg = hbgMatch ? parseFloat(hbgMatch[0]) : 'Không xác định';
+
+                document.getElementById('gender').value = gender;
+                document.getElementById('age').value = age;
+                document.getElementById('soHBG').value = hbg;
+
+                // Gọi hàm xử lý để kiểm tra chỉ số HBG
+                processInput();
+            };
+
+            function startListening() {
+                recognition.start();
+            }
+        }
+
+        const introAudio = document.getElementById('introAudio');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                introAudio.pause();
+                introAudio.currentTime = 0; // Tùy chọn: Đặt lại thời gian phát về đầu
+            } else {
+                introAudio.play();
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Sử dụng biến để đếm số lần nhấp
+        let clickCount = 0;
+        let clickTimeout;
+
+        document.addEventListener('click', function() {
+            clickCount++;
+
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+            }
+
+            clickTimeout = setTimeout(() => {
+                if (clickCount === 1) {
+                    toggleAudio(); // 1 lần nhấp để phát/tạm dừng âm thanh
+                } else if (clickCount === 2) {
+                    startListening(); // 2 lần nhấp để bắt đầu nhận diện giọng nói
+                }
+
+                // Đặt lại số lần nhấp chuột
+                clickCount = 0;
+            }, 300); // Thời gian giữa các lần nhấp để phân biệt nhấp đơn và nhấp đúp
+        });
+    </script>
+    <section>
+        <div class="center-text">
+            <h1 id="first">BioCheX - Hoá Sinh trong Đời Sống</h1>
+            <marquee behavior="alternate">
+                <marquee style="color:#000000; font-weight:bold" width="700px">BIOCHEX - HOÁ SINH TRONG ĐỜI SỐNG</marquee>
+            </marquee>
+        </div>
+        <label for="gender">Chọn giới tính (theo giới tính sinh học):</label>
+        <select id="gender">
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+        </select>
+        <label for="age">Chọn độ tuổi:</label>
+        <select id="age">
+            <option value="Người già">Người già</option>
+            <option value="Trẻ sơ sinh">Trẻ sơ sinh</option>
+            <option value="Người trung niên">Người trung niên</option>
+            <option value="Phụ nữ mang thai hoặc đang cho con bú">Phụ nữ mang thai hoặc đang cho con bú</option>
+        </select>
+
+        <label for="soHBG">Chỉ số HBG:</label>
+        <input type="number" id="soHBG" step="any">
+        <button onclick="processInput()">Kiểm tra</button>
+
+        <p id="result">Tình trạng hiện tại của chỉ số HBG: </p>
+        <p id="tt">Tình trạng cơ thể hiện tại, một số triệu chứng do chỉ số HBG gây nên:</p>
+        <p id="pt">Biện pháp phòng ngừa tình trạng trên:</p>
+        <img src="https://cdn.tgdd.vn/Files/2022/09/12/1468099/cac-trieu-chung-benh-bach-cau-giup-ban-kip-thoi-phat-hien-benh-16_800x450.jpg" alt="Hình ảnh" id="image">
+        
+        <script>
+            function playSound(audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play();
+        }
+            function processInput() {
+                var gender = document.getElementById("gender").value;
+                var age = document.getElementById("age").value;
+                var soHBG = parseFloat(document.getElementById("soHBG").value);
+                var resultElement = document.getElementById("result");
+                var ttElement = document.getElementById("tt");
+                var imageElement = document.getElementById("image");
+                var ptElement = document.getElementById("pt");
+
+                if (gender === "Nam") {
+    if (age === "Người trung niên") {
+        if (soHBG >= 17) {
+            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao...";
+            imageElement.src = "https://cdn.nhathuoclongchau.com.vn/unsafe/https://cms-prod.s3-sgn09.fptcloud.com/smalls/10_ly_do_khien_dan_ong_met_moi_moi_ngay_xz_W_Ph_1591182124_2500bf8271.jpg";
+            playSound('hgbcao.mp3');
+            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể giảm lượng muối trong chế độ ăn và tăng cường hoạt động thể dục (Tiến sĩ John M. Green, nghiên cứu về huyết áp cao).";
+        } else if (soHBG <= 12 && soHBG >= 10) {
+            resultElement.innerHTML = "Chỉ số HBG thấp";
+            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là...";
+            imageElement.src = "https://images2.thanhnien.vn/528068263637045248/2023/6/18/2-kiet-suc-nghe-nghiep-shutterstock-1687105466861522101724.jpg";
+            playSound('hgbthap.mp3');
+            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan và rau xanh (Giáo sư Marie-Claire Fenech, chuyên gia dinh dưỡng).";
+        } else if (soHBG <= 6 && soHBG >= 0) {
+            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng...";
+            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+            playSound('hbgquathap.mp3');
+            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu (Tiến sĩ William G. Brown, chuyên gia về huyết học).";
+        } else if (soHBG >= 13 && soHBG <= 18) {
+            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+            playSound('hbgbth.mp3');
+            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất (Giáo sư Michael Smith, chuyên gia y học dự phòng).";
+            imageElement.src = "https://sohanews.sohacdn.com/2018/5/15/2-1526397933885113641391.jpg";
+        }
+    } else if (age === "Người già") {
+        if (soHBG >= 17.5) {
+            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao...";
+            imageElement.src = "https://nld.mediacdn.vn/291774122806476800/2022/9/20/photo-1-16636615426291502870491.jpg";
+            playSound('hgbcao.mp3');
+            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể giảm lượng muối và tránh căng thẳng (Tiến sĩ Sandra J. Tan, nghiên cứu về sức khỏe người cao tuổi).";
+        } else if (soHBG <= 12.5 && soHBG >= 10.5) {
+            resultElement.innerHTML = "Chỉ số HBG thấp";
+            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là...";
+            imageElement.src = "https://prod-cdn.pharmacity.io/blog/hoa-mat-1.jpg";
+            playSound('hgbthap.mp3');
+            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, và rau lá xanh (Giáo sư Michael Jordan, chuyên gia về dinh dưỡng người cao tuổi).";
+        } else if (soHBG <= 6 && soHBG > 0) {
+            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng...";
+            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+            playSound('hbgquathap.mp3');
+            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu (Tiến sĩ William G. Brown, chuyên gia về huyết học).";
+        } else if (soHBG >= 12.5 && soHBG <= 17.5) {
+            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+            playSound('hbgbth.mp3');
+            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất (Giáo sư Michael Smith, chuyên gia y học dự phòng).";
+            imageElement.src = "https://suckhoedoisong.qltns.mediacdn.vn/Images/duylinh/2017/12/08/bai_4.nguoi_cao_tuoi_song_khoe_resize.jpg";
+        }
+    } 
+    else if (age === "Trẻ sơ sinh") {
+                        if (soHBG >= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+                            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao. Tăng nguy cơ cho bệnh tim và đột quỵ: Các nghiên cứu đã chỉ ra rằng có mối liên kết giữa chỉ số HBG cao và nguy cơ mắc bệnh tim và đột quỵ. Mệt mỏi và uể oải: Một trong những triệu chứng phổ biến khi có HBG cao là cảm giác mệt mỏi và uể oải, do cơ thể phải làm việc nặng nề hơn để cung cấp oxy cho các tế bào.";
+                            imageElement.src = "https://cdn.benhvienthucuc.vn/wp-content/uploads/2020/11/tre-nhuc-dau.jpg";
+                            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể, Giảm lượng sắt trong chế độ ăn uống: Tránh thực phẩm giàu sắt như thịt đỏ, gan, và các loại thực phẩm bổ sung sắt. Uống nhiều nước: Giúp pha loãng máu và giảm nồng độ HGB. Giảm hoặc ngừng tiêu thụ rượu bia và caffeine: Các chất này có thể làm tăng nồng độ HGB.";
+                            playSound('hgbcao.mp3');
+                        } else if (soHBG <= 12.5 && soHBG >= 10.5) {
+                            resultElement.innerHTML = "Chỉ số HBG thấp";
+                            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là cảm giác mệt mỏi và yếu đuối. Do máu không mang đủ oxy đến các tế bào cơ thể, gây ra cảm giác mệt mỏi và suy nhược. Da nhợt nhạt hoặc màu xanh xao: Sự thiếu máu có thể làm cho da mất màu hoặc có màu nhợt nhạt, đặc biệt là ở vùng khuôn mặt, lòng bàn tay và lòng bàn chân. Nhịp tim nhanh và hơi thở ngắn: Thiếu oxy có thể khiến cho nhịp tim tăng lên và làm cho hơi thở trở nên ngắn hơn bình thường.";
+                            imageElement.src = "https://mamamy.vn/wp-content/uploads/2021/07/tre-4-tuoi-hay-keu-dau-dau-04.png";
+                            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, thịt gia cầm, hải sản, đậu, rau lá xanh đậm (như cải bó xôi, cải xoăn), ngũ cốc bổ sung sắt. Tránh uống trà và cà phê trong bữa ăn vì chúng chứa tannin có thể cản trở hấp thụ sắt. Hạn chế đồ uống có cồn: Vì có thể ảnh hưởng đến việc hấp thụ và chuyển hóa sắt.";
+                            playSound('hgbthap.mp3');
+                        } else if (soHBG <= 6 && soHBG > 0) {
+                            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+                            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng hoặc xuất huyết dưới da, do cơ thể thiếu các yếu tố cần thiết để cầm máu. Đau ngực: Có thể xuất hiện cơn đau ngực do tim không nhận đủ oxy để hoạt động bình thường. Mệt mỏi nghiêm trọng: Người bệnh cảm thấy kiệt sức và không có năng lượng, ngay cả khi thực hiện các hoạt động hàng ngày đơn giản.";
+                            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu: Truyền máu là biện pháp nhanh chóng và hiệu quả nhất để tăng lượng hemoglobin trong cơ thể.";
+                            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+                            playSound('hbgquathap.mp3');
+                        } else if (soHBG >= 12.5 && soHBG <= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+                            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+                            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất";
+                            imageElement.src = "https://cdn.eva.vn/upload/1-2019/images/2019-02-14/shutterstock_132653732-1550101079-970-width640height480.jpg";
+                            playSound('hbgbth.mp3');
+                        }
+                    }
+    
+                } else if (gender === "Nữ") {
+                    if (age === "Người trung niên") {
+                        if (soHBG >= 15) {
+                            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+                            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao. Tăng nguy cơ cho bệnh tim và đột quỵ: Các nghiên cứu đã chỉ ra rằng có mối liên kết giữa chỉ số HBG cao và nguy cơ mắc bệnh tim và đột quỵ. Mệt mỏi và uể oải: Một trong những triệu chứng phổ biến khi có HBG cao là cảm giác mệt mỏi và uể oải, do cơ thể phải làm việc nặng nề hơn để cung cấp oxy cho các tế bào.";
+                            imageElement.src = "https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2023/5/12/met-moi-do-thieu-magie-168390216756348190864.jpg";
+                            playSound('hgbcao.mp3');
+                            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể, Giảm lượng sắt trong chế độ ăn uống: Tránh thực phẩm giàu sắt như thịt đỏ, gan, và các loại thực phẩm bổ sung sắt. Uống nhiều nước: Giúp pha loãng máu và giảm nồng độ HGB. Giảm hoặc ngừng tiêu thụ rượu bia và caffeine: Các chất này có thể làm tăng nồng độ HGB.";
+                        } else if (soHBG <= 12 && soHBG >= 10) {
+                            resultElement.innerHTML = "Chỉ số HBG thấp";
+                            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là cảm giác mệt mỏi và yếu đuối. Do máu không mang đủ oxy đến các tế bào cơ thể, gây ra cảm giác mệt mỏi và suy nhược. Da nhợt nhạt hoặc màu xanh xao: Sự thiếu máu có thể làm cho da mất màu hoặc có màu nhợt nhạt, đặc biệt là ở vùng khuôn mặt, lòng bàn tay và lòng bàn chân. Nhịp tim nhanh và hơi thở ngắn: Thiếu oxy có thể khiến cho nhịp tim tăng lên và làm cho hơi thở trở nên ngắn hơn bình thường.";
+                            imageElement.src = "https://cdn.benhvienthucuc.vn/wp-content/uploads/2016/04/hay-met-va-buon-ngu-vi-sao-4.jpg";
+                            playSound('hgbthap.mp3');
+                            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, thịt gia cầm, hải sản, đậu, rau lá xanh đậm (như cải bó xôi, cải xoăn), ngũ cốc bổ sung sắt. Tránh uống trà và cà phê trong bữa ăn vì chúng chứa tannin có thể cản trở hấp thụ sắt. Hạn chế đồ uống có cồn: Vì có thể ảnh hưởng đến việc hấp thụ và chuyển hóa sắt.";
+                        } else if (soHBG <= 6 && soHBG >= 0) {
+                            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+                            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng hoặc xuất huyết dưới da, do cơ thể thiếu các yếu tố cần thiết để cầm máu. Đau ngực: Có thể xuất hiện cơn đau ngực do tim không nhận đủ oxy để hoạt động bình thường. Mệt mỏi nghiêm trọng: Người bệnh cảm thấy kiệt sức và không có năng lượng, ngay cả khi thực hiện các hoạt động hàng ngày đơn giản.";
+                            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu: Truyền máu là biện pháp nhanh chóng và hiệu quả nhất để tăng lượng hemoglobin trong cơ thể.";
+                            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+                            playSound('hbgquathap.mp3');
+                    } else if (soHBG >= 13 && soHBG <= 15) {
+                            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+                            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+                            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất";
+                            imageElement.src = "https://image.baophapluat.vn/w840/Uploaded/2024/athlraqhpghat/2021_10_17/anh-1-2632.jpg";
+                            playSound('hbgbth.mp3');
+                        }
+                    }
+                    else if (age === "Trẻ sơ sinh") {
+                        if (soHBG >= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+                            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao. Tăng nguy cơ cho bệnh tim và đột quỵ: Các nghiên cứu đã chỉ ra rằng có mối liên kết giữa chỉ số HBG cao và nguy cơ mắc bệnh tim và đột quỵ. Mệt mỏi và uể oải: Một trong những triệu chứng phổ biến khi có HBG cao là cảm giác mệt mỏi và uể oải, do cơ thể phải làm việc nặng nề hơn để cung cấp oxy cho các tế bào.";
+                            imageElement.src = "https://cdn.benhvienthucuc.vn/wp-content/uploads/2020/11/tre-nhuc-dau.jpg";
+                            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể, Giảm lượng sắt trong chế độ ăn uống: Tránh thực phẩm giàu sắt như thịt đỏ, gan, và các loại thực phẩm bổ sung sắt. Uống nhiều nước: Giúp pha loãng máu và giảm nồng độ HGB. Giảm hoặc ngừng tiêu thụ rượu bia và caffeine: Các chất này có thể làm tăng nồng độ HGB.";
+                            playSound('hgbcao.mp3');
+                        } else if (soHBG <= 12.5 && soHBG >= 10.5) {
+                            resultElement.innerHTML = "Chỉ số HBG thấp";
+                            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là cảm giác mệt mỏi và yếu đuối. Do máu không mang đủ oxy đến các tế bào cơ thể, gây ra cảm giác mệt mỏi và suy nhược. Da nhợt nhạt hoặc màu xanh xao: Sự thiếu máu có thể làm cho da mất màu hoặc có màu nhợt nhạt, đặc biệt là ở vùng khuôn mặt, lòng bàn tay và lòng bàn chân. Nhịp tim nhanh và hơi thở ngắn: Thiếu oxy có thể khiến cho nhịp tim tăng lên và làm cho hơi thở trở nên ngắn hơn bình thường.";
+                            imageElement.src = "https://mamamy.vn/wp-content/uploads/2021/07/tre-4-tuoi-hay-keu-dau-dau-04.png";
+                            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, thịt gia cầm, hải sản, đậu, rau lá xanh đậm (như cải bó xôi, cải xoăn), ngũ cốc bổ sung sắt. Tránh uống trà và cà phê trong bữa ăn vì chúng chứa tannin có thể cản trở hấp thụ sắt. Hạn chế đồ uống có cồn: Vì có thể ảnh hưởng đến việc hấp thụ và chuyển hóa sắt.";
+                            playSound('hgbthap.mp3');
+                        } else if (soHBG <= 6 && soHBG > 0) {
+                            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+                            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng hoặc xuất huyết dưới da, do cơ thể thiếu các yếu tố cần thiết để cầm máu. Đau ngực: Có thể xuất hiện cơn đau ngực do tim không nhận đủ oxy để hoạt động bình thường. Mệt mỏi nghiêm trọng: Người bệnh cảm thấy kiệt sức và không có năng lượng, ngay cả khi thực hiện các hoạt động hàng ngày đơn giản.";
+                            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu: Truyền máu là biện pháp nhanh chóng và hiệu quả nhất để tăng lượng hemoglobin trong cơ thể.";
+                            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+                            playSound('hbgquathap.mp3');
+                        } else if (soHBG >= 12.5 && soHBG <= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+                            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+                            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất";
+                            imageElement.src = "https://cdn.eva.vn/upload/1-2019/images/2019-02-14/shutterstock_132653732-1550101079-970-width640height480.jpg";
+                            playSound('hbgbth.mp3');
+                        }
+                    }
+                    else if (age === "Phụ nữ mang thai hoặc đang cho con bú") {
+                        if (soHBG >= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+                            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao. Tăng nguy cơ cho bệnh tim và đột quỵ: Các nghiên cứu đã chỉ ra rằng có mối liên kết giữa chỉ số HBG cao và nguy cơ mắc bệnh tim và đột quỵ. Mệt mỏi và uể oải: Một trong những triệu chứng phổ biến khi có HBG cao là cảm giác mệt mỏi và uể oải, do cơ thể phải làm việc nặng nề hơn để cung cấp oxy cho các tế bào.";
+                            imageElement.src = "https://benhvienthucuc.vn/wp-content/uploads/2015/07/dau-dau-khi-mang-thai.jpg";
+                            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể, Giảm lượng sắt trong chế độ ăn uống: Tránh thực phẩm giàu sắt như thịt đỏ, gan, và các loại thực phẩm bổ sung sắt. Uống nhiều nước: Giúp pha loãng máu và giảm nồng độ HGB. Giảm hoặc ngừng tiêu thụ rượu bia và caffeine: Các chất này có thể làm tăng nồng độ HGB.";
+                            playSound('hgbcao.mp3');
+                        } else if (soHBG <= 12.5 && soHBG >= 10.5) {
+                            resultElement.innerHTML = "Chỉ số HBG thấp";
+                            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là cảm giác mệt mỏi và yếu đuối. Do máu không mang đủ oxy đến các tế bào cơ thể, gây ra cảm giác mệt mỏi và suy nhược. Da nhợt nhạt hoặc màu xanh xao: Sự thiếu máu có thể làm cho da mất màu hoặc có màu nhợt nhạt, đặc biệt là ở vùng khuôn mặt, lòng bàn tay và lòng bàn chân. Nhịp tim nhanh và hơi thở ngắn: Thiếu oxy có thể khiến cho nhịp tim tăng lên và làm cho hơi thở trở nên ngắn hơn bình thường.";
+                            imageElement.src = "https://hapacol.vn/wp-content/uploads/2023/10/dau-dau-khi-mang-thai-co-nguy-hiem-khong.jpg";
+                            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, thịt gia cầm, hải sản, đậu, rau lá xanh đậm (như cải bó xôi, cải xoăn), ngũ cốc bổ sung sắt. Tránh uống trà và cà phê trong bữa ăn vì chúng chứa tannin có thể cản trở hấp thụ sắt. Hạn chế đồ uống có cồn: Vì có thể ảnh hưởng đến việc hấp thụ và chuyển hóa sắt.";
+                            playSound('hgbthap.mp3');
+                        } else if (soHBG <= 6 && soHBG >= 0) {
+                            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+                            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng hoặc xuất huyết dưới da, do cơ thể thiếu các yếu tố cần thiết để cầm máu. Đau ngực: Có thể xuất hiện cơn đau ngực do tim không nhận đủ oxy để hoạt động bình thường. Mệt mỏi nghiêm trọng: Người bệnh cảm thấy kiệt sức và không có năng lượng, ngay cả khi thực hiện các hoạt động hàng ngày đơn giản.";
+                            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu: Truyền máu là biện pháp nhanh chóng và hiệu quả nhất để tăng lượng hemoglobin trong cơ thể.";
+                            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+                            playSound('hbgquathap.mp3');
+                        } else if (soHBG >= 12.5 && soHBG <= 17.5) {
+                            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+                            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+                            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất";
+                            imageElement.src = "https://tamanhhospital.vn/wp-content/uploads/2021/08/bai-tap-kegel-cho-phu-nu-mang-thai.jpg";
+                            playSound('hbgbth.mp3');
+                        }
+                    } else if (age === "Người già") {
+                        if (soHBG >= 15.3) {
+                            resultElement.innerHTML = "Chỉ số HBG ở ngưỡng cao bất thường";
+                            ttElement.innerHTML = "Tăng huyết áp: Một số người có thể gặp vấn đề với huyết áp cao khi có chỉ số HBG cao. Tăng nguy cơ cho bệnh tim và đột quỵ: Các nghiên cứu đã chỉ ra rằng có mối liên kết giữa chỉ số HBG cao và nguy cơ mắc bệnh tim và đột quỵ. Mệt mỏi và uể oải: Một trong những triệu chứng phổ biến khi có HBG cao là cảm giác mệt mỏi và uể oải, do cơ thể phải làm việc nặng nề hơn để cung cấp oxy cho các tế bào.";
+                            imageElement.src = "https://medlatec.vn/ImagePath/images/20211222/20211222_viem-xoang-gay-dau-dau-1.jpg";
+                            ptElement.innerHTML = "Thăm khám bác sĩ. Ở nhà có thể, Giảm lượng sắt trong chế độ ăn uống: Tránh thực phẩm giàu sắt như thịt đỏ, gan, và các loại thực phẩm bổ sung sắt. Uống nhiều nước: Giúp pha loãng máu và giảm nồng độ HGB. Giảm hoặc ngừng tiêu thụ rượu bia và caffeine: Các chất này có thể làm tăng nồng độ HGB.";
+                            playSound('hgbcao.mp3');
+                        } else if (soHBG <= 12.5 && soHBG >= 10.5) {
+                            resultElement.innerHTML = "Chỉ số HBG thấp";
+                            ttElement.innerHTML = "Mệt mỏi và yếu đuối: Một trong những triệu chứng phổ biến nhất của HBG thấp là cảm giác mệt mỏi và yếu đuối. Do máu không mang đủ oxy đến các tế bào cơ thể, gây ra cảm giác mệt mỏi và suy nhược. Da nhợt nhạt hoặc màu xanh xao: Sự thiếu máu có thể làm cho da mất màu hoặc có màu nhợt nhạt, đặc biệt là ở vùng khuôn mặt, lòng bàn tay và lòng bàn chân. Nhịp tim nhanh và hơi thở ngắn: Thiếu oxy có thể khiến cho nhịp tim tăng lên và làm cho hơi thở trở nên ngắn hơn bình thường.";
+                            imageElement.src = "https://3peyecare.vn/wp-content/uploads/2022/03/thi-luc-suy-giam.png";
+                            ptElement.innerHTML = "Thực phẩm giàu sắt: Bao gồm thịt đỏ, gan, thịt gia cầm, hải sản, đậu, rau lá xanh đậm (như cải bó xôi, cải xoăn), ngũ cốc bổ sung sắt. Tránh uống trà và cà phê trong bữa ăn vì chúng chứa tannin có thể cản trở hấp thụ sắt. Hạn chế đồ uống có cồn: Vì có thể ảnh hưởng đến việc hấp thụ và chuyển hóa sắt.";
+                            playSound('hgbthap.mp3');
+                        } else if (soHBG <= 6 && soHBG >= 0) {
+                            resultElement.innerHTML = "Chỉ số HBG đã ngưỡng quá thấp, mức nguy hiểm";
+                            ttElement.innerHTML = "Chảy máu không kiểm soát: Tăng nguy cơ chảy máu, như chảy máu chân răng hoặc xuất huyết dưới da, do cơ thể thiếu các yếu tố cần thiết để cầm máu. Đau ngực: Có thể xuất hiện cơn đau ngực do tim không nhận đủ oxy để hoạt động bình thường. Mệt mỏi nghiêm trọng: Người bệnh cảm thấy kiệt sức và không có năng lượng, ngay cả khi thực hiện các hoạt động hàng ngày đơn giản.";
+                            ptElement.innerHTML = "Truyền máu cấp cứu, đến viện khẩn cấp để truyền máu: Truyền máu là biện pháp nhanh chóng và hiệu quả nhất để tăng lượng hemoglobin trong cơ thể.";
+                            imageElement.src = "https://cokhitt.com/wp-content/uploads/2020/06/GHSO7-nguy-hai.png";
+                            playSound('hbgquathap.mp3');
+                        } else if (soHBG >= 13 && soHBG <= 15.3) {
+                            resultElement.innerHTML = "Chỉ số HBG ở mức ổn định";
+                            ttElement.innerHTML = "Cơ thể ổn định, khoẻ mạnh";
+                            ptElement.innerHTML = "Duy trì chế độ sống ổn định, ăn phối hợp nhiều chất";
+                            imageElement.src = "https://suckhoedoisong.qltns.mediacdn.vn/Images/thuhuong/2020/10/27/nhung-lam-tuong-anh-huong-toi-qua-trinh-lao-hoa-lanh-manh1603765703.jpg";
+                            playSound('hbgbth.mp3');
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

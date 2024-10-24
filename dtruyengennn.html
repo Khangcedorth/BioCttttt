@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Gene ngoài nhân chủ yếu nằm trong cơ quan nào của tế bào?",
+        answers: [
+            { text: "Nhân tế bào", correct: false },
+            { text: "Ti thể và lục lạp", correct: true },
+            { text: "Bộ máy Golgi", correct: false},
+            { text: "Lưới nội chất", correct: false }
+        ],
+        explanation: "Gene ngoài nhân chủ yếu nằm trong ti thể và lục lạp của tế bào."
+    },
+    {
+        question: "Câu 2: Di truyền gene ngoài nhân được gọi là gì?",
+        answers: [
+            { text: "Di truyền thẳng", correct: false },
+            { text: "Di truyền tế bào chất", correct: true },
+            { text: "Di truyền liên kết", correct: false},
+            { text: "Di truyền phân li", correct: false }
+        ],
+        explanation: "Di truyền gene ngoài nhân được gọi là di truyền tế bào chất."
+    },
+    {
+        question: "Câu 3: Gene ngoài nhân có nguồn gốc từ đâu?",
+        answers: [
+            { text: "DNA của ti thể và lục lạp", correct: true },
+            { text: "RNA của ribosome", correct: false },
+            { text: "Protein của lục lạp", correct: false},
+            { text: "Lipid của màng tế bào", correct: false }
+        ],
+        explanation: "Gene ngoài nhân có nguồn gốc từ DNA của ti thể và lục lạp."
+    },
+    {
+        question: "Câu 4: Gene ngoài nhân có vai trò gì trong tế bào?",
+        answers: [
+            { text: "Mã hóa protein cho sự quang hợp và hô hấp", correct: true },
+            { text: "Điều khiển sự phân bào", correct: false },
+            { text: "Tham gia vào sự tổng hợp lipid", correct: false},
+            { text: "Điều hòa sự phiên mã", correct: false }
+        ],
+        explanation: "Gene ngoài nhân có vai trò mã hóa protein cho sự quang hợp và hô hấp."
+    },
+    {
+        question: "Câu 5: Sự di truyền gene ngoài nhân chủ yếu được truyền qua?",
+        answers: [
+            { text: "Tinh trùng", correct: false },
+            { text: "Trứng", correct: true },
+            { text: "Nhiễm sắc thể", correct: false},
+            { text: "Môi trường ngoại bào", correct: false }
+        ],
+        explanation: "Sự di truyền gene ngoài nhân chủ yếu được truyền qua trứng."
+    },
+    {
+        question: "Câu 6: Hội chứng di truyền Leber có liên quan đến gene nào?",
+        answers: [
+            { text: "Gene của ti thể", correct: true },
+            { text: "Gene của lục lạp", correct: false },
+            { text: "Gene của ribosome", correct: false},
+            { text: "Gene của nhân tế bào", correct: false }
+        ],
+        explanation: "Hội chứng di truyền Leber có liên quan đến gene của ti thể."
+    },
+    {
+        question: "Câu 7: Gene của lục lạp có chức năng gì trong tế bào thực vật?",
+        answers: [
+            { text: "Mã hóa protein tham gia vào quá trình quang hợp", correct: true },
+            { text: "Điều khiển sự phân chia tế bào", correct: false },
+            { text: "Tổng hợp lipid", correct: false},
+            { text: "Điều hòa chu kỳ tế bào", correct: false }
+        ],
+        explanation: "Gene của lục lạp có chức năng mã hóa protein tham gia vào quá trình quang hợp."
+    },
+    {
+        question: "Câu 8: DNA của ti thể có đặc điểm gì so với DNA của nhân?",
+        answers: [
+            { text: "Vòng, không có intron", correct: true },
+            { text: "Thẳng, có nhiều intron", correct: false },
+            { text: "Vòng, có nhiều intron", correct: false},
+            { text: "Thẳng, không có intron", correct: false }
+        ],
+        explanation: "DNA của ti thể có đặc điểm vòng và không có intron."
+    },
+    {
+        question: "Câu 9: Gene của ti thể di truyền theo kiểu nào?",
+        answers: [
+            { text: "Di truyền theo dòng mẹ", correct: true },
+            { text: "Di truyền theo dòng bố", correct: false },
+            { text: "Di truyền theo dòng con", correct: false},
+            { text: "Di truyền theo dòng ngẫu nhiên", correct: false }
+        ],
+        explanation: "Gene của ti thể di truyền theo dòng mẹ."
+    },
+    {
+        question: "Câu 10: Di truyền gene ngoài nhân có ảnh hưởng như thế nào đến tính trạng của cơ thể?",
+        answers: [
+            { text: "Có thể gây ra các bệnh di truyền liên quan đến chức năng của ti thể và lục lạp", correct: true },
+            { text: "Không có ảnh hưởng đáng kể", correct: false },
+            { text: "Chỉ ảnh hưởng đến tính trạng ngoại hình", correct: false},
+            { text: "Chỉ ảnh hưởng đến tính trạng sinh sản", correct: false }
+        ],
+        explanation: "Di truyền gene ngoài nhân có thể gây ra các bệnh di truyền liên quan đến chức năng của ti thể và lục lạp."
+    },
+    {
+        question: "Câu 11: DNA của lục lạp có kích thước bao nhiêu so với DNA của ti thể?",
+        answers: [
+            { text: "Lớn hơn", correct: true },
+            { text: "Nhỏ hơn", correct: false },
+            { text: "Bằng nhau", correct: false},
+            { text: "Không xác định được", correct: false }
+        ],
+        explanation: "DNA của lục lạp có kích thước lớn hơn so với DNA của ti thể."
+    },
+    {
+        question: "Câu 12: Gene ngoài nhân có thể mã hóa protein nào sau đây?",
+        answers: [
+            { text: "Protein enzyme tham gia vào quá trình hô hấp tế bào", correct: true },
+            { text: "Protein cấu trúc của màng tế bào", correct: false },
+            { text: "Protein tham gia vào quá trình phiên mã", correct: false},
+            { text: "Protein liên quan đến sự phân chia tế bào", correct: false }
+        ],
+        explanation: "Gene ngoài nhân có thể mã hóa protein enzyme tham gia vào quá trình hô hấp tế bào."
+    },
+    {
+        question: "Câu 13: Sự mất mát của gene ngoài nhân có thể dẫn đến tình trạng gì?",
+        answers: [
+            { text: "Suy giảm chức năng hô hấp và quang hợp", correct: true },
+            { text: "Tăng cường chức năng tế bào", correct: false },
+            { text: "Không ảnh hưởng gì", correct: false},
+            { text: "Gây ra đột biến gen trong nhân", correct: false }
+        ],
+        explanation: "Sự mất mát của gene ngoài nhân có thể dẫn đến suy giảm chức năng hô hấp và quang hợp."
+    },
+    {
+        question: "Câu 14: Tính chất của sự di truyền gene ngoài nhân là gì?",
+        answers: [
+            { text: "Không tuân theo quy luật di truyền Mendel", correct: true },
+            { text: "Tuân theo quy luật di truyền Mendel", correct: false },
+            { text: "Phụ thuộc vào nhiễm sắc thể giới tính", correct: false},
+            { text: "Di truyền theo dòng bố", correct: false }
+        ],
+        explanation: "Tính chất của sự di truyền gene ngoài nhân là không tuân theo quy luật di truyền Mendel."
+    },
+    {
+        question: "Câu 15: Gene của ti thể và lục lạp có thể bị ảnh hưởng bởi yếu tố nào sau đây?",
+        answers: [
+            { text: "Thuốc diệt cỏ và thuốc trừ sâu", correct: true },
+            { text: "Ánh sáng mặt trời", correct: false },
+            { text: "Nhiệt độ thấp", correct: false},
+            { text: "Độ ẩm cao", correct: false }
+        ],
+        explanation: "Gene của ti thể và lục lạp có thể bị ảnh hưởng bởi thuốc diệt cỏ và thuốc trừ sâu."
+    },
+    {
+        question: "Câu 16: Sự tái tổ hợp gene ngoài nhân xảy ra khi nào?",
+        answers: [
+            { text: "Sự giao tử kết hợp", correct: true },
+            { text: "Sự phân chia tế bào", correct: false },
+            { text: "Sự tổng hợp protein", correct: false},
+            { text: "Sự phiên mã", correct: false }
+        ],
+        explanation: "Sự tái tổ hợp gene ngoài nhân xảy ra khi giao tử kết hợp."
+    },
+    {
+        question: "Câu 17: Loại đột biến nào có thể ảnh hưởng đến gene ngoài nhân?",
+        answers: [
+            { text: "Đột biến điểm", correct: true },
+            { text: "Đột biến cấu trúc nhiễm sắc thể", correct: false },
+            { text: "Đột biến số lượng nhiễm sắc thể", correct: false},
+            { text: "Đột biến gen trong nhân", correct: false }
+        ],
+        explanation: "Đột biến điểm có thể ảnh hưởng đến gene ngoài nhân."
+    },
+    {
+        question: "Câu 18: Gene ngoài nhân có thể được nghiên cứu thông qua phương pháp nào?",
+        answers: [
+            { text: "Phân tích trình tự DNA của ti thể và lục lạp", correct: true },
+            { text: "Phân tích cấu trúc nhiễm sắc thể", correct: false },
+            { text: "Quan sát dưới kính hiển vi", correct: false},
+            { text: "Phân tích protein", correct: false }
+        ],
+        explanation: "Gene ngoài nhân có thể được nghiên cứu thông qua phân tích trình tự DNA của ti thể và lục lạp."
+    },
+    {
+        question: "Câu 19: Tại sao gene ngoài nhân không tuân theo quy luật di truyền Mendel?",
+        answers: [
+            { text: "Do không nằm trên nhiễm sắc thể trong nhân", correct: true },
+            { text: "Do không có khả năng đột biến", correct: false },
+            { text: "Do nằm trên nhiễm sắc thể giới tính", correct: false},
+            { text: "Do không tham gia vào quá trình di truyền", correct: false }
+        ],
+        explanation: "Gene ngoài nhân không tuân theo quy luật di truyền Mendel do không nằm trên nhiễm sắc thể trong nhân."
+    },
+    {
+        question: "Câu 20: Đặc điểm nào của gene ngoài nhân giúp chúng di truyền độc lập?",
+        answers: [
+            { text: "Có cơ chế nhân đôi riêng", correct: true },
+            { text: "Không có intron", correct: false },
+            { text: "Không tham gia vào quá trình phân bào", correct: false},
+            { text: "Có kích thước nhỏ", correct: false }
+        ],
+        explanation: "Gene ngoài nhân có cơ chế nhân đôi riêng giúp chúng di truyền độc lập."
+    }
+];
+
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

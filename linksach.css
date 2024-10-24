@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2ecec;
+}
+
+header {
+    background: linear-gradient(135deg, #6cf367e5, #08f300);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #fafafa;
+    color: #000;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar h2 {
+    font-size: 22px;
+    margin-top: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: rgb(6, 6, 6);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}
+
+main {
+    margin-left: 270px;
+    padding: 20px;
+    width: calc(100% - 270px);
+}
+
+section {
+    margin-bottom: 40px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    color: #000;
+    margin-top: 0;
+}
+
+.section-image {
+    width: 150%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.button-container a {
+    display: inline-block;
+    text-decoration: none;
+    margin: 10px;
+    transition: transform 0.3s;
+}
+
+.button-container a img {
+    width: 100px;
+    height: 150px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.button-container a:hover {
+    transform: scale(1.1);
+}
+
+footer {
+    background-color: #2d2d2eb9;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

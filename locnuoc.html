@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="locnuoc.css">
+</head>
+<body>
+    <section class="introduction">
+        <h1>Giới Thiệu về Bình Lọc Nước</h1>
+        <p>Khi tình trạng nước ô nhiễm xảy ra ngày càng nghiêm trọng và phổ biến thì các hộ gia đình đã chủ động trong việc sử dụng các thiết bị lọc nước để đảm bảo nguồn nước sạch sử dụng hàng ngày. Bình lọc nước là thiết bị lọc đơn giản với kích thước nhỏ gọn có tác dụng loại bỏ các tạp chất, cặn bẩn trong nguồn nước, đáp ứng nhu cầu sử dụng nước sạch trực tiếp của người dùng.</p>
+        
+        <div class="exercise-link">
+            <a href="btlocnuoc.html" class="custom-button">Làm Bài Tập về Bình Lọc Nước</a>
+            <a href="https://www.youtube.com/watch?v=M_vUcoo4gLA" class="custom-button">Hướng dẫn làm bình lọc nước đơn giản</a>
+        </div>
+
+        <div class="guidelines">
+            <h2>Hướng Dẫn</h2>
+            <p>B1: Chuẩn bị chai nước không đáy và để ngược đầu chai xuống làm cái phễu</p>
+            <p>B2: cho lần lượt các nguyên liệu như: bông, cát, than hoạt tính, sỏi 0,5-1mm, sỏi 1-3mm, sỏi 3-5mm </p>
+            <p>cuối cùng, thử nghiệm bằng cách cho nước bẩn vào chai </p>
+        </div>
+
+        <div class="upload-section">
+            <h2>Đăng Tải Hình Ảnh hoặc Video</h2>
+            <form id="uploadForm" action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file" accept="image/*,video/*">
+                <button type="submit" id="uploadButton" class="custom-button">Tải Lên</button>
+            </form>
+            <div id="preview"></div>
+        </div>
+
+        <div class="task-section">
+            <h2>Các Công Việc</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Công Việc</th>
+                        <th>Đánh Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chuẩn bị bình lọc nước</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lắp đặt bình lọc nước</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kiểm tra chất lượng nước sau lọc</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bảo trì định kỳ</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="printButton" class="custom-button">In Kết Quả</button>
+        </div>
+        <div id="result"></div>
+    </section>
+
+    <script>
+        document.getElementById('printButton').addEventListener('click', function() {
+            var results = document.querySelectorAll('.task-result');
+            var result = document.getElementById('result');
+            var completedTasks = [];
+            var totalScore = 0;
+            var maxScore = results.length * 3; // Maximum score based on the number of tasks
+            var scores = {
+                "Không Đạt": 0,
+                "Đạt": 1,
+                "Hoàn Thành": 2,
+                "Xuất Sắc": 3
+            };
+
+            results.forEach((select, index) => {
+                var taskResult = select.value;
+                completedTasks.push({
+                    task: select.parentElement.previousElementSibling.textContent,
+                    result: taskResult,
+                    score: scores[taskResult]
+                });
+                totalScore += scores[taskResult];
+            });
+
+            var percentageScore = (totalScore / maxScore) * 100;
+
+            result.innerHTML = '<h2>Kết Quả Công Việc</h2>';
+            if (completedTasks.length > 0) {
+                var ul = document.createElement('ul');
+                completedTasks.forEach(task => {
+                    var li = document.createElement('li');
+                    li.textContent = `${task.task}: ${task.result} (Điểm: ${task.score})`;
+                    ul.appendChild(li);
+                });
+                result.appendChild(ul);
+                result.innerHTML += `<h3>Tổng Điểm: ${totalScore} / ${maxScore} (${percentageScore.toFixed(2)}%)</h3>`;
+            } else {
+                result.innerHTML += '<p>Không có công việc nào được hoàn thành.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

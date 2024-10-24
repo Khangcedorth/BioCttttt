@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Đơn phân nào cấu tạo nên DNA",
+                answers: [
+                    { text: "Nucleotide", correct: true },
+                    { text: "Amino acid", correct: false },
+                    { text: "Acid béo", correct: false},
+                    { text: "Glucose", correct: false }
+                ],
+                explanation: "Đơn phân cấu tạo nên DNA là nucleotide."
+            },
+            {
+                question: "Câu 2: 2 mạch của DNA gắn với nhau bằng liên kết nào?",
+                answers: [
+                    { text: "Peptide", correct: false },
+                    { text: "Ion", correct: false },
+                    { text: "Hydrogen", correct: true},
+                    { text: "Tĩnh điện", correct: false }
+                ],
+                explanation: "Hai mạch của DNA gắn với nhau bằng liên kết hydrogen."
+            },
+            {
+                question: "Câu 3: Về cấu trúc gene có mấy vùng",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: false },
+                    { text: "3", correct: true},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về cấu trúc gene có 3 vùng: vùng mã hoá, vùng không mã hoá và vùng điều khiển."
+            },
+            {
+                question: "Câu 4: Về chức năng gene chia thành mấy loại",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: true },
+                    { text: "3", correct: false},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về chức năng gene chia thành 2 loại: gene cấu trúc và gene điều hoà."
+            },
+            {
+                question: "Câu 5: Về cấu trúc gene chia thành mấy loại?",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: true },
+                    { text: "3", correct: false},
+                    { text: "4", correct: false }
+                ],
+                explanation: "Về cấu trúc gene chia thành 2 loại: gene phân mảnh và gene không phân mảnh."
+            },
+            {
+                question: "Câu 6: Tái bản DNA dựa trên nguyên tắc nào?",
+                answers: [
+                    { text: "Bổ sung", correct: false },
+                    { text: "Bảo tồn", correct: false },
+                    { text: "Bán bảo tồn", correct: false},
+                    { text: "Bổ sung và bán bảo tồn", correct: true }
+                ],
+                explanation: "Tái bản DNA dựa trên nguyên tắc bổ sung và bán bảo tồn."
+            },
+            {
+                question: "Câu 7: Nucleotide nào dưới đây không tham gia cấu tạo nên DNA?",
+                answers: [
+                    { text: "Uracil", correct: true },
+                    { text: "Adenine", correct: false },
+                    { text: "Cytosine", correct: false},
+                    { text: "Thymine", correct: false }
+                ],
+                explanation: "Uracil không tham gia cấu tạo nên DNA, thay vào đó nó có trong RNA."
+            },
+            {
+                question: "Câu 8: Ở tế bào động vật, DNA có trong cấu trúc nào dưới đây?",
+                answers: [
+                    { text: "Ti thể, không bào, lục lạp", correct: false },
+                    { text: "Nhân tế bào, ti thể", correct: true },
+                    { text: "Nhân tế bào, ti thể, lục lạp", correct: false},
+                    { text: "Ti thể, không bào", correct: false }
+                ],
+                explanation: "Ở tế bào động vật, DNA có trong nhân tế bào và ti thể."
+            },
+            {
+                question: "Câu 9: Trong quá trình nhân đôi, enzyme nào dưới đây đóng vai trò ghép các nucleotide tự do tạo mạch đơn mới là?",
+                answers: [
+                    { text: "Ligase", correct: false },
+                    { text: "DNA polymerase", correct: true },
+                    { text: "Primase", correct: false},
+                    { text: "Gyrase", correct: false }
+                ],
+                explanation: "Trong quá trình nhân đôi, DNA polymerase đóng vai trò ghép các nucleotide tự do tạo mạch đơn mới."
+            },
+            {
+                question: "Câu 10: Từ 1 phân tử DNA tiến hành nhân đôi 6 lần tạo mấy phân tử DNA?",
+                answers: [
+                    { text: "16", correct: false },
+                    { text: "64", correct: true },
+                    { text: "32", correct: false},
+                    { text: "8", correct: false }
+                ],
+                explanation: "Nhân đôi DNA 6 lần tạo ra 2^6 = 64 phân tử DNA."
+            },
+            {
+                question: "Câu 11: Chức năng của DNA?",
+                answers: [
+                    { text: "Lưu trữ thông tin di truyền", correct: false },
+                    { text: "Bảo quản thông tin di truyền", correct: false },
+                    { text: "Truyền đạt thông tin di truyền", correct: false},
+                    { text: "Cả 3 ý trên đều đúng", correct: true }
+                ],
+                explanation: "Chức năng của DNA bao gồm lưu trữ, bảo quản và truyền đạt thông tin di truyền."
+            },
+            {
+                question: "Câu 12: DNA truyền đạt thông tin di truyền theo cơ chế nào?",
+                answers: [
+                    { text: "Nhân đôi DNA, phiên mã tổng hợp RNA", correct: true },
+                    { text: "Cơ chế bổ sung", correct: false },
+                    { text: "Nhân đôi DNA", correct: false},
+                    { text: "Dịch mã", correct: false }
+                ],
+                explanation: "DNA truyền đạt thông tin di truyền theo cơ chế nhân đôi DNA và phiên mã tổng hợp RNA."
+            },
+            {
+                question: "Câu 13: Các đoạn nhỏ nằm trong mạch mới được tổng hợp không liên tục gọi là các đoạn?",
+                answers: [
+                    { text: "Polypeptide", correct: false },
+                    { text: "Okazaki", correct: true },
+                    { text: "Xinapse", correct: false},
+                    { text: "Codon", correct: false }
+                ],
+                explanation: "Các đoạn nhỏ nằm trong mạch mới được tổng hợp không liên tục gọi là các đoạn Okazaki."
+            },
+            {
+                question: "Câu 14: Một gene có tổng số 3200 nucleotide và số nucleotide loại G chiếm 20% tổng số nucleotide của gene. Gene nhân đôi 3 lần. Số nucleotide loại A mà môi trường cung cấp là bao nhiêu?",
+                answers: [
+                    { text: "4480", correct: false },
+                    { text: "6720", correct: true },
+                    { text: "2940", correct: false},
+                    { text: "640", correct: false }
+                ],
+                explanation: "Gene có 3200 nucleotide, G chiếm 20% tổng số nucleotide tức là có 640 nucleotide G. Vậy số nucleotide loại A là (3200 - 640 x 2) / 2 = 960. Khi gene nhân đôi 3 lần tạo ra 2^3 = 8 gene, môi trường cần cung cấp 960 x 7 = 6720 nucleotide loại A."
+            },
+            {
+                question: "Câu 15: Ở tế bào nhân thực, sự nhân đôi DNA của ti thể và lục lạp diễn ra?",
+                answers: [
+                    { text: "Độc lập với sự nhân đôi DNA trong nhân", correct: true },
+                    { text: "Phụ thuộc với sự nhân đôi DNA trong nhân", correct: false },
+                    { text: "Phụ thuộc với sự nhân đôi nhiễm sắc thể", correct: false},
+                    { text: "Sau khi nhân đôi DNA trong nhân", correct: false }
+                ],
+                explanation: "Ở tế bào nhân thực, sự nhân đôi DNA của ti thể và lục lạp diễn ra độc lập với sự nhân đôi DNA trong nhân."
+            },
+            {
+                question: "Câu 16: Trên 2 mạch gene có tỉ lệ A:T:G:C=1:2:2:3 tỉ lệ (A+T)/(G+C) của gene là?",
+                answers: [
+                    { text: "3/5", correct: true },
+                    { text: "1/4", correct: false },
+                    { text: "3/8", correct: false},
+                    { text: "1/2", correct: false }
+                ],
+                explanation: "Với tỉ lệ A:T:G:C = 1:2:2:3, (A+T) = 3 và (G+C) = 5, nên tỉ lệ (A+T)/(G+C) là 3/5."
+            },
+            {
+                question: "Câu 17: TV nhân sơ chỉ có 1 điểm khởi đầu trong quá trình nhân đôi?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Tế bào vi khuẩn (TV) nhân sơ chỉ có 1 điểm khởi đầu trong quá trình nhân đôi DNA."
+            },
+            {
+                question: "Câu 18: 1 chu lỳ xoắn gồm 10 cặp nu?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "1 Chu kỳ xoắn gồm 10 cặp nucleotide."
+            },
+            {
+                question: "Câu 19: Cặp A nối với T = 2 liên kết hydrogen?",
+                answers: [
+                    { text: "DNA", correct: true },
+                    { text: "RNA", correct: false },
+                ],
+                explanation: " Cặp A nối với T = 2 liên kết hydrogen."
+            },
+            {
+                question: "Câu 20: Số phân tử DNA hoàn toàn mới sau nhân đôi là 2^n+1 với n là số lần nhân đôi?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Số phân tử DNA hoàn toàn mới sau khi nhân đôi là (2^n)-2 với n là số lần nhân đôi."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

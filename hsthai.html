@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Hệ sinh thái là gì?",
+        answers: [
+            { text: "Là một cộng đồng sinh vật và các yếu tố phi sinh vật trong môi trường sống của chúng.", correct: true },
+            { text: "Là một tập hợp các loài động vật trong một khu vực.", correct: false },
+            { text: "Là một hệ thống nước ngọt với các loài cá khác nhau.", correct: false },
+            { text: "Là một môi trường sống chỉ gồm thực vật.", correct: false }
+        ],
+        explanation: "Hệ sinh thái là một cộng đồng sinh vật và các yếu tố phi sinh vật tương tác với nhau trong một môi trường cụ thể."
+    },
+    {
+        question: "Câu 2: Yếu tố nào không phải là thành phần của hệ sinh thái?",
+        answers: [
+            { text: "Năng lượng mặt trời.", correct: false },
+            { text: "Vi sinh vật trong đất.", correct: false },
+            { text: "Nước trong sông.", correct: false },
+            { text: "Sản phẩm công nghiệp.", correct: true }
+        ],
+        explanation: "Sản phẩm công nghiệp không phải là thành phần tự nhiên của hệ sinh thái."
+    },
+    {
+        question: "Câu 3: Chuỗi thức ăn trong hệ sinh thái được hiểu là gì?",
+        answers: [
+            { text: "Là một loạt các sinh vật ăn lẫn nhau theo trình tự.", correct: true },
+            { text: "Là quá trình phân hủy chất hữu cơ.", correct: false },
+            { text: "Là sự sinh sản của loài trong hệ sinh thái.", correct: false },
+            { text: "Là quá trình trao đổi khí trong hệ sinh thái.", correct: false }
+        ],
+        explanation: "Chuỗi thức ăn là một loạt các sinh vật được sắp xếp theo trình tự, trong đó mỗi sinh vật là thức ăn của sinh vật kế tiếp."
+    },
+    {
+        question: "Câu 4: Vai trò của sinh vật phân hủy trong hệ sinh thái là gì?",
+        answers: [
+            { text: "Phân hủy chất hữu cơ thành các chất vô cơ cần thiết cho sinh vật khác.", correct: true },
+            { text: "Cung cấp năng lượng cho hệ sinh thái.", correct: false },
+            { text: "Tạo ra nguồn thức ăn chính cho các sinh vật tiêu thụ.", correct: false },
+            { text: "Tăng cường khả năng sinh sản của các loài trong hệ sinh thái.", correct: false }
+        ],
+        explanation: "Sinh vật phân hủy đóng vai trò quan trọng trong việc phân hủy chất hữu cơ thành các chất vô cơ, giúp tái chế dinh dưỡng trong hệ sinh thái."
+    },
+    {
+        question: "Câu 5: Đơn vị cơ bản nhất trong một hệ sinh thái là gì?",
+        answers: [
+            { text: "Cá thể.", correct: true },
+            { text: "Quần thể.", correct: false },
+            { text: "Cộng đồng.", correct: false },
+            { text: "Hệ sinh thái.", correct: false }
+        ],
+        explanation: "Cá thể là đơn vị cơ bản nhất trong một hệ sinh thái."
+    },
+    {
+        question: "Câu 6: Quá trình chuyển hóa năng lượng trong hệ sinh thái thường bắt đầu từ đâu?",
+        answers: [
+            { text: "Từ các sinh vật sản xuất (như cây xanh).", correct: true },
+            { text: "Từ các sinh vật tiêu thụ cấp 1.", correct: false },
+            { text: "Từ các sinh vật phân hủy.", correct: false },
+            { text: "Từ các sinh vật tiêu thụ cấp 2.", correct: false }
+        ],
+        explanation: "Quá trình chuyển hóa năng lượng trong hệ sinh thái bắt đầu từ các sinh vật sản xuất như cây xanh, thông qua quá trình quang hợp."
+    },
+    {
+        question: "Câu 7: Loại hệ sinh thái nào sau đây là hệ sinh thái nước ngọt?",
+        answers: [
+            { text: "Hồ và sông.", correct: true },
+            { text: "Rừng nhiệt đới.", correct: false },
+            { text: "Đồng cỏ.", correct: false },
+            { text: "Sa mạc.", correct: false }
+        ],
+        explanation: "Hồ và sông là những hệ sinh thái nước ngọt, với sự hiện diện của nước ngọt làm môi trường sống."
+    },
+    {
+        question: "Câu 8: Sinh vật tiêu thụ cấp 1 trong chuỗi thức ăn thường là gì?",
+        answers: [
+            { text: "Các loài động vật ăn thực vật.", correct: true },
+            { text: "Các loài động vật ăn thịt.", correct: false },
+            { text: "Các loài vi khuẩn phân hủy.", correct: false },
+            { text: "Các loài thực vật.", correct: false }
+        ],
+        explanation: "Sinh vật tiêu thụ cấp 1 trong chuỗi thức ăn thường là các loài động vật ăn thực vật, còn được gọi là động vật ăn cỏ."
+    },
+    {
+        question: "Câu 9: Tầng năng lượng cao nhất trong một hệ sinh thái thường thuộc về nhóm sinh vật nào?",
+        answers: [
+            { text: "Sinh vật tiêu thụ cấp 3 hoặc cao hơn.", correct: true },
+            { text: "Sinh vật tiêu thụ cấp 1.", correct: false },
+            { text: "Sinh vật sản xuất.", correct: false },
+            { text: "Sinh vật phân hủy.", correct: false }
+        ],
+        explanation: "Sinh vật tiêu thụ cấp 3 hoặc cao hơn, chẳng hạn như các loài động vật ăn thịt lớn, nằm ở tầng năng lượng cao nhất trong một hệ sinh thái."
+    },
+    {
+        question: "Câu 10: Chức năng của hệ sinh thái là gì?",
+        answers: [
+            { text: "Duy trì cân bằng giữa các yếu tố sinh vật và phi sinh vật.", correct: true },
+            { text: "Tạo ra năng lượng từ không khí.", correct: false },
+            { text: "Chỉ cung cấp thức ăn cho sinh vật.", correct: false },
+            { text: "Tạo ra nước cho các loài động vật.", correct: false }
+        ],
+        explanation: "Chức năng chính của hệ sinh thái là duy trì cân bằng giữa các yếu tố sinh vật và phi sinh vật, giúp đảm bảo sự ổn định và phát triển của môi trường sống."
+    },
+    {
+        question: "Câu 11: Quá trình nào sau đây là một phần của chu trình cacbon trong hệ sinh thái?",
+        answers: [
+            { text: "Quang hợp và hô hấp.", correct: true },
+            { text: "Thăng hoa và lắng đọng.", correct: false },
+            { text: "Nước bốc hơi.", correct: false },
+            { text: "Nitrat hóa.", correct: false }
+        ],
+        explanation: "Quang hợp và hô hấp là hai quá trình chính trong chu trình cacbon, giúp duy trì lượng cacbon trong hệ sinh thái."
+    },
+    {
+        question: "Câu 12: Yếu tố nào sau đây có thể phá vỡ sự cân bằng của một hệ sinh thái?",
+        answers: [
+            { text: "Ô nhiễm môi trường và thay đổi khí hậu.", correct: true },
+            { text: "Sự tương tác tự nhiên giữa các loài.", correct: false },
+            { text: "Sự phân hủy của chất hữu cơ.", correct: false },
+            { text: "Sự phát triển của cây xanh.", correct: false }
+        ],
+        explanation: "Ô nhiễm môi trường và thay đổi khí hậu có thể gây ra sự mất cân bằng trong hệ sinh thái, dẫn đến những ảnh hưởng tiêu cực đến các loài sinh vật và môi trường."
+    },
+    {
+        question: "Câu 13: Đa dạng sinh học trong hệ sinh thái được hiểu là gì?",
+        answers: [
+            { text: "Sự đa dạng về loài, gen, và môi trường sống trong một hệ sinh thái.", correct: true },
+            { text: "Số lượng cây cối trong một khu vực.", correct: false },
+            { text: "Sự phân bố đồng đều của các loài trong hệ sinh thái.", correct: false },
+            { text: "Số lượng động vật trong một hệ sinh thái.", correct: false }
+        ],
+        explanation: "Đa dạng sinh học bao gồm sự đa dạng về loài, gen, và môi trường sống, đóng vai trò quan trọng trong việc duy trì sự ổn định và phát triển của hệ sinh thái."
+    },
+    {
+        question: "Câu 14: Vai trò của thực vật trong một hệ sinh thái là gì?",
+        answers: [
+            { text: "Thực vật đóng vai trò như sinh vật sản xuất, cung cấp thức ăn và oxy cho các sinh vật khác.", correct: true },
+            { text: "Thực vật đóng vai trò như sinh vật tiêu thụ.", correct: false },
+            { text: "Thực vật là sinh vật phân hủy.", correct: false },
+            { text: "Thực vật không có vai trò quan trọng trong hệ sinh thái.", correct: false }
+        ],
+        explanation: "Thực vật đóng vai trò quan trọng trong hệ sinh thái như là sinh vật sản xuất, cung cấp thức ăn và oxy cho các sinh vật tiêu thụ và phân hủy."
+    },
+    {
+        question: "Câu 15: Mối quan hệ giữa kẻ săn mồi và con mồi trong hệ sinh thái là một ví dụ của?",
+        answers: [
+            { text: "Quan hệ sinh vật ăn sinh vật khác.", correct: true },
+            { text: "Quan hệ cộng sinh.", correct: false },
+            { text: "Quan hệ ký sinh.", correct: false },
+            { text: "Quan hệ cạnh tranh.", correct: false }
+        ],
+        explanation: "Mối quan hệ giữa kẻ săn mồi và con mồi là một ví dụ điển hình của quan hệ sinh vật ăn sinh vật khác trong hệ sinh thái."
+    },
+    {
+        question: "Câu 16: Chu trình nào sau đây là chu trình tuần hoàn nước trong hệ sinh thái?",
+        answers: [
+            { text: "Bốc hơi, ngưng tụ, và mưa.", correct: true },
+            { text: "Quang hợp, hô hấp, và phân hủy.", correct: false },
+            { text: "Hóa thạch, thăng hoa, và lắng đọng.", correct: false },
+            { text: "Nitrat hóa, amoni hóa, và phân giải.", correct: false }
+        ],
+        explanation: "Chu trình tuần hoàn nước bao gồm quá trình bốc hơi, ngưng tụ, và mưa, đóng vai trò quan trọng trong việc duy trì sự cân bằng nước trong hệ sinh thái."
+    },
+    {
+        question: "Câu 17: Sinh vật nào đóng vai trò chủ yếu trong việc cung cấp năng lượng cho hệ sinh thái?",
+        answers: [
+            { text: "Sinh vật sản xuất.", correct: true },
+            { text: "Sinh vật tiêu thụ.", correct: false },
+            { text: "Sinh vật phân hủy.", correct: false },
+            { text: "Vi sinh vật.", correct: false }
+        ],
+        explanation: "Sinh vật sản xuất, như thực vật, đóng vai trò cung cấp năng lượng chính cho hệ sinh thái thông qua quá trình quang hợp."
+    },
+    {
+        question: "Câu 18: Sự phân hủy trong hệ sinh thái có tác dụng gì?",
+        answers: [
+            { text: "Giải phóng các chất dinh dưỡng cần thiết cho sinh vật sản xuất.", correct: true },
+            { text: "Tạo ra năng lượng cho hệ sinh thái.", correct: false },
+            { text: "Tăng cường khả năng sinh sản của sinh vật tiêu thụ.", correct: false },
+            { text: "Tạo ra các loài mới.", correct: false }
+        ],
+        explanation: "Sự phân hủy giúp giải phóng các chất dinh dưỡng từ chất hữu cơ, cung cấp cho sinh vật sản xuất và tái chế dinh dưỡng trong hệ sinh thái."
+    },
+    {
+        question: "Câu 19: Đâu là một ví dụ của hệ sinh thái nhân tạo?",
+        answers: [
+            { text: "Ruộng lúa.", correct: true },
+            { text: "Rừng mưa nhiệt đới.", correct: false },
+            { text: "Hồ nước ngọt.", correct: false },
+            { text: "Sa mạc.", correct: false }
+        ],
+        explanation: "Ruộng lúa là một ví dụ của hệ sinh thái nhân tạo, do con người tạo ra và duy trì."
+    },
+    {
+        question: "Câu 20: Quá trình nào trong hệ sinh thái giúp duy trì lượng oxy trong khí quyển?",
+        answers: [
+            { text: "Quang hợp.", correct: true },
+            { text: "Hô hấp.", correct: false },
+            { text: "Phân hủy.", correct: false },
+            { text: "Nitrat hóa.", correct: false }
+        ],
+        explanation: "Quá trình quang hợp trong hệ sinh thái giúp duy trì lượng oxy trong khí quyển bằng cách chuyển đổi CO2 thành O2."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

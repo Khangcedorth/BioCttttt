@@ -1,0 +1,213 @@
+/* Đặt lại mặc định cho một số yếu tố */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Phông chữ chung */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f4f4f4;
+}
+
+/* Đầu trang */
+header {
+    background: linear-gradient(135deg, #FF6F61, #D32F2F);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Chính */
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#quiz {
+    flex: 1;
+    min-width: 300px;
+}
+
+#question-list {
+    left: 20px;
+    flex: 0 0 200px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: max-content;
+    left: auto;
+    right: inherit;
+}
+
+#question-list h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+
+#question-navigation {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#question-navigation li {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    margin: 5px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+#question-navigation li:hover {
+    background: #ddd;
+}
+
+/* Câu hỏi trắc nghiệm */
+#quiz h2, #results h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #111010;
+}
+
+#quiz-form p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    border-radius: 0cqmax;
+    box-shadow: #333;
+    stroke-linecap: butt;
+    padding: auto;
+}
+
+#quiz-form input[type="radio"] {
+    margin-right: 10px;
+}
+
+button {
+    display: inline-block;
+    background: #FF6F61;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #D32F2F;
+}
+
+/* Kết quả */
+#results {
+    text-align:center;
+    flex: 1;
+    min-width: 300px;
+}
+
+#results div {
+    margin: 10px 0;
+    font-size: 1.2em;
+    box-shadow: #333;
+    text-shadow: #333;
+    border-radius: 10%;
+}
+
+#results ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+#results ul li {
+    margin-bottom: 10px;
+    background: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#results ul li p {
+    margin: 5px 0;
+}
+
+/* Chân trang */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+footer ul {
+    list-style: none;
+}
+
+footer ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+footer ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer ul li a:hover {
+    text-decoration: underline;
+}
+#congratulations-image {
+    position: absolute;
+    width:40%;
+    height: fit-content;
+    top: 260px; /* Điều chỉnh giá trị này để điều chỉnh vị trí theo chiều dọc */
+    left: 20px; /* Điều chỉnh giá trị này để điều chỉnh vị trí theo chiều ngang */
+}

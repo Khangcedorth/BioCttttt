@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="huyetap.css">
+</head>
+<body>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="introAudio">
+        <source src="huyetap.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+
+<script>
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.");
+    } else {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'vi-VN';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript.toLowerCase();
+            console.log("Giọng nói được nhận diện: ", transcript);
+            
+            // Nhận diện loại tuổi
+            let age = transcript.includes('người già') ? 'Người già' : 
+                      transcript.includes('trẻ em') || transcript.includes('mang thai') ? 'Trẻ em và phụ nữ mang thai' : 
+                      transcript.includes('trung niên') ? 'Người trung niên' : 'Không xác định';
+
+            // Tách các số liệu nhịp tim, huyết áp tâm thu, huyết áp tâm trương
+            const numbers = transcript.match(/\d+/g);
+            let nhiptim = numbers && numbers.length > 0 ? parseInt(numbers[0]) : 0;
+            let tamthu = numbers && numbers.length > 1 ? parseInt(numbers[1]) : 0;
+            let tamtruong = numbers && numbers.length > 2 ? parseInt(numbers[2]) : 0;
+
+            // Điền các giá trị vào các ô nhập liệu
+            document.getElementById('age').value = age;
+            document.getElementById('nhiptim').value = nhiptim;
+            document.getElementById('tamthu').value = tamthu;
+            document.getElementById('tamtruong').value = tamtruong;
+
+            // Gọi hàm xử lý để kiểm tra các chỉ số
+            processInput();
+        };
+
+        function startListening() {
+            recognition.start();
+        }
+    }
+
+    const introAudio = document.getElementById('introAudio');
+    let isPlaying = false;
+
+    function toggleAudio() {
+        if (isPlaying) {
+            introAudio.pause();
+            introAudio.currentTime = 0; // Tùy chọn: Đặt lại thời gian phát về đầu
+        } else {
+            introAudio.play();
+        }
+        isPlaying = !isPlaying;
+    }
+
+    // Sử dụng biến để đếm số lần nhấp
+    let clickCount = 0;
+    let clickTimeout;
+
+    document.addEventListener('click', function() {
+        clickCount++;
+
+        if (clickTimeout) {
+            clearTimeout(clickTimeout);
+        }
+
+        clickTimeout = setTimeout(() => {
+            if (clickCount === 1) {
+                toggleAudio(); // 1 lần nhấp để phát/tạm dừng âm thanh
+            } else if (clickCount === 2) {
+                startListening(); // 2 lần nhấp để bắt đầu nhận diện giọng nói
+            }
+
+            // Đặt lại số lần nhấp chuột
+            clickCount = 0;
+        }, 300); // Thời gian giữa các lần nhấp để phân biệt nhấp đơn và nhấp đúp
+    });
+</script>
+
+    <section>
+        <img id="chemistry-icon" src="Kok.png" alt="Icon Hoá Học">
+        <img id="righticon" src="iconindex.PNG" alt="Icon Hoá Học">
+        <div class="center-text">
+            <h1 id="first">BioCheX - Hoá Sinh trong đời sống</h1>
+            <marquee behavior="alternate">
+                <marquee style="color:#e60b0b; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </div>
+        <p class="luuy">Lưu ý trước khi đo không được ăn quá no, không căng thẳng, không vận động mạnh, đo sau khi ăn trên 2 tiếng</p>
+        <br>
+        <div>
+            <label for="age">Chọn độ tuổi</label>
+            <select id="age">
+                <option value="Người già">Người già</option>
+                <option value="Trẻ em và phụ nữ mang thai">Trẻ em và phụ nữ mang thai</option>
+                <option value="Người trung niên">Người trung niên</option>
+            </select>
+            <br><br>
+            <div>
+                <label for="nhiptim">Nhập chỉ số nhịp tim mới đo được (bpm):</label>
+                <input type="number" id="nhiptim">
+            </div>
+        </div>
+        <br>
+        <div>
+            <label for="tamthu">Nhập chỉ số huyết áp tâm thu mà bạn mới đo được (mmHg) kí hiệu SYS:</label>
+            <input type="number" id="tamthu">
+        </div>
+        <br>
+        <div>
+            <label for="tamtruong">Nhập chỉ số huyết áp tâm trương mà bạn mới đo được (mmHg) kí hiệu DIA:</label>
+            <input type="number" id="tamtruong">
+        </div>
+        <button onclick="processInput()">Kiểm tra</button>
+        <p id="result">Mức độ chỉ số huyết áp và nhịp tim hiện tại: </p>
+        <p id="md">Biểu hiện cơ thể:</p>
+        <p id="neutralize">Cách sơ cứu nhanh vời thời điểm huyết áp và nhịp tim bất ổn </p>
+        <img src="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2022/10/21/huyet-ap-thap-16663434916371495325185.png" alt="Hình ảnh" id="image">
+        
+        <script>
+            
+            function playSound(audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play();
+        }
+            function processInput() {
+                var a = parseInt(document.getElementById("tamthu").value);
+                var b = parseInt(document.getElementById("tamtruong").value);
+                var n = parseInt(document.getElementById("nhiptim").value);
+                var resultElement = document.getElementById("result");
+                var mdElement = document.getElementById("md");
+                var neutralizeElement = document.getElementById("neutralize");
+                var imageElement = document.getElementById("image");
+
+                if (a > 140 && b > 90) {
+                    resultElement.innerHTML = "Huyết áp cao";
+                    mdElement.innerHTML = "Biểu hiện cơ thể: nhức đầu, hoa mắt, chóng mặt, ù tai, mất ngủ nhẹ,...đau nhói vùng tim, suy giảm thị lực, thở gấp, mặt đỏ bừng, da tái xanh, nôn ói, hồi hộp, đánh trống ngực, hốt hoảng.";
+                    neutralizeElement.innerHTML = "Cách sơ cứu nhanh cho người bệnh: cho người bệnh nằm nghỉ ở nơi thoáng khí, không để người bệnh đi lại để tránh bị choáng, ngất. Nếu người bệnh thấy khó thở, đỡ họ ngồi dậy và kê gối ở sau lưng, nếu người bệnh nôn, cho họ nằm nghiêng để tránh tắc nghẽn đường hô hấp. Không cho người bệnh ăn nếu có dấu hiệu đột quỵ, không dắt hoặc để người bệnh đi lại vì dễ ngất xỉu. Không để người bệnh uống cà phê hay nước uống có cồn";
+                    imageElement.src = "https://benhviennamsaigon.com.vn/vnt_upload/news/06_2020/efd8b6c3729b8fc5d68a.jpg";
+                playSound('hacao.mp3');
+                } else if (a < 90 && b < 60) {
+                    resultElement.innerHTML = "Huyết áp thấp, tụt huyết áp";
+                    mdElement.innerHTML = "Biểu hiện cơ thể: Dấu hiệu của huyết áp giảm đột ngột là người bệnh sẽ có cảm giác choáng váng, hoa mắt, chóng mặt, hồi hộp, tim đập nhanh; nặng hơn có thể là lơ mơ, lú lẫn, ngất xỉu và mất ý thức. Huyết áp giảm đột ngột làm cho não và các cơ quan khác trong cơ thể không nhận được lượng máu cung cấp đủ oxy và các chất dinh dưỡng, có thể gây thiếu máu não và chết não, nguy hiểm đến tính mạng.";
+                    neutralizeElement.innerHTML = "Cách sơ cứu nhanh cho người bệnh: Khi thấy có dấu hiệu của tụt huyết áp thì việc cần làm ngay là đặt bệnh nhân nằm hay ngồi xuống. Chọn nơi yên tĩnh để nghỉ ngơi, tránh ồn ào hay kích động sẽ khiến tình trạng trở nên nặng nề hơn. Bên cạnh đó, cho người bệnh uống một cốc nước ấm, như trà ấm hay nước gừng, sau đó đo lại huyết áp sẽ thấy hồi phục được phần nào. Tạm ngưng dùng thuốc, nằm cao chân, bổ sung nước, đường, muối để đưa huyết áp về trạng thái ổn định hơn.";
+                    imageElement.src = "https://cdn.suckhoeonline.com.vn/upload/news/032021/huyet-ap-thap_2411202107.jpg";
+                playSound('thapthap.mp3');
+                } else {
+                    resultElement.innerHTML = "Huyết áp ổn định";
+                    mdElement.innerHTML = "Biểu hiện cơ thể: Bình thường.";
+                    neutralizeElement.innerHTML = "Duy trì chế độ ăn uống và sinh hoạt lành mạnh.";
+                    imageElement.src = "https://ytesaigon.com/wp-content/uploads/2017/10/tut-huyet-ap.jpg";
+                playSound('hathap.mp3');
+                }
+            }
+        </script>
+    </section>
+</body>
+</html>

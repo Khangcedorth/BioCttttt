@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Sinh trưởng là gì?",
+        answers: [
+            { text: "Sự gia tăng về số lượng tế bào và kích thước của cơ thể", correct: true },
+            { text: "Sự thay đổi về cấu trúc và chức năng của cơ thể", correct: false },
+            { text: "Sự phát triển của hệ thần kinh", correct: false },
+            { text: "Sự biến đổi về hình thái", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng là sự gia tăng về số lượng tế bào và kích thước của cơ thể."
+    },
+    {
+        question: "Câu 2: Phát triển là gì?",
+        answers: [
+            { text: "Sự gia tăng về kích thước", correct: false },
+            { text: "Sự thay đổi về cấu trúc và chức năng của cơ thể", correct: true },
+            { text: "Sự thay đổi về nhiệt độ", correct: false },
+            { text: "Sự gia tăng về khối lượng", correct: false }
+        ],
+        explanation: "Giải thích: Phát triển là sự thay đổi về cấu trúc và chức năng của cơ thể, bao gồm cả sinh trưởng và biệt hoá."
+    },
+    {
+        question: "Câu 3: Quá trình nào không phải là một phần của sự phát triển ở sinh vật?",
+        answers: [
+            { text: "Biệt hoá tế bào", correct: false },
+            { text: "Sinh sản vô tính", correct: true },
+            { text: "Phân bào", correct: false },
+            { text: "Sự hình thành mô mới", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản vô tính là quá trình tạo ra cá thể mới mà không phải là một phần của sự phát triển trong một cá thể sinh vật."
+    },
+    {
+        question: "Câu 4: Hormone nào có vai trò quan trọng trong sự sinh trưởng ở thực vật?",
+        answers: [
+            { text: "Auxin", correct: true },
+            { text: "Insulin", correct: false },
+            { text: "Adrenaline", correct: false },
+            { text: "Thyroxin", correct: false }
+        ],
+        explanation: "Giải thích: Auxin là hormone có vai trò quan trọng trong sự sinh trưởng và phát triển ở thực vật."
+    },
+    {
+        question: "Câu 5: Yếu tố nào không ảnh hưởng đến sự sinh trưởng và phát triển của sinh vật?",
+        answers: [
+            { text: "Nhiệt độ", correct: false },
+            { text: "Ánh sáng", correct: false },
+            { text: "Âm thanh", correct: true },
+            { text: "Nước", correct: false }
+        ],
+        explanation: "Giải thích: Âm thanh không phải là yếu tố chính ảnh hưởng đến sự sinh trưởng và phát triển của sinh vật."
+    },
+    {
+        question: "Câu 6: Thời kỳ nào trong vòng đời của thực vật có sự gia tăng mạnh mẽ về sinh trưởng?",
+        answers: [
+            { text: "Nảy mầm", correct: true },
+            { text: "Ra hoa", correct: false },
+            { text: "Tạo quả", correct: false },
+            { text: "Trưởng thành", correct: false }
+        ],
+        explanation: "Giải thích: Thời kỳ nảy mầm là giai đoạn có sự gia tăng mạnh mẽ về sinh trưởng ở thực vật."
+    },
+    {
+        question: "Câu 7: Sự biệt hoá là gì?",
+        answers: [
+            { text: "Sự thay đổi về kích thước", correct: false },
+            { text: "Sự thay đổi về cấu trúc và chức năng của tế bào để thực hiện các chức năng chuyên biệt", correct: true },
+            { text: "Sự gia tăng về số lượng tế bào", correct: false },
+            { text: "Sự thay đổi về màu sắc", correct: false }
+        ],
+        explanation: "Giải thích: Sự biệt hoá là quá trình thay đổi về cấu trúc và chức năng của tế bào để thực hiện các chức năng chuyên biệt."
+    },
+    {
+        question: "Câu 8: Giai đoạn nào không phải là một phần của chu kỳ tế bào?",
+        answers: [
+            { text: "Kỳ trung gian", correct: false },
+            { text: "Kỳ phân bào", correct: false },
+            { text: "Kỳ ngừng phát triển", correct: true },
+            { text: "Kỳ chuẩn bị phân bào", correct: false }
+        ],
+        explanation: "Giải thích: Kỳ ngừng phát triển không phải là một phần của chu kỳ tế bào, mà là trạng thái nghỉ."
+    },
+    {
+        question: "Câu 9: Ở động vật, hormone nào đóng vai trò quan trọng trong sự phát triển của xương và cơ bắp?",
+        answers: [
+            { text: "Hormone tăng trưởng (GH)", correct: true },
+            { text: "Insulin", correct: false },
+            { text: "Thyroxin", correct: false },
+            { text: "Cortisol", correct: false }
+        ],
+        explanation: "Giải thích: Hormone tăng trưởng (GH) đóng vai trò quan trọng trong sự phát triển của xương và cơ bắp ở động vật."
+    },
+    {
+        question: "Câu 10: Quá trình nào liên quan đến sự phát triển của thực vật theo mùa?",
+        answers: [
+            { text: "Photoperiodism", correct: true },
+            { text: "Quang hợp", correct: false },
+            { text: "Hô hấp tế bào", correct: false },
+            { text: "Sinh sản hữu tính", correct: false }
+        ],
+        explanation: "Giải thích: Photoperiodism là quá trình thực vật phản ứng với sự thay đổi của chu kỳ ánh sáng và bóng tối trong ngày, liên quan đến sự phát triển theo mùa."
+    },
+    {
+        question: "Câu 11: Hormone nào không ảnh hưởng trực tiếp đến sự sinh trưởng ở thực vật?",
+        answers: [
+            { text: "Cytokinin", correct: false },
+            { text: "Ethylene", correct: false },
+            { text: "Adrenaline", correct: true },
+            { text: "Gibberellin", correct: false }
+        ],
+        explanation: "Giải thích: Adrenaline không ảnh hưởng trực tiếp đến sự sinh trưởng ở thực vật, mà là hormone liên quan đến căng thẳng ở động vật."
+    },
+    {
+        question: "Câu 12: Sự phát triển nào không xảy ra trong giai đoạn nảy mầm của hạt?",
+        answers: [
+            { text: "Sự phát triển của mầm", correct: false },
+            { text: "Sự hình thành rễ", correct: false },
+            { text: "Sự ra hoa", correct: true },
+            { text: "Sự phát triển của lá mầm", correct: false }
+        ],
+        explanation: "Giải thích: Sự ra hoa không xảy ra trong giai đoạn nảy mầm của hạt, mà là một giai đoạn sau này trong vòng đời của cây."
+    },
+    {
+        question: "Câu 13: Trong sinh trưởng và phát triển của thực vật, phototropism là gì?",
+        answers: [
+            { text: "Sự phát triển của thực vật hướng về ánh sáng", correct: true },
+            { text: "Sự phát triển của rễ hướng về nước", correct: false },
+            { text: "Sự phát triển của thân hướng về đất", correct: false },
+            { text: "Sự phát triển của hoa hướng về mặt trời", correct: false }
+        ],
+        explanation: "Giải thích: Phototropism là hiện tượng thực vật phát triển hướng về nguồn ánh sáng."
+    },
+    {
+        question: "Câu 14: Quá trình nào là sự gia tăng về số lượng tế bào thông qua phân bào nguyên phân?",
+        answers: [
+            { text: "Sinh trưởng sơ cấp", correct: true },
+            { text: "Sinh trưởng thứ cấp", correct: false },
+            { text: "Phát triển", correct: false },
+            { text: "Biệt hóa", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng sơ cấp là sự gia tăng về số lượng tế bào thông qua phân bào nguyên phân."
+    },
+    {
+        question: "Câu 15: Các yếu tố môi trường nào sau đây không ảnh hưởng trực tiếp đến sự sinh trưởng của cây?",
+        answers: [
+            { text: "Độ ẩm", correct: false },
+            { text: "Ánh sáng", correct: false },
+            { text: "Nhiệt độ", correct: false },
+            { text: "Âm thanh", correct: true }
+        ],
+        explanation: "Giải thích: Âm thanh không ảnh hưởng trực tiếp đến sự sinh trưởng của cây."
+    },
+    {
+        question: "Câu 16: Quá trình nào xảy ra trong sự phát triển thứ cấp của thực vật?",
+        answers: [
+            { text: "Phát triển chiều ngang của thân và rễ", correct: true },
+            { text: "Tăng chiều cao của cây", correct: false },
+            { text: "Hình thành hoa", correct: false },
+            { text: "Phát triển lá mới", correct: false }
+        ],
+        explanation: "Giải thích: Sự phát triển thứ cấp là quá trình phát triển chiều ngang của thân và rễ."
+    },
+    {
+        question: "Câu 17: Quá trình sinh trưởng và phát triển của thực vật có thể bị ảnh hưởng bởi điều kiện nào sau đây?",
+        answers: [
+            { text: "Thời tiết", correct: true },
+            { text: "Màu sắc của đất", correct: false },
+            { text: "Âm nhạc", correct: false },
+            { text: "Độ cao của vùng", correct: false }
+        ],
+        explanation: "Giải thích: Thời tiết là một yếu tố quan trọng ảnh hưởng đến sự sinh trưởng và phát triển của thực vật."
+    },
+    {
+        question: "Câu 18: Biệt hóa là quá trình gì?",
+        answers: [
+            { text: "Sự tăng kích thước của tế bào", correct: false },
+            { text: "Sự phát triển chức năng chuyên biệt của tế bào", correct: true },
+            { text: "Sự gia tăng số lượng tế bào", correct: false },
+            { text: "Sự phát triển của hoa", correct: false }
+        ],
+        explanation: "Giải thích: Biệt hóa là quá trình phát triển chức năng chuyên biệt của tế bào."
+    },
+    {
+        question: "Câu 19: Hormone nào điều khiển quá trình đóng mở khí khổng ở thực vật?",
+        answers: [
+            { text: "Abscisic acid (ABA)", correct: true },
+            { text: "Auxin", correct: false },
+            { text: "Gibberellin", correct: false },
+            { text: "Cytokinin", correct: false }
+        ],
+        explanation: "Giải thích: Abscisic acid (ABA) là hormone điều khiển quá trình đóng mở khí khổng ở thực vật."
+    },
+    {
+        question: "Câu 20: Sinh trưởng thứ cấp ở cây gỗ chủ yếu do hoạt động của mô nào?",
+        answers: [
+            { text: "Tầng sinh vỏ và tầng sinh trụ", correct: true },
+            { text: "Tầng sinh gỗ và tầng sinh mạch", correct: false },
+            { text: "Tầng sinh biểu bì và tầng sinh lá", correct: false },
+            { text: "Tầng sinh rễ và tầng sinh hoa", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng thứ cấp ở cây gỗ chủ yếu do hoạt động của tầng sinh vỏ và tầng sinh trụ."
+    }
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

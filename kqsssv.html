@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Sinh sản là gì?",
+        answers: [
+            { text: "Quá trình tạo ra các thế hệ mới của sinh vật", correct: true },
+            { text: "Quá trình thay đổi gen", correct: false },
+            { text: "Quá trình tạo ra hormone sinh sản", correct: false },
+            { text: "Quá trình phát triển của phôi", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản là quá trình tạo ra các thế hệ mới của sinh vật."
+    },
+    {
+        question: "Câu 2: Sinh sản hữu tính là gì?",
+        answers: [
+            { text: "Sinh sản bằng sự kết hợp giữa gametes của hai cá thể khác giống nhau", correct: true },
+            { text: "Sinh sản bằng sự phân chia tế bào", correct: false },
+            { text: "Sinh sản trong môi trường ngoài", correct: false },
+            { text: "Sinh sản mà không cần thụ tinh", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản hữu tính là quá trình tạo ra các thế hệ mới bằng sự kết hợp giữa gametes của hai cá thể khác giống nhau."
+    },
+    {
+        question: "Câu 3: Sinh sản vô tính là gì?",
+        answers: [
+            { text: "Sinh sản bằng sự kết hợp giữa gametes của hai cá thể khác giống nhau", correct: false },
+            { text: "Sinh sản bằng sự phân chia tế bào", correct: true },
+            { text: "Sinh sản trong môi trường ngoài", correct: false },
+            { text: "Sinh sản mà không cần thụ tinh", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản vô tính là quá trình tạo ra các thế hệ mới bằng sự phân chia tế bào."
+    },
+    {
+        question: "Câu 4: Loài đơn giản nhất chỉ thực hiện sinh sản vô tính là gì?",
+        answers: [
+            { text: "Vi khuẩn", correct: true },
+            { text: "Động vật", correct: false },
+            { text: "Thực vật", correct: false },
+            { text: "Nấm", correct: false }
+        ],
+        explanation: "Giải thích: Vi khuẩn là loài đơn giản nhất chỉ thực hiện sinh sản vô tính."
+    },
+    {
+        question: "Câu 5: Sinh sản mà không cần sự tham gia của con cái được gọi là gì?",
+        answers: [
+            { text: "Sinh sản hữu tính", correct: false },
+            { text: "Sinh sản vô tính", correct: true },
+            { text: "Sinh sản lai", correct: false },
+            { text: "Sinh sản đơn giản", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản mà không cần sự tham gia của con cái được gọi là sinh sản vô tính."
+    },
+    {
+        question: "Câu 6: Quá trình nào sau đây không phải là sinh sản vô tính?",
+        answers: [
+            { text: "Tách vòng cầu tế bào", correct: false },
+            { text: "Phân chia nhân tế bào", correct: false },
+            { text: "Sinh sản bằng hạt giống", correct: true },
+            { text: "Sinh sản bằng mầm", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản bằng hạt giống không phải là quá trình sinh sản vô tính."
+    },
+    {
+        question: "Câu 7: Sinh sản lai là gì?",
+        answers: [
+            { text: "Sinh sản bằng sự kết hợp giữa gametes của hai cá thể khác giống nhau", correct: false },
+            { text: "Sinh sản của các loài có khả năng sinh sản cả hữu tính và vô tính", correct: true },
+            { text: "Sinh sản trong môi trường ngoài", correct: false },
+            { text: "Sinh sản mà không cần thụ tinh", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản lai là quá trình sinh sản của các loài có khả năng sinh sản cả hữu tính và vô tính."
+    },
+    {
+        question: "Câu 8: Sự thay đổi di truyền trong quá trình sinh sản được gọi là gì?",
+        answers: [
+            { text: "Đột biến", correct: true },
+            { text: "Lai tạo", correct: false },
+            { text: "Sự biến đổi gen", correct: false },
+            { text: "Sự lai giống", correct: false }
+        ],
+        explanation: "Giải thích: Sự thay đổi di truyền trong quá trình sinh sản được gọi là đột biến."
+    },
+    {
+        question: "Câu 9: Sự tiếp tục của loài qua các thế hệ được gọi là gì?",
+        answers: [
+            { text: "Sinh trưởng", correct: false },
+            { text: "Sinh sản", correct: true },
+            { text: "Phát triển", correct: false },
+            { text: "Tiến hóa", correct: false }
+        ],
+        explanation: "Giải thích: Sự tiếp tục của loài qua các thế hệ được gọi là sinh sản."
+    },
+    {
+        question: "Câu 10: Quá trình nào dưới đây không phải là sinh sản hữu tính?",
+        answers: [
+            { text: "Tách hạt giống", correct: true },
+            { text: "Thụ tinh", correct: false },
+            { text: "Lai giống", correct: false },
+            { text: "Sinh sản bằng gametes", correct: false }
+        ],
+        explanation: "Giải thích: Tách hạt giống không phải là quá trình sinh sản hữu tính."
+    },
+    {
+        question: "Câu 11: Loài nào sau đây thực hiện cả sinh sản hữu tính và vô tính?",
+        answers: [
+            { text: "Cá heo", correct: false },
+            { text: "Sao biển", correct: true },
+            { text: "Voi rừng", correct: false },
+            { text: "Chim cánh cụt", correct: false }
+        ],
+        explanation: "Giải thích: Sao biển là loài thực hiện cả sinh sản hữu tính và vô tính."
+    },
+    {
+        question: "Câu 12: Quá trình tạo ra các gametes được gọi là gì?",
+        answers: [
+            { text: "Thụ tinh", correct: false },
+            { text: "Lai giống", correct: false },
+            { text: "Sinh sản", correct: false },
+            { text: "Gioan genesis", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình tạo ra các gametes được gọi là gioan genesis."
+    },
+    {
+        question: "Câu 13: Quá trình thụ tinh diễn ra ở bộ phận nào của hoa?",
+        answers: [
+            { text: "Đài hoa", correct: false },
+            { text: "Nhụy hoa", correct: true },
+            { text: "Lá hoa", correct: false },
+            { text: "Cuống hoa", correct: false }
+        ],
+        explanation: "Giải thích: Quá trình thụ tinh diễn ra ở bộ phận nhụy hoa của hoa."
+    },
+    {
+        question: "Câu 14: Quá trình sinh sản được thúc đẩy bởi sự kích thích của yếu tố nào?",
+answers: [
+{ text: "Hormone sinh sản", correct: false },
+{ text: "Hormone tăng trưởng", correct: false },
+{ text: "Hormone thần kinh", correct: false },
+{ text: "Hormone sinh sản", correct: true }
+],
+explanation: "Giải thích: Quá trình sinh sản được thúc đẩy bởi sự kích thích của hormone sinh sản."
+},
+{
+question: "Câu 15: Sự chuyển giới trong sinh vật là gì?",
+answers: [
+{ text: "Quá trình chuyển đổi từ sinh sản vô tính sang sinh sản hữu tính", correct: false },
+{ text: "Quá trình chuyển đổi giới tính từ con đực sang con cái hoặc ngược lại", correct: true },
+{ text: "Quá trình chuyển đổi từ sinh sản hữu tính sang sinh sản vô tính", correct: false },
+{ text: "Quá trình chuyển đổi giới tính từ sinh vật lưỡng tính sang sinh vật đơn tính", correct: false }
+],
+explanation: "Giải thích: Sự chuyển giới trong sinh vật là quá trình chuyển đổi giới tính từ con đực sang con cái hoặc ngược lại."
+},
+{
+question: "Câu 16: Sinh vật lưỡng tính là gì?",
+answers: [
+{ text: "Sinh vật chỉ có một giới tính", correct: false },
+{ text: "Sinh vật có thể sinh sản cả hữu tính và vô tính", correct: true },
+{ text: "Sinh vật có nhiều hơn hai giới tính", correct: false },
+{ text: "Sinh vật không tham gia sinh sản", correct: false }
+],
+explanation: "Giải thích: Sinh vật lưỡng tính là sinh vật có thể sinh sản cả hữu tính và vô tính."
+},
+{
+question: "Câu 17: Quá trình phát triển của phôi bắt đầu từ giai đoạn nào của sinh sản?",
+answers: [
+{ text: "Lai giống", correct: false },
+{ text: "Thụ tinh", correct: true },
+{ text: "Gioan genesis", correct: false },
+{ text: "Sin trưởng", correct: false }
+],
+explanation: "Giải thích: Quá trình phát triển của phôi bắt đầu từ giai đoạn thụ tinh của sinh sản."
+},
+{
+question: "Câu 18: Sinh sản bằng mầm thực hiện bởi loài nào?",
+answers: [
+{ text: "Cây trồng", correct: true },
+{ text: "Động vật", correct: false },
+{ text: "Nấm", correct: false },
+{ text: "Vi khuẩn", correct: false }
+],
+explanation: "Giải thích: Sinh sản bằng mầm thực hiện bởi các loài thực vật như cây trồng."
+},
+{
+question: "Câu 19: Quá trình nào dưới đây không phải là một phần của sinh sản?",
+answers: [
+{ text: "Gioan genesis", correct: false },
+{ text: "Sinh trưởng", correct: true },
+{ text: "Lai giống", correct: false },
+{ text: "Thụ tinh", correct: false }
+],
+explanation: "Giải thích: Sinh trưởng không phải là một phần của quá trình sinh sản."
+},
+{
+question: "Câu 20: Quá trình nào là cơ chế sinh sản thường thấy ở vi khuẩn?",
+answers: [
+{ text: "Sinh sản hữu tính", correct: false },
+{ text: "Sinh sản vô tính", correct: true },
+{ text: "Lai giống", correct: false },
+{ text: "Thụ tinh", correct: false }
+],
+explanation: "Giải thích: Quá trình sinh sản vô tính là cơ chế sinh sản thường thấy ở vi khuẩn."
+}
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

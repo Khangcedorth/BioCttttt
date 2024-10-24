@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Dẫn xuất halogen nào sau đây có thể làm mất màu dung dịch brom?",
+        answers: [
+            { text: "C2H5Br", correct: false },
+            { text: "CH2Cl2", correct: false },
+            { text: "CH2=CHCl", correct: true },
+            { text: "CCl4", correct: false }
+        ],
+        explanation: "CH2=CHCl có liên kết đôi, có thể làm mất màu dung dịch brom."
+    },
+    {
+        question: "Câu 2: Phản ứng thế halogen vào hydrocarbon no thường xảy ra trong điều kiện nào?",
+        answers: [
+            { text: "Nhiệt độ cao hoặc có ánh sáng", correct: true },
+            { text: "Áp suất cao", correct: false },
+            { text: "Điều kiện thường", correct: false },
+            { text: "Có mặt chất xúc tác", correct: false }
+        ],
+        explanation: "Phản ứng thế halogen vào hydrocarbon no thường cần nhiệt độ cao hoặc có ánh sáng."
+    },
+    {
+        question: "Câu 3: Sản phẩm chính của phản ứng giữa C2H4 và Cl2 trong điều kiện ánh sáng là",
+        answers: [
+            { text: "C2H4Cl2", correct: false },
+            { text: "C2H2Cl4", correct: false },
+            { text: "C2H4Cl4", correct: false },
+            { text: "C2H2Cl2", correct: true }
+        ],
+        explanation: "Dưới ánh sáng, phản ứng tạo sản phẩm chính là 1,2-dichloroethane (C2H2Cl2)."
+    },
+    {
+        question: "Câu 4: Khi đốt cháy CH3Cl trong không khí, sản phẩm chính thu được là",
+        answers: [
+            { text: "CO2 và HCl", correct: true },
+            { text: "CO và HCl", correct: false },
+            { text: "CCl4 và H2O", correct: false },
+            { text: "CO2 và Cl2", correct: false }
+        ],
+        explanation: "Đốt cháy CH3Cl trong không khí tạo ra CO2 và HCl."
+    },
+    {
+        question: "Câu 5: Dẫn xuất halogen nào sau đây được sử dụng rộng rãi trong công nghiệp làm chất tẩy rửa?",
+        answers: [
+            { text: "CH3Cl", correct: false },
+            { text: "CHCl3", correct: false },
+            { text: "CCl4", correct: true },
+            { text: "CH2Cl2", correct: false }
+        ],
+        explanation: "CCl4 được sử dụng rộng rãi trong công nghiệp làm chất tẩy rửa."
+    },
+    {
+        question: "Câu 6: Dẫn xuất halogen nào sau đây không tham gia phản ứng thế với NaOH?",
+        answers: [
+            { text: "C2H5Cl", correct: false },
+            { text: "CH2=CHCl", correct: false },
+            { text: "C6H5Cl", correct: true },
+            { text: "CH3Cl", correct: false }
+        ],
+        explanation: "C6H5Cl (chlorobenzene) có cấu trúc bền vững không dễ tham gia phản ứng thế với NaOH."
+    },
+    {
+        question: "Câu 7: Đặc điểm chung của các dẫn xuất halogen là",
+        answers: [
+            { text: "Tính không tan trong nước", correct: true },
+            { text: "Có tính tan trong nước", correct: false },
+            { text: "Có tính axit mạnh", correct: false },
+            { text: "Có tính bazơ mạnh", correct: false }
+        ],
+        explanation: "Các dẫn xuất halogen thường không tan trong nước."
+    },
+    {
+        question: "Câu 8: Khi cho CH3Br tác dụng với dung dịch KOH, sản phẩm thu được là",
+        answers: [
+            { text: "CH4", correct: false },
+            { text: "CH3OH", correct: true },
+            { text: "CH2=CH2", correct: false },
+            { text: "C2H6", correct: false }
+        ],
+        explanation: "CH3Br + KOH → CH3OH + KBr."
+    },
+    {
+        question: "Câu 9: Phản ứng nào sau đây là phản ứng thế halogen?",
+        answers: [
+            { text: "CH4 + Cl2 → CH3Cl + HCl", correct: true },
+            { text: "C2H4 + Cl2 → C2H4Cl2", correct: false },
+            { text: "C2H2 + Cl2 → C2H2Cl2", correct: false },
+            { text: "C2H4 + HCl → C2H5Cl", correct: false }
+        ],
+        explanation: "Phản ứng CH4 + Cl2 → CH3Cl + HCl là phản ứng thế halogen."
+    },
+    {
+        question: "Câu 10: Dẫn xuất halogen nào sau đây có thể được dùng làm thuốc gây mê?",
+        answers: [
+            { text: "C2H5Br", correct: false },
+            { text: "CH2Cl2", correct: false },
+            { text: "CHCl3", correct: true },
+            { text: "CCl4", correct: false }
+        ],
+        explanation: "CHCl3 (chloroform) được dùng làm thuốc gây mê."
+    },
+    {
+        question: "Câu 11: Tên gọi của CCl4 theo danh pháp IUPAC là",
+        answers: [
+            { text: "Tetrachloromethane", correct: true },
+            { text: "Trichloromethane", correct: false },
+            { text: "Dichloromethane", correct: false },
+            { text: "Chloromethane", correct: false }
+        ],
+        explanation: "CCl4 có tên gọi theo danh pháp IUPAC là Tetrachloromethane."
+    },
+    {
+        question: "Câu 12: Dẫn xuất halogen nào sau đây được sử dụng trong công nghiệp làm dung môi tẩy rửa và chất làm lạnh?",
+        answers: [
+            { text: "CCl4", correct: true },
+            { text: "CH2Cl2", correct: false },
+            { text: "CHCl3", correct: false },
+            { text: "C2H5Cl", correct: false }
+        ],
+        explanation: "CCl4 được sử dụng trong công nghiệp làm dung môi tẩy rửa và chất làm lạnh."
+    },
+    {
+        question: "Câu 13: Đặc điểm nào sau đây không phải của dẫn xuất halogen?",
+        answers: [
+            { text: "Không tan trong nước", correct: false },
+            { text: "Có khả năng gây ung thư", correct: false },
+            { text: "Có mùi thơm dễ chịu", correct: true },
+            { text: "Là chất lỏng hoặc chất khí ở điều kiện thường", correct: false }
+        ],
+        explanation: "Dẫn xuất halogen thường có mùi hắc chứ không phải mùi thơm dễ chịu."
+    },
+    {
+        question: "Câu 14: Phản ứng thế halogen xảy ra dễ dàng nhất với dẫn xuất halogen nào?",
+        answers: [
+            { text: "C2H5Cl", correct: true },
+            { text: "C6H5Cl", correct: false },
+            { text: "C2H2Cl2", correct: false },
+            { text: "CCl4", correct: false }
+        ],
+        explanation: "C2H5Cl dễ tham gia phản ứng thế halogen nhất so với các dẫn xuất halogen khác."
+    },
+    {
+        question: "Câu 15: Tính chất nào sau đây không phải của các dẫn xuất halogen?",
+        answers: [
+            { text: "Không độc hại", correct: true },
+            { text: "Không tan trong nước", correct: false },
+            { text: "Có khả năng cháy", correct: false },
+            { text: "Có khả năng gây ung thư", correct: false }
+        ],
+        explanation: "Nhiều dẫn xuất halogen rất độc hại và có khả năng gây ung thư."
+    },
+    {
+        question: "Câu 16: Khi cho C2H4 tác dụng với Br2 trong CCl4, sản phẩm thu được là",
+        answers: [
+            { text: "C2H4Br2", correct: true },
+            { text: "C2H2Br2", correct: false },
+            { text: "C2H5Br", correct: false },
+            { text: "C2H6", correct: false }
+        ],
+        explanation: "C2H4 + Br2 → C2H4Br2 (1,2-dibromoethane)."
+    },
+    {
+        question: "Câu 17: Phản ứng giữa CH3Cl và NaOH trong dung dịch ethanol tạo ra sản phẩm chính là",
+        answers: [
+            { text: "CH3OH", correct: false },
+            { text: "CH2=CH2", correct: true },
+            { text: "CH3Na", correct: false },
+            { text: "CH2Cl2", correct: false }
+        ],
+        explanation: "CH3Cl + NaOH (ethanol) → CH2=CH2 + NaCl + H2O."
+    },
+    {
+        question: "Câu 18: CHCl3 có thể dùng làm chất gây mê?",
+        answers: [
+            { text: "Đúng", correct: true },
+            { text: "Sai", correct: false }
+        ],
+        explanation: "CHCl3 (chloroform) có thể dùng làm chất gây mê."
+    },
+    {
+        question: "Câu 19: Khi đốt cháy CH3Cl trong không khí, sản phẩm chính thu được là",
+        answers: [
+            { text: "CO2 và HCl", correct: true },
+            { text: "CO và HCl", correct: false },
+            { text: "CCl4 và H2O", correct: false },
+            { text: "CO2 và Cl2", correct: false }
+        ],
+        explanation: "Đốt cháy CH3Cl trong không khí tạo ra CO2 và HCl."
+    },
+    {
+        question: "Câu 20: Dẫn xuất halogen nào sau đây không tham gia phản ứng với NaOH?",
+        answers: [
+            { text: "CH2=CHCl", correct: false },
+            { text: "CH3Cl", correct: false },
+            { text: "C6H5Cl", correct: true },
+            { text: "C2H5Cl", correct: false }
+        ],
+        explanation: "C6H5Cl (chlorobenzene) không tham gia phản ứng với NaOH."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

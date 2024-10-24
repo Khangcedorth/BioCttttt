@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Học thuyết tiến hóa tổng hợp hiện đại kết hợp những lý thuyết nào?",
+        answers: [
+            { text: "Lý thuyết chọn lọc tự nhiên của Darwin và di truyền học Mendelian.", correct: true },
+            { text: "Lý thuyết của Lamarck và sinh học phân tử.", correct: false },
+            { text: "Lý thuyết của Wallace và sinh học phát triển.", correct: false },
+            { text: "Lý thuyết di truyền học Mendelian và sinh học tế bào.", correct: false }
+        ],
+        explanation: "Học thuyết tiến hóa tổng hợp hiện đại kết hợp lý thuyết chọn lọc tự nhiên của Darwin và di truyền học Mendelian."
+    },
+    {
+        question: "Câu 2: Ai là những người đóng góp chính vào phát triển học thuyết tiến hóa tổng hợp hiện đại?",
+        answers: [
+            { text: "Darwin, Mendel, và Fisher", correct: true },
+            { text: "Lamarck, Wallace, và Watson", correct: false },
+            { text: "Mendel, Wallace, và Crick", correct: false },
+            { text: "Darwin, Lamarck, và Watson", correct: false }
+        ],
+        explanation: "Darwin, Mendel, và Fisher là những người đóng góp chính vào phát triển học thuyết tiến hóa tổng hợp hiện đại."
+    },
+    {
+        question: "Câu 3: Khái niệm nào không thuộc học thuyết tiến hóa tổng hợp hiện đại?",
+        answers: [
+            { text: "Di truyền học Mendelian", correct: false },
+            { text: "Di truyền học phân tử", correct: false },
+            { text: "Lý thuyết của Lamarck", correct: true },
+            { text: "Chọn lọc tự nhiên", correct: false }
+        ],
+        explanation: "Lý thuyết của Lamarck không thuộc học thuyết tiến hóa tổng hợp hiện đại."
+    },
+    {
+        question: "Câu 4: Theo học thuyết tiến hóa tổng hợp hiện đại, quá trình tiến hóa là kết quả của?",
+        answers: [
+            { text: "Sự tương tác giữa chọn lọc tự nhiên, di truyền học, và biến dị di truyền.", correct: true },
+            { text: "Sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Sự di cư của các cá thể từ nơi này sang nơi khác.", correct: false },
+            { text: "Sự giao phối giữa các loài khác nhau.", correct: false }
+        ],
+        explanation: "Theo học thuyết tiến hóa tổng hợp hiện đại, quá trình tiến hóa là kết quả của sự tương tác giữa chọn lọc tự nhiên, di truyền học, và biến dị di truyền."
+    },
+    {
+        question: "Câu 5: Ai là người đầu tiên đưa ra các khái niệm cơ bản của di truyền học hiện đại?",
+        answers: [
+            { text: "Gregor Mendel", correct: true },
+            { text: "Charles Darwin", correct: false },
+            { text: "Francis Crick", correct: false },
+            { text: "James Watson", correct: false }
+        ],
+        explanation: "Gregor Mendel là người đầu tiên đưa ra các khái niệm cơ bản của di truyền học hiện đại."
+    },
+    {
+        question: "Câu 6: Khái niệm 'đặc điểm di truyền' trong học thuyết tiến hóa tổng hợp hiện đại được hiểu như thế nào?",
+        answers: [
+            { text: "Các thuộc tính di truyền của cá thể được truyền từ thế hệ này sang thế hệ khác.", correct: true },
+            { text: "Các thuộc tính của môi trường ảnh hưởng đến di truyền của cá thể.", correct: false },
+            { text: "Các thuộc tính của cá thể thay đổi ngẫu nhiên theo thời gian.", correct: false },
+            { text: "Các thuộc tính di truyền không thay đổi trong suốt đời cá thể.", correct: false }
+        ],
+        explanation: "Khái niệm 'đặc điểm di truyền' trong học thuyết tiến hóa tổng hợp hiện đại được hiểu là các thuộc tính di truyền của cá thể được truyền từ thế hệ này sang thế hệ khác."
+    },
+    {
+        question: "Câu 7: Trong học thuyết tiến hóa tổng hợp hiện đại, cơ chế nào góp phần làm tăng sự đa dạng di truyền?",
+        answers: [
+            { text: "Đột biến và giao phối", correct: true },
+            { text: "Sự di cư và chọn lọc tự nhiên", correct: false },
+            { text: "Sự thay đổi môi trường và di cư", correct: false },
+            { text: "Sự giao phối ngẫu nhiên và phân tách địa lý", correct: false }
+        ],
+        explanation: "Trong học thuyết tiến hóa tổng hợp hiện đại, đột biến và giao phối góp phần làm tăng sự đa dạng di truyền."
+    },
+    {
+        question: "Câu 8: Học thuyết tiến hóa tổng hợp hiện đại đã bổ sung thêm điều gì vào lý thuyết chọn lọc tự nhiên của Darwin?",
+        answers: [
+            { text: "Khái niệm di truyền học Mendelian và biến dị di truyền.", correct: true },
+            { text: "Khái niệm di cư và chọn lọc ngẫu nhiên.", correct: false },
+            { text: "Khái niệm chọn lọc nhân tạo và di truyền học phân tử.", correct: false },
+            { text: "Khái niệm sự thích nghi và giao phối giữa các loài.", correct: false }
+        ],
+        explanation: "Học thuyết tiến hóa tổng hợp hiện đại đã bổ sung khái niệm di truyền học Mendelian và biến dị di truyền vào lý thuyết chọn lọc tự nhiên của Darwin."
+    },
+    {
+        question: "Câu 9: Đột biến là gì trong ngữ cảnh của học thuyết tiến hóa tổng hợp hiện đại?",
+        answers: [
+            { text: "Sự thay đổi ngẫu nhiên trong DNA của cá thể.", correct: true },
+            { text: "Sự thay đổi trong môi trường sống của loài.", correct: false },
+            { text: "Sự di cư của các cá thể.", correct: false },
+            { text: "Sự giao phối giữa các cá thể trong cùng một loài.", correct: false }
+        ],
+        explanation: "Đột biến là sự thay đổi ngẫu nhiên trong DNA của cá thể trong ngữ cảnh của học thuyết tiến hóa tổng hợp hiện đại."
+    },
+    {
+        question: "Câu 10: Khái niệm 'dòng gen' trong học thuyết tiến hóa tổng hợp hiện đại đề cập đến điều gì?",
+        answers: [
+            { text: "Sự thay đổi tần số các allele trong quần thể qua các thế hệ.", correct: true },
+            { text: "Sự di cư của cá thể từ quần thể này sang quần thể khác.", correct: false },
+            { text: "Sự khác biệt trong di truyền giữa các loài.", correct: false },
+            { text: "Sự thay đổi trong môi trường sống của cá thể.", correct: false }
+        ],
+        explanation: "Khái niệm 'dòng gen' trong học thuyết tiến hóa tổng hợp hiện đại đề cập đến sự thay đổi tần số các allele trong quần thể qua các thế hệ."
+    },
+    {
+        question: "Câu 11: Theo học thuyết tiến hóa tổng hợp hiện đại, nguồn gốc của sự thay đổi di truyền trong quần thể là gì?",
+        answers: [
+            { text: "Đột biến và tái tổ hợp di truyền.", correct: true },
+            { text: "Sự giao phối ngẫu nhiên và sự di cư.", correct: false },
+            { text: "Sự chọn lọc nhân tạo và sự thay đổi môi trường.", correct: false },
+            { text: "Sự khác biệt giữa các loài và sự giao phối.", correct: false }
+        ],
+        explanation: "Theo học thuyết tiến hóa tổng hợp hiện đại, nguồn gốc của sự thay đổi di truyền trong quần thể là đột biến và tái tổ hợp di truyền."
+    },
+    {
+        question: "Câu 12: Khái niệm 'tái tổ hợp di truyền' trong học thuyết tiến hóa tổng hợp hiện đại có nghĩa là gì?",
+        answers: [
+            { text: "Quá trình kết hợp các allele khác nhau trong quá trình giao phối.", correct: true },
+            { text: "Sự thay đổi của DNA do đột biến.", correct: false },
+            { text: "Sự thay đổi trong môi trường sống của loài.", correct: false },
+            { text: "Sự di cư của các cá thể giữa các quần thể.", correct: false }
+        ],
+        explanation: "Khái niệm 'tái tổ hợp di truyền' trong học thuyết tiến hóa tổng hợp hiện đại có nghĩa là quá trình kết hợp các allele khác nhau trong quá trình giao phối."
+    },
+    {
+        question: "Câu 13: Khái niệm 'chọn lọc tự nhiên' trong học thuyết tiến hóa tổng hợp hiện đại bao gồm yếu tố nào?",
+        answers: [
+            { text: "Lợi thế sinh sản của cá thể thích nghi hơn.", correct: true },
+            { text: "Sự di cư của cá thể từ nơi này sang nơi khác.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Sự giao phối ngẫu nhiên và phân tách địa lý.", correct: false }
+        ],
+        explanation: "Khái niệm 'chọn lọc tự nhiên' trong học thuyết tiến hóa tổng hợp hiện đại bao gồm lợi thế sinh sản của cá thể thích nghi hơn."
+    },
+    {
+        question: "Câu 14: Học thuyết tiến hóa tổng hợp hiện đại giải thích sự hình thành loài mới bằng cách nào?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự thay đổi di truyền.", correct: true },
+            { text: "Sự di cư và sự chọn lọc nhân tạo.", correct: false },
+            { text: "Sự giao phối giữa các loài và sự thay đổi ngẫu nhiên.", correct: false },
+            { text: "Sự thay đổi môi trường và sự tương tác giữa các loài.", correct: false }
+        ],
+        explanation: "Học thuyết tiến hóa tổng hợp hiện đại giải thích sự hình thành loài mới bằng sự phân tách địa lý và sự thay đổi di truyền."
+    },
+    {
+        question: "Câu 15: Khái niệm 'chọn lọc giới tính' trong học thuyết tiến hóa tổng hợp hiện đại đề cập đến điều gì?",
+        answers: [
+            { text: "Lợi thế sinh sản của các cá thể có đặc điểm hấp dẫn đối với bạn tình.", correct: true },
+            { text: "Sự thay đổi trong tần số allele do môi trường sống.", correct: false },
+            { text: "Sự di cư của các cá thể từ quần thể này sang quần thể khác.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong di truyền.", correct: false }
+        ],
+        explanation: "Khái niệm 'chọn lọc giới tính' trong học thuyết tiến hóa tổng hợp hiện đại đề cập đến lợi thế sinh sản của các cá thể có đặc điểm hấp dẫn đối với bạn tình."
+    },
+    {
+        question: "Câu 16: Theo học thuyết tiến hóa tổng hợp hiện đại, điều gì xảy ra khi quần thể không còn có sự giao phối giữa các cá thể?",
+        answers: [
+            { text: "Có thể dẫn đến sự phân hóa gen và hình thành loài mới.", correct: true },
+            { text: "Có thể dẫn đến sự giảm số lượng cá thể trong quần thể.", correct: false },
+            { text: "Có thể dẫn đến sự thay đổi trong tần số allele do môi trường.", correct: false },
+            { text: "Có thể dẫn đến sự di cư của các cá thể.", correct: false }
+        ],
+        explanation: "Theo học thuyết tiến hóa tổng hợp hiện đại, khi quần thể không còn có sự giao phối giữa các cá thể, có thể dẫn đến sự phân hóa gen và hình thành loài mới."
+    },
+    {
+        question: "Câu 17: Trong học thuyết tiến hóa tổng hợp hiện đại, khái niệm 'tính thích nghi' của loài đề cập đến điều gì?",
+        answers: [
+            { text: "Khả năng của loài để tồn tại và sinh sản trong môi trường hiện tại.", correct: true },
+            { text: "Khả năng di cư của loài giữa các môi trường khác nhau.", correct: false },
+            { text: "Khả năng giao phối với các loài khác để tạo ra sự đa dạng di truyền.", correct: false },
+            { text: "Khả năng thay đổi ngẫu nhiên theo thời gian.", correct: false }
+        ],
+        explanation: "Trong học thuyết tiến hóa tổng hợp hiện đại, khái niệm 'tính thích nghi' của loài đề cập đến khả năng của loài để tồn tại và sinh sản trong môi trường hiện tại."
+    },
+    {
+        question: "Câu 18: Theo học thuyết tiến hóa tổng hợp hiện đại, biến dị di truyền quan trọng như thế nào?",
+        answers: [
+            { text: "Cung cấp nguồn nguyên liệu cho chọn lọc tự nhiên và tiến hóa.", correct: true },
+            { text: "Giảm sự đa dạng di truyền trong quần thể.", correct: false },
+            { text: "Gây ra sự di cư của các cá thể.", correct: false },
+            { text: "Gây ra sự thay đổi ngẫu nhiên trong môi trường.", correct: false }
+        ],
+        explanation: "Theo học thuyết tiến hóa tổng hợp hiện đại, biến dị di truyền cung cấp nguồn nguyên liệu cho chọn lọc tự nhiên và tiến hóa."
+    },
+    {
+        question: "Câu 19: Học thuyết tiến hóa tổng hợp hiện đại giải thích thế nào về sự phân hóa loài?",
+        answers: [
+            { text: "Sự phân hóa loài xảy ra do sự phân tách địa lý và sự khác biệt trong di truyền.", correct: true },
+            { text: "Sự phân hóa loài xảy ra do sự di cư của các cá thể.", correct: false },
+            { text: "Sự phân hóa loài xảy ra do sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Sự phân hóa loài xảy ra do sự giao phối ngẫu nhiên giữa các loài.", correct: false }
+        ],
+        explanation: "Học thuyết tiến hóa tổng hợp hiện đại giải thích rằng sự phân hóa loài xảy ra do sự phân tách địa lý và sự khác biệt trong di truyền."
+    },
+    {
+        question: "Câu 20: Theo học thuyết tiến hóa tổng hợp hiện đại, yếu tố nào ảnh hưởng lớn đến sự tiến hóa của loài?",
+        answers: [
+            { text: "Sự tương tác giữa chọn lọc tự nhiên, biến dị di truyền, và di truyền học.", correct: true },
+            { text: "Sự thay đổi ngẫu nhiên trong môi trường và sự di cư.", correct: false },
+            { text: "Sự giao phối giữa các loài và sự thay đổi trong đặc điểm của cá thể.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong số lượng cá thể và sự di cư.", correct: false }
+        ],
+        explanation: "Theo học thuyết tiến hóa tổng hợp hiện đại, sự tương tác giữa chọn lọc tự nhiên, biến dị di truyền, và di truyền học ảnh hưởng lớn đến sự tiến hóa của loài."
+    }
+];
+
+
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Liên kết ion được hình thành giữa các nguyên tố nào?",
+        answers: [
+            { text: "Kim loại và phi kim", correct: true },
+            { text: "Kim loại và kim loại", correct: false },
+            { text: "Phi kim và phi kim", correct: false },
+            { text: "Kim loại và khí hiếm", correct: false }
+        ],
+        explanation: "Liên kết ion được hình thành giữa các nguyên tố kim loại và phi kim."
+    },
+    {
+        question: "Câu 2: Liên kết ion được hình thành như thế nào?",
+        answers: [
+            { text: "Do sự chuyển electron từ nguyên tử kim loại sang nguyên tử phi kim", correct: true },
+            { text: "Do sự chia sẻ electron giữa các nguyên tử", correct: false },
+            { text: "Do sự hút lẫn nhau giữa các nguyên tử", correct: false },
+            { text: "Do sự chuyển proton từ nguyên tử kim loại sang nguyên tử phi kim", correct: false }
+        ],
+        explanation: "Liên kết ion được hình thành do sự chuyển electron từ nguyên tử kim loại sang nguyên tử phi kim, tạo thành ion dương và ion âm."
+    },
+    {
+        question: "Câu 3: Ion dương được hình thành như thế nào?",
+        answers: [
+            { text: "Khi nguyên tử mất electron", correct: true },
+            { text: "Khi nguyên tử nhận electron", correct: false },
+            { text: "Khi nguyên tử mất proton", correct: false },
+            { text: "Khi nguyên tử nhận proton", correct: false }
+        ],
+        explanation: "Ion dương được hình thành khi nguyên tử mất electron."
+    },
+    {
+        question: "Câu 4: Ion âm được hình thành như thế nào?",
+        answers: [
+            { text: "Khi nguyên tử nhận electron", correct: true },
+            { text: "Khi nguyên tử mất electron", correct: false },
+            { text: "Khi nguyên tử nhận proton", correct: false },
+            { text: "Khi nguyên tử mất proton", correct: false }
+        ],
+        explanation: "Ion âm được hình thành khi nguyên tử nhận electron."
+    },
+    {
+        question: "Câu 5: Ví dụ về hợp chất ion là gì?",
+        answers: [
+            { text: "NaCl", correct: true },
+            { text: "H2O", correct: false },
+            { text: "CO2", correct: false },
+            { text: "O2", correct: false }
+        ],
+        explanation: "NaCl là ví dụ về hợp chất ion, được hình thành từ ion Na+ và ion Cl-."
+    },
+    {
+        question: "Câu 6: Liên kết ion có đặc điểm gì?",
+        answers: [
+            { text: "Có nhiệt độ nóng chảy cao", correct: true },
+            { text: "Dễ bay hơi", correct: false },
+            { text: "Không dẫn điện khi tan chảy", correct: false },
+            { text: "Mềm và dễ gãy", correct: false }
+        ],
+        explanation: "Liên kết ion có nhiệt độ nóng chảy cao và dẫn điện khi tan chảy."
+    },
+    {
+        question: "Câu 7: Trong trạng thái rắn, các hợp chất ion có dẫn điện không?",
+        answers: [
+            { text: "Không", correct: true },
+            { text: "Có", correct: false },
+            { text: "Chỉ khi ở nhiệt độ thấp", correct: false },
+            { text: "Chỉ khi ở nhiệt độ cao", correct: false }
+        ],
+        explanation: "Trong trạng thái rắn, các hợp chất ion không dẫn điện do các ion không di chuyển được."
+    },
+    {
+        question: "Câu 8: Tại sao các hợp chất ion có nhiệt độ nóng chảy cao?",
+        answers: [
+            { text: "Vì lực hút giữa các ion rất mạnh", correct: true },
+            { text: "Vì chúng nhẹ", correct: false },
+            { text: "Vì chúng có liên kết cộng hóa trị", correct: false },
+            { text: "Vì chúng dễ bị phân hủy", correct: false }
+        ],
+        explanation: "Các hợp chất ion có nhiệt độ nóng chảy cao vì lực hút giữa các ion rất mạnh."
+    },
+    {
+        question: "Câu 9: Hợp chất nào sau đây là hợp chất ion?",
+        answers: [
+            { text: "MgO", correct: true },
+            { text: "CH4", correct: false },
+            { text: "NH3", correct: false },
+            { text: "SO2", correct: false }
+        ],
+        explanation: "MgO là hợp chất ion, được hình thành từ ion Mg2+ và ion O2-."
+    },
+    {
+        question: "Câu 10: Tính chất nào sau đây không đúng với hợp chất ion?",
+        answers: [
+            { text: "Có cấu trúc tinh thể", correct: false },
+            { text: "Dẫn điện khi tan chảy", correct: false },
+            { text: "Dễ bay hơi", correct: true },
+            { text: "Có nhiệt độ nóng chảy cao", correct: false }
+        ],
+        explanation: "Hợp chất ion không dễ bay hơi vì lực hút giữa các ion rất mạnh."
+    },
+    {
+        question: "Câu 11: Liên kết ion hình thành như thế nào trong hợp chất NaCl?",
+        answers: [
+            { text: "Na mất 1 electron và Cl nhận 1 electron", correct: true },
+            { text: "Na và Cl chia sẻ electron", correct: false },
+            { text: "Na mất proton và Cl nhận proton", correct: false },
+            { text: "Na và Cl chia sẻ proton", correct: false }
+        ],
+        explanation: "Trong NaCl, Na mất 1 electron để tạo ion Na+ và Cl nhận 1 electron để tạo ion Cl-."
+    },
+    {
+        question: "Câu 12: Ion nào sau đây là ion âm?",
+        answers: [
+            { text: "Cl-", correct: true },
+            { text: "Na+", correct: false },
+            { text: "Mg2+", correct: false },
+            { text: "Al3+", correct: false }
+        ],
+        explanation: "Cl- là ion âm vì nó nhận electron."
+    },
+    {
+        question: "Câu 13: Ion nào sau đây là ion dương?",
+        answers: [
+            { text: "Na+", correct: true },
+            { text: "Cl-", correct: false },
+            { text: "O2-", correct: false },
+            { text: "F-", correct: false }
+        ],
+        explanation: "Na+ là ion dương vì nó mất electron."
+    },
+    {
+        question: "Câu 14: Liên kết ion có bền vững không?",
+        answers: [
+            { text: "Có, vì lực hút tĩnh điện giữa các ion rất mạnh", correct: true },
+            { text: "Không, vì lực hút giữa các ion yếu", correct: false },
+            { text: "Có, vì các ion có cùng điện tích", correct: false },
+            { text: "Không, vì các ion dễ bay hơi", correct: false }
+        ],
+        explanation: "Liên kết ion bền vững vì lực hút tĩnh điện giữa các ion rất mạnh."
+    },
+    {
+        question: "Câu 15: Hợp chất nào sau đây là hợp chất ion?",
+        answers: [
+            { text: "CaCl2", correct: true },
+            { text: "CCl4", correct: false },
+            { text: "CO2", correct: false },
+            { text: "H2O", correct: false }
+        ],
+        explanation: "CaCl2 là hợp chất ion, được hình thành từ ion Ca2+ và ion Cl-."
+    },
+    {
+        question: "Câu 16: Tính chất nào của hợp chất ion giúp chúng dẫn điện trong trạng thái tan chảy?",
+        answers: [
+            { text: "Các ion có thể di chuyển tự do", correct: true },
+            { text: "Các electron có thể di chuyển tự do", correct: false },
+            { text: "Các proton có thể di chuyển tự do", correct: false },
+            { text: "Các neutron có thể di chuyển tự do", correct: false }
+        ],
+        explanation: "Hợp chất ion dẫn điện trong trạng thái tan chảy vì các ion có thể di chuyển tự do."
+    },
+    {
+        question: "Câu 17: Ion nào sau đây có nhiều hơn 1 điện tích dương?",
+        answers: [
+            { text: "Ca2+", correct: true },
+            { text: "Na+", correct: false },
+            { text: "K+", correct: false },
+            { text: "H+", correct: false }
+        ],
+        explanation: "Ca2+ có 2 điện tích dương vì nó mất 2 electron."
+    },
+    {
+        question: "Câu 18: Ion nào sau đây có nhiều hơn 1 điện tích âm?",
+        answers: [
+            { text: "O2-", correct: true },
+            { text: "Cl-", correct: false },
+            { text: "F-", correct: false },
+            { text: "Br-", correct: false }
+        ],
+        explanation: "O2- có 2 điện tích âm vì nó nhận 2 electron."
+    },
+    {
+        question: "Câu 19: Liên kết ion thường xuất hiện ở hợp chất nào sau đây?",
+        answers: [
+            { text: "KCl", correct: true },
+            { text: "H2S", correct: false },
+            { text: "PCl5", correct: false },
+            { text: "SF6", correct: false }
+        ],
+        explanation: "KCl là hợp chất ion, được hình thành từ ion K+ và ion Cl-."
+    },
+    {
+        question: "Câu 20: Tại sao NaCl tan được trong nước?",
+        answers: [
+            { text: "Vì lực hút giữa các ion Na+ và Cl- với các phân tử nước rất mạnh", correct: true },
+            { text: "Vì NaCl là chất dễ bay hơi", correct: false },
+            { text: "Vì các ion Na+ và Cl- không hút nhau", correct: false },
+            { text: "Vì NaCl có nhiệt độ nóng chảy thấp", correct: false }
+        ],
+        explanation: "NaCl tan được trong nước vì lực hút giữa các ion Na+ và Cl- với các phân tử nước rất mạnh."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

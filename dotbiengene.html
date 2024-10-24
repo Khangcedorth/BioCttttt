@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Đột biến gene là gì?",
+                answers: [
+                    { text: "Sự thay đổi trong trình tự cấu trúc của gene", correct: true },
+                    { text: "Sự nhân đôi DNA", correct: false },
+                    { text: "Sự trao đổi chéo giữa các nhiễm sắc thể", correct: false },
+                    { text: "Sự phân li độc lập của các nhiễm sắc thể", correct: false }
+                ],
+                explanation: "Đột biến gene là sự thay đổi trong trình tự cấu trúc của một gene."
+            },
+            {
+                question: "Câu 2: Đột biến điểm là gì?",
+                answers: [
+                    { text: "Sự thay đổi một cặp nucleotide trong DNA", correct: true },
+                    { text: "Sự thay đổi số lượng nhiễm sắc thể", correct: false },
+                    { text: "Sự tái tổ hợp gene", correct: false },
+                    { text: "Sự phân chia tế bào", correct: false }
+                ],
+                explanation: "Đột biến điểm là sự thay đổi một cặp nuceotide duy nhất trong DNA."
+            },
+            {
+                question: "Câu 3: Nguyên nhân gây đột biến gene có thể là gì?",
+                answers: [
+                    { text: "Tác nhân vật lý như tia phóng xạ, tia tử ngoại", correct: true },
+                    { text: "Sự phân chia tế bào", correct: false },
+                    { text: "Sự tổng hợp protein", correct: false },
+                    { text: "Sự trao đổi chất", correct: false }
+                ],
+                explanation: "Đột biến gene có thể do tác nhân vật lý như tia phóng xạ, tia tử ngoại gây ra."
+            },
+            {
+                question: "Câu 4: Đột biến thay thế cặp nucleotide có thể dẫn đến hậu quả nào?",
+                answers: [
+                    { text: "Tạo ra một protein không chức năng", correct: true },
+                    { text: "Tăng số lượng DNA", correct: false },
+                    { text: "Tăng tốc độ phiên mã", correct: false },
+                    { text: "Giảm tốc độ dịch mã", correct: false }
+                ],
+                explanation: "Đột biến thay thế cặp nucleotide có thể dẫn đến việc tạo ra một protein không chức năng."
+            },
+            {
+                question: "Câu 5: Đột biến im lặng là gì?",
+                answers: [
+                    { text: "Đột biến không làm thay đổi amino acid trong protein", correct: true },
+                    { text: "Đột biến làm thay đổi amino acid trong protein", correct: false },
+                    { text: "Đột biến làm dừng quá trình dịch mã", correct: false },
+                    { text: "Đột biến làm thay đổi số lượng nhiễm sắc thể", correct: false }
+                ],
+                explanation: "Đột biến im lặng là đột biến không làm thay đổi amino acid trong protein."
+            },
+            {
+                question: "Câu 6: Đột biến thêm hoặc mất cặp nucleotide có thể gây ra điều gì?",
+                answers: [
+                    { text: "Dịch khung đọc (frameshift)", correct: true },
+                    { text: "Tăng số lượng gene", correct: false },
+                    { text: "Tăng cường phiên mã", correct: false },
+                    { text: "Giảm cường độ dịch mã", correct: false }
+                ],
+                explanation: "Đột biến thêm hoặc mất cặp nucleotide có thể gây ra dịch khung đọc (frameshift)."
+            },
+            {
+                question: "Câu 7: Đột biến vô nghĩa (nonsense mutation) là gì?",
+                answers: [
+                    { text: "Đột biến làm tạo ra codon dừng sớm", correct: true },
+                    { text: "Đột biến làm thay đổi amino acid", correct: false },
+                    { text: "Đột biến không ảnh hưởng đến protein", correct: false },
+                    { text: "Đột biến làm tăng số lượng gene", correct: false }
+                ],
+                explanation: "Đột biến vô nghĩa là đột biến làm tạo ra codon dừng sớm trong quá trình dịch mã."
+            },
+            {
+                question: "Câu 8: Đột biến gây bệnh hồng cầu hình liềm là loại đột biến nào?",
+                answers: [
+                    { text: "Đột biến thay thế cặp nucleotide", correct: true },
+                    { text: "Đột biến thêm cặp nucleotide", correct: false },
+                    { text: "Đột biến mất cặp nucleotide", correct: false },
+                    { text: "Đột biến đảo đoạn", correct: false }
+                ],
+                explanation: "Bệnh hồng cầu hình liềm là kết quả của đột biến thay thế cặp nucleotide trong gene HBB."
+            },
+            {
+                question: "Câu 9: Đột biến lệch bội (aneuploidy) là gì?",
+                answers: [
+                    { text: "Sự thay đổi số lượng nhiễm sắc thể", correct: true },
+                    { text: "Sự thay đổi cấu trúc gene", correct: false },
+                    { text: "Sự phân chia không đều của tế bào", correct: false },
+                    { text: "Sự thay đổi base trong DNA", correct: false }
+                ],
+                explanation: "Đột biến lệch bội là sự thay đổi số lượng nhiễm sắc thể trong tế bào."
+            },
+            {
+                question: "Câu 10: Đột biến gene có mấy dạng?",
+                answers: [
+                    { text: "1", correct: false },
+                    { text: "2", correct: false },
+                    { text: "3", correct: true },
+                    { text: "4", correct: false }
+                ],
+                explanation: "Đột biến gene có 3 dạng là đột biến thêm cặp nucleotide, mất cặp nucleotide, thay thế cặp nucleotide."
+            },
+            {
+                question: "Câu 11: Ngoài tác nhân vật lý thì tác nhân hoá học không làm ảnh hưởng đến đột biến gene?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Tác nhân vật lý, tác nhân hoá học và tác nhân sinh học đều ảnh hưởng đến đột biến gene."
+            },
+            {
+                question: "Câu 12: Đột biến thay thế 1 cặp nu là đột biến ít gây hậu quả nhất?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Đột biến thêm hoặc mất 1 cặp nu gây hậu quả nghiêm trọng hơn thay thế 1 cặp nucleotide."
+            },
+            {
+                question: "Câu 13: Đột biến gene chỉ gây hại?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Đột biến gene là nguyên liệu quan trọng cho tiến hoá, nhiều loại đột biến có lợi cho sinh vật."
+            },
+            {
+                question: "Câu 14: Đột biến điểm là dạng đột biến phổ biến nhất",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },  
+                ],
+                explanation: "Đột biến điểm là dạng đột biến phổ biến nhất."
+            },
+            {
+                question: "Câu 15: Chất 5BM làm thay thế cặp G-C bằng cặp A-T?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Chất 5BM làm thay thế cặp A-T bằng cặp G-C."
+            },
+            {
+                question: "Câu 16: Đột biến lặp đoạn là gì?",
+                answers: [
+                    { text: "Một đoạn DNA được sao chép nhiều lần", correct: true },
+                    { text: "Một đoạn DNA bị mất đi", correct: false },
+                    { text: "Một đoạn DNA bị cắt ra và gắn lại", correct: false },
+                    { text: "Một đoạn DNA bị thay thế", correct: false }
+                ],
+                explanation: "Đột biến lặp đoạn là khi một đoạn DNA được sao chép nhiều lần trong genome."
+            },
+            {
+                question: "Câu 17: Đột biến mất đoạn (deletion) là gì?",
+                answers: [
+                    { text: "Một đoạn DNA bị mất đi", correct: true },
+                    { text: "Một đoạn DNA được sao chép nhiều lần", correct: false },
+                    { text: "Một đoạn DNA bị cắt ra và gắn lại", correct: false },
+                    { text: "Một đoạn DNA bị thay thế", correct: false }
+                ],
+                explanation: "Đột biến mất đoạn là khi một đoạn DNA bị mất đi trong genome."
+            },
+            {
+                question: "Câu 18: Đột biến gene nào có thể gây bệnh Huntington?",
+                answers: [
+                    { text: "Lặp lại nhiều lần của đoạn CAG trong gene HTT", correct: true },
+                    { text: "Thay thế base trong gene HTT", correct: false },
+                    { text: "Mất đoạn trong gene HTT", correct: false },
+                    { text: "Chuyển đoạn trong gene HTT", correct: false }
+                ],
+                explanation: "Bệnh Huntington do lặp lại nhiều lần của đoạn CAG trong gene HTT gây ra."
+            },
+            {
+                question: "Câu 19: Điều gì xảy ra khi một gene bị đột biến gây mất chức năng?",
+                answers: [
+                    { text: "Protein do gene đó mã hoá bị mất chức năng", correct: true },
+                    { text: "Gene đó nhân đôi nhanh hơn", correct: false },
+                    { text: "Gene đó chuyển sang nhiễm sắc thể khác", correct: false },
+                    { text: "Gene đó thay đổi vị trí", correct: false }
+                ],
+                explanation: "Khi một gene bị đột biến gây mất chức năng, protein do gene đó mã hoá sẽ mất chức năng."
+            },
+            {
+                question: "Câu 20: Đột biến gene có vai trò gì trong tiến hoá?",
+                answers: [
+                    { text: "Tạo ra các biến dị di truyền cung cấp nguyên liệu cho chọn lọc tự nhiên", correct: true },
+                    { text: "Làm giảm sự đa dạng di truyền", correct: false },
+                    { text: "Gây ra sự tuyệt chủng của loài", correct: false },
+                    { text: "Ngăn cản quá trình thích nghi của loài", correct: false }
+                ],
+                explanation: "Đột biến gene tạo ra các biến dị di truyền cung cấp nguyên liệu cho chọn lọc tự nhiên."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+        {
+            question: "Câu 1: Gen là gì?",
+            answers: [
+                { text: "Một đoạn DNA quy định một tính trạng cụ thể", correct: true },
+                { text: "Một đoạn RNA trong tế bào", correct: false },
+                { text: "Một loại protein trong tế bào", correct: false },
+                { text: "Một đoạn DNA không mang thông tin di truyền", correct: false }
+            ],
+            explanation: "Gen là một đoạn DNA quy định một tính trạng cụ thể."
+        },
+        {
+            question: "Câu 2: Alen là gì?",
+            answers: [
+                { text: "Các gen khác nhau trên một nhiễm sắc thể", correct: false },
+                { text: "Một đoạn DNA không mã hóa protein", correct: false },
+                { text: "Các dạng khác nhau của cùng một gen", correct: true },
+                { text: "Một đoạn RNA tương ứng với một gen", correct: false }
+            ],
+            explanation: "Alen là các dạng khác nhau của cùng một gen."
+        },
+        {
+            question: "Câu 3: Gen trội là gì?",
+            answers: [
+                { text: "Gen không bao giờ biểu hiện tính trạng", correct: false },
+                { text: "Gen biểu hiện tính trạng khi có mặt", correct: true },
+                { text: "Gen chỉ biểu hiện tính trạng khi có hai bản sao", correct: false },
+                { text: "Gen chỉ có trong tế bào sinh dục", correct: false }
+            ],
+            explanation: "Gen trội là gen biểu hiện tính trạng khi có mặt."
+        },
+        {
+            question: "Câu 4: Gen lặn là gì?",
+            answers: [
+                { text: "Gen chỉ biểu hiện tính trạng khi có hai bản sao", correct: true },
+                { text: "Gen biểu hiện tính trạng khi có mặt", correct: false },
+                { text: "Gen không bao giờ biểu hiện tính trạng", correct: false },
+                { text: "Gen chỉ có trong tế bào sinh dục", correct: false }
+            ],
+            explanation: "Gen lặn là gen chỉ biểu hiện tính trạng khi có hai bản sao."
+        },
+        {
+            question: "Câu 5: Tính trạng là gì?",
+            answers: [
+                { text: "Một đoạn DNA không mang thông tin di truyền", correct: false },
+                { text: "Một loại protein trong tế bào", correct: false },
+                { text: "Một đoạn RNA trong tế bào", correct: false },
+                { text: "Đặc điểm cụ thể do gen quy định", correct: true },
+            ],
+            explanation: "Tính trạng là đặc điểm cụ thể do gen quy định."
+        },
+        {
+            question: "Câu 6: Lai giống là gì?",
+            answers: [
+                { text: "Quá trình kết hợp các gen khác nhau qua giao phối", correct: true },
+                { text: "Quá trình sao chép DNA trong tế bào", correct: false },
+                { text: "Quá trình phân chia tế bào", correct: false },
+                { text: "Quá trình tổng hợp protein", correct: false }
+            ],
+            explanation: "Lai giống là quá trình kết hợp các gen khác nhau qua giao phối."
+        },
+        {
+            question: "Câu 7: Định luật phân ly của Mendel là gì?",
+            answers: [
+                { text: "Các gen trội luôn luôn biểu hiện tính trạng", correct: false },
+                { text: "Các alen phân ly ngẫu nhiên khi giao tử hình thành", correct: true },
+                { text: "Các alen không bao giờ phân ly", correct: false },
+                { text: "Các gen lặn không bao giờ biểu hiện tính trạng", correct: false }
+            ],
+            explanation: "Định luật phân ly của Mendel cho rằng các alen phân ly ngẫu nhiên khi giao tử hình thành."
+        },
+        {
+            question: "Câu 8: Định luật phân ly độc lập của Mendel là gì?",
+            answers: [
+                { text: "Các gen trội luôn luôn biểu hiện tính trạng", correct: false },
+                { text: "Các cặp alen không bao giờ phân ly", correct: false },
+                { text: "Các gen lặn không bao giờ biểu hiện tính trạng", correct: false },
+                { text: "Các cặp alen phân ly độc lập với nhau khi giao tử hình thành", correct: true },
+            ],
+            explanation: "Định luật phân ly độc lập của Mendel cho rằng các cặp alen phân ly độc lập với nhau khi giao tử hình thành."
+        },
+        {
+            question: "Câu 9: Kết quả của phép lai đơn giản (monohybrid cross) là gì?",
+            answers: [
+                { text: "Tỉ lệ 3:1 giữa các tính trạng trội và lặn", correct: true },
+                { text: "Tỉ lệ 9:3:3:1 giữa các tính trạng trội và lặn", correct: false },
+                { text: "Tỉ lệ 1:1 giữa các tính trạng trội và lặn", correct: false },
+                { text: "Tỉ lệ 2:1 giữa các tính trạng trội và lặn", correct: false }
+            ],
+            explanation: "Kết quả của phép lai đơn giản (monohybrid cross) là tỉ lệ 3:1 giữa các tính trạng trội và lặn."
+        },
+        {
+            question: "Câu 10: Kết quả của phép lai hai tính trạng (dihybrid cross) là gì?",
+            answers: [
+                { text: "Tỉ lệ 3:1 giữa các tính trạng trội và lặn", correct: false },
+                { text: "Tỉ lệ 1:1 giữa các tính trạng trội và lặn", correct: false },
+                { text: "Tỉ lệ 9:3:3:1 giữa các tính trạng trội và lặn", correct: true },
+                { text: "Tỉ lệ 2:1 giữa các tính trạng trội và lặn", correct: false }
+            ],
+            explanation: "Kết quả của phép lai hai tính trạng (dihybrid cross) là tỉ lệ 9:3:3:1 giữa các tính trạng trội và lặn."
+        },
+        {
+            question: "Câu 11: Gen nằm trên nhiễm sắc thể giới tính là gì?",
+            answers: [
+                { text: "Gen trội", correct: false },
+                { text: "Gen lặn", correct: false },
+                { text: "Gen độc lập", correct: false },
+                { text: "Gen liên kết giới tính", correct: true },
+            ],
+            explanation: "Gen nằm trên nhiễm sắc thể giới tính được gọi là gen liên kết giới tính."
+        },
+        {
+            question: "Câu 12: Hiện tượng hoán vị gen là gì?",
+            answers: [
+                { text: "Sự trao đổi đoạn DNA giữa hai nhiễm sắc thể tương đồng", correct: true },
+                { text: "Sự phân ly của các alen trong quá trình hình thành giao tử", correct: false },
+                { text: "Sự phân ly của các cặp nhiễm sắc thể trong quá trình phân bào", correct: false },
+                { text: "Sự kết hợp ngẫu nhiên của các alen trong giao phối", correct: false }
+            ],
+            explanation: "Hiện tượng hoán vị gen là sự trao đổi đoạn DNA giữa hai nhiễm sắc thể tương đồng."
+        },
+        {
+            question: "Câu 13: Phép lai phân tích là gì?",
+            answers: [
+                { text: "Phép lai giữa cá thể mang tính trạng trội với cá thể mang tính trạng lặn", correct: true },
+                { text: "Phép lai giữa hai cá thể mang tính trạng lặn", correct: false },
+                { text: "Phép lai giữa hai cá thể mang tính trạng trội", correct: false },
+                { text: "Phép lai giữa cá thể mang tính trạng trội với cá thể mang tính trạng trội", correct: false }
+            ],
+            explanation: "Phép lai phân tích là phép lai giữa cá thể mang tính trạng trội với cá thể mang tính trạng lặn."
+        },
+        {
+            question: "Câu 14: Cây phân tích phả hệ là gì?",
+            answers: [
+                { text: "Biểu đồ biểu thị sự phân ly của các alen trong quá trình hình thành giao tử", correct: false },
+                { text: "Biểu đồ biểu thị sự di truyền của các tính trạng qua các thế hệ", correct: true },
+                { text: "Biểu đồ biểu thị sự kết hợp ngẫu nhiên của các alen trong giao phối", correct: false },
+                { text: "Biểu đồ biểu thị sự phân ly của các cặp nhiễm sắc thể trong quá trình phân bào", correct: false }
+            ],
+            explanation: "Cây phân tích phả hệ là biểu đồ biểu thị sự di truyền của các tính trạng qua các thế hệ."
+        },
+        {
+            question: "Câu 15: Gen đa hiệu là gene ảnh hưởng đến 1 tính trạng duy nhất?",
+            answers: [
+                { text: "Đúng", correct: false },
+                { text: "Sai", correct: true },
+            ],
+            explanation: "Gen đa hiệu là gen ảnh hưởng đến nhiều tính trạng khác nhau."
+        },
+        {
+            question: "Câu 16: Đột biến gen là sự thay đổi trong cấu trúc của gene?",
+            answers: [
+                { text: "Đúng", correct: true },
+                { text: "Sai", correct: false },
+            ],
+            explanation: "Đột biến gen là sự thay đổi trong cấu trúc của gen."
+        },
+        {
+            question: "Câu 17: Đột biến nhiễm sắc thể là sự kết hợp ngẫu nhiên các allele trong quá trình giao phối?",
+            answers: [
+                { text: "Đúng", correct: false },
+                { text: "Sai", correct: true },
+            ],
+            explanation: "Đột biến nhiễm sắc thể là sự thay đổi trong cấu trúc hoặc số lượng của nhiễm sắc thể."
+        },
+        {
+            question: "Câu 18: Mendel đã đưa ra học thuyết lai 2 cặp tính trạng có sự phân ly độc lập?",
+            answers: [
+                { text: "Đúng", correct: true },
+                { text: "Sai", correct: false },
+            ],
+            explanation: "Mendel đã đưa ra học thuyết lai 2 cặp tính tragnj."
+        },
+        {
+            question: "Câu 19: Mendel đã sửa dụng ruồi giấm làm nguyên liệu nghiên cứu di truyền?",
+            answers: [
+                { text: "Đúng", correct: false },
+                { text: "Sai", correct: true },
+            ],
+            explanation: "Mendel đã sử dụng đậu Hà Lan làm nghiên liệu nghiên cứu di truyền."
+        },
+        {
+            question: "Câu 20: Phép lai Aa x Aa cho đời con có 2 kiểu gene?",
+            answers: [
+                { text: "Đúng", correct: false },
+                { text: "Sai", correct: true },
+            ],
+            explanation: "Phép lai Aa x Aa cho đời con có 3 kiểu gene là AA,Aa,aa."
+        }
+    ];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

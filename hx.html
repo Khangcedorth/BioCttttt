@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Hydrogen halide là những hợp chất gồm những nguyên tố nào?",
+        answers: [
+            { text: "Hydrogen và halogen", correct: true },
+            { text: "Hydrogen và oxy", correct: false },
+            { text: "Hydrogen và nitơ", correct: false },
+            { text: "Hydrogen và sunfua", correct: false }
+        ],
+        explanation: "Hydrogen halide là các hợp chất gồm hydrogen và halogen (F, Cl, Br, I)."
+    },
+    {
+        question: "Câu 2: Hydrogen halide nào có tính axit mạnh nhất?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: true },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HCl là hydrogen halide có tính axit mạnh nhất trong các hợp chất này."
+    },
+    {
+        question: "Câu 3: Trong quá trình hòa tan vào nước, hydrogen halide tạo thành loại dung dịch nào?",
+        answers: [
+            { text: "Dung dịch bazơ", correct: false },
+            { text: "Dung dịch trung tính", correct: false },
+            { text: "Dung dịch acid", correct: true },
+            { text: "Dung dịch muối", correct: false }
+        ],
+        explanation: "Hydrogen halide hòa tan trong nước tạo thành dung dịch axit."
+    },
+    {
+        question: "Câu 4: Đặc điểm chung của các hydrogen halide là gì?",
+        answers: [
+            { text: "Tính chất không tương đồng", correct: false },
+            { text: "Đều có màu vàng nhạt", correct: false },
+            { text: "Đều là khí có mùi hắc", correct: false },
+            { text: "Đều có tính axit mạnh", correct: true }
+        ],
+        explanation: "Các hydrogen halide đều có tính axit mạnh."
+    },
+    {
+        question: "Câu 5: Tính chất về màu sắc của các hydrogen halide là gì?",
+        answers: [
+            { text: "Màu nâu đỏ", correct: false },
+            { text: "Màu vàng nhạt", correct: false },
+            { text: "Không có màu sắc đặc trưng", correct: false },
+            { text: "Đều là khí màu vàng lục", correct: true }
+        ],
+        explanation: "Các hydrogen halide đều là khí màu vàng lục."
+    },
+    {
+        question: "Câu 6: Hydrogen halide nào không hòa tan trong nước?",
+        answers: [
+            { text: "HF", correct: true },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HF là hydrogen halide không hòa tan tốt trong nước."
+    },
+    {
+        question: "Câu 7: Trong các hydrogen halide, cái nào có nhiệt độ bay hơi thấp nhất?",
+        answers: [
+            { text: "HF", correct: true },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HF có nhiệt độ bay hơi thấp nhất trong các hydrogen halide."
+    },
+    {
+        question: "Câu 8: Hydrogen halide nào có nhiệt độ bay hơi cao nhất?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: true },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HBr có nhiệt độ bay hơi cao nhất trong các hydrogen halide."
+    },
+    {
+        question: "Câu 9: Trong quá trình điều chế HBr từ Br2 và H2, chất xúc tác thường được sử dụng là gì?",
+        answers: [
+            { text: "Pt", correct: false },
+            { text: "Fe", correct: false },
+            { text: "Cu", correct: true },
+            { text: "Ni", correct: false }
+        ],
+        explanation: "Cu thường được sử dụng làm chất xúc tác trong quá trình điều chế HBr từ Br2 và H2."
+    },
+    {
+        question: "Câu 10: Hydrogen halide nào có tính oxi hóa mạnh nhất?",
+        answers: [
+            { text: "HF", correct: true },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HF là hydrogen halide có tính oxi hóa mạnh nhất."
+    },
+    {
+        question: "Câu 11: Hydrogen halide nào làm xanh quỳ tím trong dung dịch?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: true }
+        ],
+        explanation: "HI là hydrogen halide làm xanh quỳ tím trong dung dịch do tính oxi hóa mạnh."
+    },
+    {
+        question: "Câu 12: Hydrogen halide nào có mùi hôi khai?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: true },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HCl là hydrogen halide có mùi hôi khai đặc trưng."
+    },
+    {
+        question: "Câu 13: Khi hòa tan HCl vào nước, dung dịch sẽ có pH bằng bao nhiêu?",
+        answers: [
+            { text: "pH = 1", correct: false },
+            { text: "pH = 7", correct: false },
+            { text: "pH < 7", correct: true },
+            { text: "pH > 7", correct: false }
+        ],
+        explanation: "Dung dịch HCl có pH < 7, là acid mạnh."
+    },
+    {
+        question: "Câu 14: Hydrogen halide nào có tính chất khử mạnh nhất?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: true },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HBr là hydrogen halide có tính chất khử mạnh nhất trong các hợp chất này."
+    },
+    {
+        question: "Câu 15: Hydrogen halide nào làm xanh quỳ tím trong dung dịch?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: true }
+        ],
+        explanation: "HI là hydrogen halide làm xanh quỳ tím trong dung dịch do tính oxi hóa mạnh."
+    },
+    {
+        question: "Câu 16: Hydrogen halide nào có mùi hôi khai?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: true },
+            { text: "HBr", correct: false },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HCl là hydrogen halide có mùi hôi khai đặc trưng."
+    },
+    {
+        question: "Câu 17: Khi hòa tan HCl vào nước, dung dịch sẽ có pH bằng bao nhiêu?",
+        answers: [
+            { text: "pH = 1", correct: false },
+            { text: "pH = 7", correct: false },
+            { text: "pH < 7", correct: true },
+            { text: "pH > 7", correct: false }
+        ],
+        explanation: "Dung dịch HCl có pH < 7, là acid mạnh."
+    },
+    {
+        question: "Câu 18: Trong quá trình điều chế HBr từ Br2 và H2, chất xúc tác thường được sử dụng là gì?",
+        answers: [
+            { text: "Pt", correct: false },
+            { text: "Fe", correct: false },
+            { text: "Cu", correct: true },
+            { text: "Ni", correct: false }
+        ],
+        explanation: "Cu thường được sử dụng làm chất xúc tác trong quá trình điều chế HBr từ Br2 và H2."
+    },
+    {
+        question: "Câu 19: Tên gọi khác của HBr là gì?",
+        answers: [
+            { text: "Hydrogen bromite", correct: false },
+            { text: "Hydrogen bromate", correct: false },
+            { text: "Hydrobromic acid", correct: true },
+            { text: "Bromohydrogen", correct: false }
+        ],
+        explanation: "Hydrobromic acid là tên gọi khác của HBr."
+    },
+    {
+        question: "Câu 20: Hydrogen halide nào có nhiệt độ bay hơi cao nhất?",
+        answers: [
+            { text: "HF", correct: false },
+            { text: "HCl", correct: false },
+            { text: "HBr", correct: true },
+            { text: "HI", correct: false }
+        ],
+        explanation: "HBr có nhiệt độ bay hơi cao nhất trong các hydrogen halide."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

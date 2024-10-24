@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="ds.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Quiz Section -->
+        <div id="quiz-section">
+            <div id="quiz">
+                <form id="quiz-form">
+                    <div class="question">
+                        <h2>Câu hỏi 1:Ở một loài động vật, lôcut A nằm trên nhiễm sắc thể thường quy định tính trạng
+                            màu mắt có 4 alen, trội lặn hoàn toàn. Tiến hành các phép lai như sau:
+                           <br> Phép lai 1. P: mắt đỏ x mắt nâu -> F1: 25% đỏ : 50% nâu: 25% vàng.
+                           <br> Phép lai 2. P: vàng x vàng -> F1: 75% vàng: 25% trắng.
+                           <br> Có bao nhiêu phát biểu sau đây đúng?
+                           <br>I. Thứ tự trội đến lặn là: đỏ -> nâu -> vàng -> trắng.
+                           <br>II. Các cá thể P và F1 trong hai phép lai 1 nêu trên đều có thể mang kiểu gen dị hợp.
+                           <br>III. F1 trong cả hai phép lai đều có 3 kiểu gen với tỉ lệ 1: 2: 1.
+                           <br>IV. Nếu lấy con mắt nâu P phép lai 1 lai với một trong hai con mắt vàng P ở phép lai
+                           2 thì tỉ lệ mắt nâu thu được là 50%
+                        </h2>
+                        <label>I) </label><input type="text" id="q1a"><br>
+                        <label>II) </label><input type="text" id="q1b"><br>
+                        <label>III) </label><input type="text" id="q1c"><br>
+                        <label>IV) </label><input type="text" id="q1d">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 2:Hình sau đây mô tả cơ chế hoạt động của operon Lac ở vi khuẩn E. coli khi môi trường có đường lactose. Mỗi phát biểu sau đây là đúng hay sai?
+                            <br>a) Các gene cấu trúc Z, Y, A có số lần phiên mã bằng nhau.
+                            <br>b) Trong trường hợp không xảy ra đột biến, khi môi trường có lactose thì luôn tạo ra enzyme
+                            phân giải lactose.
+                            <br>c) Khi môi trường không có lactose, nếu protein ức chế bị đột biến thì chắc chắn các gene cấu trúc
+                            sẽ được phiên mã liên tục.
+                            <br>d) Trên phân tử mRNA chứa một loại mã mở đầu và một loại mã kết thúc.
+                        </h2>
+                        <div>
+                            <img src="https://images.tuyensinh247.com/picture/2018/0414/capture_1.PNG" alt="">
+                        </div>
+                        <label>a) </label><input type="text" id="q2a"><br>
+                        <label>b) </label><input type="text" id="q2b"><br>
+                        <label>c) </label><input type="text" id="q2c"><br>
+                        <label>d) </label><input type="text" id="q2d">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 3:Một loài thực vật, alen A quy định thân cao trội hoàn toàn so cới alen a quy định thân thấp, alen B quy định quả ngọt trội hoàn toàn so với b quy đinh quả chua. Cho cây thân cao, quả ngọt (P) tự thụ phấn thu được F1 gồm 4 loại kiểu hình, trong đó 54% số cây thân cao, quả ngọt. Theo lí thuyết phát biểu nào sau đây đúng?
+                            <br>a) F1 có tối đa 9 loại kiểu gene.
+                            <br>b) F1 chỉ có 1 loại kiểu gene quy định kiểu hình thân cao, quả chua.
+                            <br>c) Quá trình giảm phần ở cây P đã xảy ra hoán vị gene với tần số 20%.
+                            <br>d) Trong số các cây thân thấp, quả ngọt ở F1 có 3/7 số cây đồng hợp về cả 2 cặp gene
+                        </h2>
+                        <label>a) </label><input type="text" id="q3a"><br>
+                        <label>b) </label><input type="text" id="q3b"><br>
+                        <label>c) </label><input type="text" id="q3c"><br>
+                        <label>d) </label><input type="text" id="q3d">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 4:</h2>
+                        <label>a) </label><input type="text" id="q4a"><br>
+                        <label>b) </label><input type="text" id="q4b"><br>
+                        <label>c) </label><input type="text" id="q4c"><br>
+                        <label>d) </label><input type="text" id="q4d">
+                    </div>
+                    <button type="button" id="submit-btn">Nộp bài</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden">
+            <div id="results">
+                <div id="result"></div>
+                <ul id="incorrect-answers"></ul>
+                <button type="button" id="back-btn">Trở về câu hỏi</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <ul>
+            <li><a href="#">Điều khoản</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+        </ul>
+    </footer>
+
+    <script>
+        const correctAnswers = {
+            q1a: 'Sai',
+            q1b: 'Đúng',
+            q1c: 'Sai',
+            q1d: 'Đúng',
+            q2a: 'Đúng',
+            q2b: 'Đúng',
+            q2c: 'Sai',
+            q2d: 'Sai',
+            q3a: 'Sai',
+            q3b: 'Đúng',
+            q3c: 'Đúng',
+            q3d: 'Sai',
+            q4a: 'Sai',
+            q4b: 'Sai',
+            q4c: 'Đúng',
+            q4d: 'Đúng'
+        };
+
+        const explanations = {
+            q1a: 'Thứ tự trội lặn của các alen không phải là "đỏ -> nâu -> vàng -> trắng". Trong phép lai 1, kết quả cho thấy alen đỏ là trội nhất, alen vàng không hoàn toàn lặn so với alen đỏ và nâu. Thứ tự trội lặn chính xác là: đỏ -> nâu -> vàng -> trắng. Câu trả lời này không đúng vì mô tả thứ tự trội lặn không đúng.',
+            q1b: 'Trong phép lai 1, các cá thể P có thể là dị hợp về alen màu mắt, tức là chúng có thể mang alen đỏ (r) và nâu (n). Trong phép lai 2, alen vàng (v) là đồng hợp ở các cá thể vàng, vì vậy chúng không có alen trắng (w) trội. Điều này làm cho câu trả lời này đúng vì các cá thể trong cả hai phép lai đều có thể mang kiểu gen dị hợp.',
+            q1c: 'Trong phép lai 1, F1 có ba kiểu gen có tỉ lệ là 1:2:1 cho kiểu gen. Trong phép lai 2, F1 có kiểu gen đồng hợp, vì vậy tỷ lệ 75% vàng: 25% trắng không phản ánh tỷ lệ kiểu gen của phép lai 1. Do đó, câu trả lời này không chính xác vì không phải tất cả các phép lai đều cho tỷ lệ kiểu gen 1:2:1.',
+            q1d: 'Nếu bạn lai cá thể mắt nâu từ phép lai 1 với cá thể mắt vàng từ phép lai 2, bạn sẽ có tỷ lệ mắt nâu 50%. Điều này vì mắt nâu từ phép lai 1 có thể mang alen trội và nếu kết hợp với mắt vàng (mang alen lặn), bạn sẽ có 50% tỷ lệ con cái có màu mắt nâu. Do đó, câu trả lời này là chính xác.',
+            q2a: 'Giải thích cho câu 2a...',
+            q2b: 'Giải thích cho câu 2b...',
+            q2c: 'Giải thích cho câu 2c...',
+            q2d: 'Giải thích cho câu 2d...',
+            q3a: 'Giải thích cho câu 3a...',
+            q3b: 'Giải thích cho câu 3b...',
+            q3c: 'Giải thích cho câu 3c...',
+            q3d: 'Giải thích cho câu 3d...',
+            q4a: 'Giải thích cho câu 4a...',
+            q4b: 'Giải thích cho câu 4b...',
+            q4c: 'Giải thích cho câu 4c...',
+            q4d: 'Giải thích cho câu 4d...'
+        };
+
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            let totalScore = 0;
+            const resultDetails = [];
+
+            for (let q = 1; q <= 4; q++) {
+                let correctCount = 0;
+                let incorrectExplanation = '';
+
+                for (let part of ['a', 'b', 'c', 'd']) {
+                    const answer = document.getElementById(`q${q}${part}`).value.trim();
+                    if (answer === correctAnswers[`q${q}${part}`]) {
+                        correctCount++;
+                    } else {
+                        incorrectExplanation += `<li>Câu ${q}${part}: Bạn đã trả lời <strong>"${answer}"</strong>, đáp án đúng là <strong>"${correctAnswers[`q${q}${part}`]}"</strong>. ${explanations[`q${q}${part}`]}</li>`;
+                    }
+                }
+
+                let questionScore = 0;
+                if (correctCount === 1) questionScore = 0.1;
+                if (correctCount === 2) questionScore = 0.25;
+                if (correctCount === 3) questionScore = 0.5;
+                if (correctCount === 4) questionScore = 1.0;
+
+                totalScore += questionScore;
+                resultDetails.push(`Câu ${q}: ${correctCount}/4 ý đúng - ${questionScore} điểm`);
+                
+                if (incorrectExplanation) {
+                    resultDetails.push(incorrectExplanation);
+                }
+            }
+
+            document.getElementById('result').textContent = `Tổng điểm: ${totalScore}`;
+            document.getElementById('incorrect-answers').innerHTML = resultDetails.map(detail => `<li>${detail}</li>`).join('');
+
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+        });
+
+        document.getElementById('back-btn').addEventListener('click', function() {
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

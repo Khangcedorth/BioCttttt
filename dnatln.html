@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Quiz Section -->
+        <div id="quiz-section">
+            <div id="quiz">
+                <form id="quiz-form">
+                    <div class="question">
+                        <h2>Câu hỏi 1: Trên 2 mạch của gene có tỉ lệ A:T:G:C là 1:2:3:4. Tỉ lệ phần trăm từng loại nuclêôtit?</h2>
+                        <input type="text" id="answer1">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 2: Trên 1 mạch của gene có tỉ lệ A:G:T:C là 1:3:2:4. Tỉ lệ phần trăm từng loại nuclêôtit?</h2>
+                        <input type="text" id="answer2">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 3: Trên một mạch của gene có A = 30%, G = 20%. Tính phần trăm từng loại nuclêôtit?</h2>
+                        <input type="text" id="answer3">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 4: Một gene có 120 vòng xoắn, A = 300. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer4">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 5: Một gene có 3600 nuclêôtit, G = 600. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer5">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 6: Một gene có chiều dài 4080 Å và A = 900. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer6">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 7: Một gene có chiều dài 5100 Å và A = 900. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer7">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 8: Một gene có chiều dài 0,51 µm và A = 900. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer8">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 9: Một gene có 3900 nuclêôtit và G = 600. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer9">
+                    </div>
+                    <div class="question">
+                        <h2>Câu hỏi 10: Một gene có 1200 nuclêôtit và A = 150. Tính số lượng nuclêôtit từng loại?</h2>
+                        <input type="text" id="answer10">
+                    </div>
+                    <button type="button" id="submit-btn">Nộp bài</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden">
+            <div id="results">
+                <div id="result"></div>
+                <ul id="incorrect-answers"></ul>
+                <button type="button" id="back-btn">Trở về câu hỏi</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <ul>
+            <li><a href="#">Điều khoản</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+        </ul>
+    </footer>
+
+    <script>
+        const correctAnswers = [
+            '10%,20%,30%,40%', 
+            '10%,30%,20%,40%', 
+            '30%,20%,20%,30%', 
+            '300,300,600,600', 
+            '600,600,1200,1200',
+            '900,900,1200,1200', 
+            '900,900,1350,1350', 
+            '900,900,1350,1350', 
+            '600,600,900,900', 
+            '150,150,450,450'
+        ];
+
+        const explanations = [
+            'Explanation for question 1...', 
+            'Explanation for question 2...', 
+            'Explanation for question 3...', 
+            'Explanation for question 4...', 
+            'Explanation for question 5...', 
+            'Explanation for question 6...', 
+            'Explanation for question 7...', 
+            'Explanation for question 8...', 
+            'Explanation for question 9...', 
+            'Explanation for question 10...'
+        ];
+
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            let score = 0;
+            let incorrectAnswers = '';
+
+            for (let i = 1; i <= 10; i++) {
+                const userAnswer = document.getElementById('answer' + i).value.trim().toLowerCase();
+                if (userAnswer === correctAnswers[i - 1].toLowerCase()) {
+                    score++;
+                } else {
+                    incorrectAnswers += `<li>Câu ${i}: Bạn đã trả lời <strong>"${userAnswer}"</strong>, đáp án đúng là <strong>"${correctAnswers[i - 1]}"</strong>. ${explanations[i - 1]}</li>`;
+                }
+            }
+
+            document.getElementById('result').textContent = `Bạn đã trả lời đúng ${score} trên 10 câu.`;
+            document.getElementById('incorrect-answers').innerHTML = incorrectAnswers;
+
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+        });
+
+        document.getElementById('back-btn').addEventListener('click', function() {
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

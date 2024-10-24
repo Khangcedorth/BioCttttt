@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+        .question img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Quiz Section -->
+        <div id="quiz-section">
+            <div id="quiz">
+                <form id="quiz-form">
+                    <div class="question">
+                        <h2>1. Trong quá trình phiên mã, enzyme nào là chịu trách nhiệm chính cho việc tổng hợp RNA từ DNA?</h2>
+                        <input type="text" id="answer1">
+                    </div>
+                    <div class="question">
+                        <h2>2. Tại sao codon khởi đầu AUG rất quan trọng trong dịch mã?</h2>
+                        <input type="text" id="answer2">
+                    </div>
+                    <div class="question">
+                        <h2>3. Gene điều hòa trong operon Lac có vai trò gì trong quá trình kiểm soát sự phiên mã của các gen cấu trúc?</h2>
+                        <input type="text" id="answer3">
+                    </div>
+                    <div class="question">
+                        <h2>4. Tại sao các gen liên kết trên cùng một nhiễm sắc thể thường có xu hướng di truyền cùng nhau?</h2>
+                        <input type="text" id="answer4">
+                    </div>
+                    <div class="question">
+                        <h2>5. Vai trò của promoter trong quá trình phiên mã là gì?</h2>
+                        <input type="text" id="answer5">
+                    </div>
+                    <div class="question">
+                        <h2>6. Sự khác biệt chính giữa gene cấu trúc và gene điều hòa là gì?</h2>
+                        <input type="text" id="answer6">
+                    </div>
+                    <div class="question">
+                        <h2>7. Các gen có thể tương tác với nhau thông qua cơ chế nào để điều chỉnh sự biểu hiện của chúng?</h2>
+                        <input type="text" id="answer7">
+                    </div>
+                    <div class="question">
+                        <h2>8. Sự khác biệt giữa ADN và ARN trong quá trình truyền thông tin di truyền là gì?</h2>
+                        <input type="text" id="answer8">
+                    </div>
+                    <div class="question">
+                        <h2>9. Tại sao hệ gen của các sinh vật đa bào thường phức tạp hơn so với hệ gen của sinh vật đơn bào?</h2>
+                        <input type="text" id="answer9">
+                    </div>
+                    <div class="question">
+                        <h2>10. Hệ gen của một sinh vật cung cấp thông tin gì về khả năng di truyền của nó?</h2>
+                        <input type="text" id="answer10">
+                    </div>
+                    <button type="button" id="submit-btn">Nộp bài</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden">
+            <div id="results">
+                <div id="result"></div>
+                <ul id="incorrect-answers"></ul>
+                <button type="button" id="back-btn">Trở về câu hỏi</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <ul>
+            <li><a href="#">Điều khoản</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+        </ul>
+    </footer>
+
+    <script>
+        const correctAnswers = [
+            'RNA polymerase', 
+            'AUG is the start codon and signals the beginning of translation.', 
+            'It encodes a repressor protein that binds to the operator to prevent transcription of structural genes.', 
+            'Because genes that are close together on the same chromosome are often inherited together.', 
+            'To provide a binding site for RNA polymerase to initiate transcription.', 
+            'Structural genes encode proteins, while regulatory genes encode proteins that control the expression of structural genes.', 
+            'Through gene interactions such as epistasis, where one gene can mask or modify the effect of another gene.', 
+            'DNA is double-stranded and stores genetic information, while RNA is single-stranded and is involved in the transcription and translation processes.', 
+            'Multicellular organisms have more complex gene regulation mechanisms and more diverse cell types, which require more extensive genetic information.', 
+            'It provides a blueprint for the organism’s traits and can indicate potential genetic disorders or susceptibilities.'
+        ];
+
+        const explanations = [
+            'RNA polymerase is the enzyme responsible for synthesizing RNA from a DNA template during transcription.', 
+            'AUG codon signals the ribosome to start translation and specifies the first amino acid (methionine) in the protein sequence.', 
+            'The Lac operon’s regulatory gene encodes a repressor that blocks RNA polymerase from transcribing the structural genes when lactose is absent.', 
+            'Gene linkage occurs because genes located close together on a chromosome are less likely to be separated by recombination during meiosis.', 
+            'The promoter is a DNA sequence that signals the start site for RNA polymerase to begin transcription of a gene.', 
+            'Structural genes are involved in producing proteins, while regulatory genes are involved in controlling the expression of these structural genes.', 
+            'Gene interactions include phenomena such as epistasis where one gene can influence or override the effect of another gene.', 
+            'DNA holds genetic instructions in its sequence, while RNA helps convert these instructions into proteins.', 
+            'Multicellular organisms have more specialized cells and tissues, requiring a more complex regulatory system compared to single-celled organisms.', 
+            'The genome provides the complete set of genetic material, which dictates the organism’s traits and can also indicate the risk of genetic diseases.'
+        ];
+
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            let score = 0;
+            let incorrectAnswers = '';
+
+            for (let i = 1; i <= 10; i++) {
+                const userAnswer = document.getElementById('answer' + i).value.trim().toLowerCase();
+                if (userAnswer === correctAnswers[i - 1].toLowerCase()) {
+                    score++;
+                } else {
+                    incorrectAnswers += `<li>Câu ${i}: Bạn đã trả lời <strong>"${userAnswer}"</strong>, đáp án đúng là <strong>"${correctAnswers[i - 1]}"</strong>. ${explanations[i - 1]}</li>`;
+                }
+            }
+
+            document.getElementById('result').textContent = `Bạn đã trả lời đúng ${score} trên 10 câu.`;
+            document.getElementById('incorrect-answers').innerHTML = incorrectAnswers;
+
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+        });
+
+        document.getElementById('back-btn').addEventListener('click', function() {
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

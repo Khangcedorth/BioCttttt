@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+   <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1:Chất nào sau đây không phải là ester?",
+                answers: [
+                    { text: "HCOOCH3", correct: false },
+                    { text: "CH3COCH3", correct: true },
+                    { text: "CH3COOCH3", correct: false},
+                    { text: "HCOOC6H5", correct: false }
+                ],
+                explanation: "Ester đơn chức có công thức tổng quát là R1COOR2 hay R2-OCO-R1 (Với R1 là gốc hydrocarbon hoặc nguyên từ hydrogen, R2 là gốc hydrocarbon)."
+            },
+            {
+                question: "Câu 2: Ester no, đơn chức, mạch hở có công thức phân tử là?",
+                answers: [
+                    { text: "CnH2nO (n≥2)", correct: false },
+                    { text: "CnHnO3 (n≥2)", correct: false },
+                    { text: "CnH2nO4 (n≥2)", correct: false},
+                    { text: "CnH2nO2 (n≥2)", correct: true }
+                ],
+                explanation: "Ester no, đơn chức, mạch hở có công thức phân tử là CnH2nO2 (n≥2)."
+            },
+            {
+                question: "Câu 3: Hợp chất HCOOCH3 là một chất trung gian trong sản xuất dược phẩm và thuốc xông hơi, có tên gọi là",
+                answers: [
+                    { text: "ethyl formate", correct: false },
+                    { text: "ethyl acetate", correct: false },
+                    { text: "methyl formate", correct: true},
+                    { text: "methyl acetate", correct: false }
+                ],
+                explanation: "Tên của ester đơn chức được gọi như sau: Tên gốc R2 + Tên gốc R1COO.Trong đó, tên gốc R1COO được hình thành bằng cách thay đuôi ic trong tên carboxylic acid tương ứng bang đuôi ate."
+            },
+            {
+                question: "Câu 4: Benzyl acetate có mùi thơm của hoa nhài, có công thức là",
+                answers: [
+                    { text: "CH3COOC6H5", correct: false },
+                    { text: "CH3COOCH2C6H5", correct: true },
+                    { text: "C2H5COOCH3", correct: false},
+                    { text: "CH3COOCH3", correct: false }
+                ],
+                explanation: "Tên của ester đơn chức được gọi như sau: Tên gốc R2 + Tên gốc R1COO.Trong đó, tên gốc R1COO được hình thành bằng cách thay đuôi ic trong tên carboxylic acid tương ứng bang đuôi ate."
+            },
+            {
+                question: "Câu 5: Ester nào sau đây có mùi thơm của chuối chín?",
+                answers: [
+                    { text: "Propyl acetate.", correct: false },
+                    { text: "Isoamyl acetate.", correct: true },
+                    { text: "Isopropyl acetate.", correct: false},
+                    { text: "Benzyl acetate.", correct: false }
+                ],
+                explanation: "Ester có mùi thơm của chuối chín là isoamyl acetate."
+            },
+            {
+                question: "Câu 6: Số nguyên tử hydrogen trong phân tử methyl formate là",
+                answers: [
+                    { text: "6.", correct: false },
+                    { text: "8.", correct: false },
+                    { text: "2", correct: false},
+                    { text: "4", correct: true }
+                ],
+                explanation: "methyl formate là HCOOCH3 nên số nguyên tử hydrogen là 4"
+            },
+            {
+                question: "Câu 7: Số nguyên tử carbon trong phân tử vinyl acetate là",
+                answers: [
+                    { text: "4", correct: true },
+                    { text: "5", correct: false },
+                    { text: "2", correct: false},
+                    { text: "3", correct: false }
+                ],
+                explanation: "vinyl acetate là CH3COOCH=CH2 nên số nguyên tử carbon là 4"
+            },
+            {
+                question: "Câu 8: Trong số các chất sau đây, chất nào có nhiệt độ sôi lớn nhất?",
+                answers: [
+                    { text: "C2H5OH. ", correct: false },
+                    { text: "CH3COOH.", correct: true },
+                    { text: "CH3CHO.", correct: false},
+                    { text: "HCOOCH3.", correct: false }
+                ],
+                explanation: "Carboxylic acid (RCOOH)có nhiệt độ sôi cao nhất vì có khả năng tạo được liên kết hydrogen liên phân tử bền"
+            },
+            {
+                question: "Câu 9: Ester X được tạo bởi methyl alcohol và acetic acid. Công thức của X là",
+                answers: [
+                    { text: "HCOOC2H5.  ", correct: false },
+                    { text: "CH3COOC2H5.", correct: true },
+                    { text: "CH3COOCH3.", correct: false},
+                    { text: "HCOOCH3.", correct: false }
+                ],
+                explanation: "CH3COOH tác dụng với  CH3OH tạo ta CH3COOCH3 và nước"
+            },
+            {
+                question: "Câu 10: Đun nóng chất X có công thức phân tử C3H6O2 với dung dịch NaOH, thu được HCOONa. Công thức cấu tạo của X là",
+                answers: [
+                    { text: "HCOOCH3.", correct: false },
+                    { text: "HCOOC2H5.", correct: true },
+                    { text: "CH3COOC3H7.", correct: false},
+                    { text: "CH3COOC2H5.", correct: false }
+                ],
+                explanation: "Đun nóng chất X có công thức phân tử C3H6O2 với dung dịch NaOH, thu được HCOONa và C2H5OH."
+            },
+            {
+question: "Câu 11: Ester nào sau đây tác dụng với dung dịch NaOH thu được sodium acetate?",
+answers: [
+{ text: "CH3COOC2H5.", correct: true },
+{ text: "HCOOC2H5.", correct: false },
+{ text: "HCOOCH3.", correct: false },
+{ text: "HCOOC3H7.", correct: false }
+],
+explanation: "sodium acetate là CH3COONa nên CTCT đúng là CH3COOC2H5"
+},
+{
+question: "Câu 12: Ester nào sau đây tác dụng với dung dịch NaOH thu được methyl alcohol?",
+answers: [
+{ text: "HCOOCH3.", correct: true },
+{ text: "CH3COOC2H5.", correct: false },
+{ text: "C2H5COOC2H5.", correct: false },
+{ text: "HCOOC2H5.", correct: false }
+],
+explanation: "methyl alcohol là CH3OH"
+},
+{
+question: "Câu 13: Ester nào sau đây được sử dụng để điều chế thủy tinh hữu cơ?",
+answers: [
+{ text: "Vinyl acetate.", correct: false },
+{ text: "Methyl acrylate.", correct: false },
+{ text: "Methyl methacrylate.", correct: true },
+{ text: "Isopropyl acetate.", correct: false }
+],
+explanation: "để điều chế thủy tinh hữu cơ người ta trùng hợp monomer là methyl methacrylate."
+},
+{
+question: "Câu 14: Đun sôi hỗn hợp gồm ethyl alcohol và acetic acid (có acid H2SO4 đặc làm xúc tác) sẽ xảy ra phản ứng",
+answers: [
+{ text: "trùng ngưng.", correct: false },
+{ text: "trùng hợp.", correct: false },
+{ text: "ester hóa.", correct: true },
+{ text: "xà phòng hóa", correct: false }
+],
+explanation: "Phản ứng giữa carboxylic acid và alcohol gọi là phản ứng ester hóa."
+},
+{
+question: "Câu 15: Số đồng phân ester ứng với công thức phân tử C4H8O2 là",
+answers: [
+{ text: "2.", correct: false },
+{ text: "3.", correct: false },
+{ text: "5.", correct: false },
+{ text: "4.", correct: true }
+],
+explanation: "đồng phân ester ứng với CTPT C4H8O2 là HCOOCH2CH2CH3, HCOOCH(CH3)2, C2H5COOCH3, CH3COOC2H5"
+},
+{
+question: "Câu 16: Chất nào sau đây khi đun nóng với dung dịch NaOH thu được sản phẩm có aldehyde?",
+answers: [
+{ text: "CH3COOCH2CH=CH2.", correct: false },
+{ text: "CH3COOC(CH3)=CH2.", correct: false },
+{ text: "CH2=CHCOOCH2CH3.", correct: false },
+{ text: "CH3COOCH=CHCH3.", correct: true }
+],
+explanation: "Thủy phân CH3COOCH=CHCH3 thu được CH3COONa (muối) và CH3CH2CHO (aldehyde)"
+},
+{
+question: "Câu 17: Xà phòng hóa ester nào sau đây thu được sản phẩm có khả năng tham gia phản ứng tráng bạc?",
+answers: [
+{ text: "Vinyl acetate.", correct: true },
+{ text: "Allyl propionate.", correct: false },
+{ text: "Ethyl acrylate.", correct: false },
+{ text: "Methyl methacrylate.", correct: false }
+],
+explanation: "Xà phòng hóa ester thu được sản phẩm có khả năng tham gia phản ứng tráng bạc do có chứa nhóm chức aldehyde nên chọn Vinyl acetate. Vì khi thủy phân Vinyl acetate thu được CH3COONa (sodium acetate) và CH3HO (acetic aldehyde)"
+},
+{
+question: "Câu 18: Thủy phân hoàn toàn hỗn hợp ethyl propionate và ethyl formate trong dung dịch NaOH, thu được sản phẩm gồm",
+answers: [
+{ text: "1 muối và 1 alcohol.", correct: false },
+{ text: "2 muối và 2 alcohol.", correct: false },
+{ text: "1 muối và 2 alcohol.", correct: false },
+{ text: "2 muối và 1 alcohol.", correct: true }
+],
+explanation: "Thủy phân hoàn toàn hỗn hợp ethyl propionate và ethyl formate trong dung dịch NaOH thu được 2 muối: sodium propionate, sodium formate và 1 alcohol là ethyl alcohol"
+},
+{
+question: "Câu 19: Thủy phân hoàn toàn hỗn hợp vinyl acetate và vinyl acrylate trong dung dịch NaOH, thu được sản phẩm gồm",
+answers: [
+{ text: "1 muối và 1 ancol.", correct: false },
+{ text: "2 muối và 2 ancol.", correct: false },
+{ text: "2 muối và 1 anđehit.", correct: true },
+{ text: "2 muối và 1 ancol.", correct: false }
+],
+explanation: "Thủy phân hoàn toàn hỗn hợp vinyl acetate và vinyl acrylate trong dung dịch NaOH, thu được sản phẩm gồm 2 muối: sodium acetate, sodium acrylate và 1 aldehyde là acetic aldehyde"
+},
+{
+question: "Câu 20: Đun nóng ester CH3COOC6H5 (phenyl acetate) với lượng dư dung dịch NaOH, thu được các sản phẩm hữu cơ là",
+answers: [
+{ text: "CH3OH và C6H5ONa.", correct: false },
+{ text: "CH3COOH và C6H5ONa.", correct: false },
+{ text: "CH3COOH và C6H5OH.", correct: false },
+{ text: "CH3COONa và C6H5ONa.", correct: true }
+],
+explanation: "Đun nóng ester CH3COOC6H5 (phenyl acetate) với lượng dư dung dịch NaOH, thu được các sản phẩm hữu cơ gồm 2 muối (CH3COONa và C6H5ONa) và nước "
+},
+{
+question: "Câu 21: Ethyl formate là chất mùi thơm, không độc, được dùng làm chất tạo hương trong công nghiệp thực phẩm. a. Ethyl formate có công thức cấu tạo là HCOOC2H5. b. Ethyl formate có thể tham gia phản ứng tráng gương. c. Khối lượng phân tử của ethyl formate là 74. d. Ethyl formate nhẹ hơn nước và rất ít tan trong nước. Số phát biểu đúng là",
+answers: [
+{ text: "1", correct: false },
+{ text: "2", correct: false },
+{ text: "3", correct: false },
+{ text: "4", correct: true }
+],
+explanation: "a. Đúng vì Ethyl formate có công thức cấu tạo là HCOOC2H5. b. Đúng vì Ethyl formate có thể tham gia phản ứng tráng gương trong CTCT có chứa nhóm -CHO (nhóm chức aldehyde). c. Đúng vì Khối lượng phân tử của ethyl formate là 74. d. Đúng vì Ethyl formate là ester nên nhẹ hơn nước và rất ít tan trong nước. Số phát biểu đúng là 4. "
+}
+        ];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
+

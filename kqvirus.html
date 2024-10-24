@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Virus là gì?",
+        answers: [
+            { text: "Là các tác nhân gây bệnh nhỏ hơn vi khuẩn và không thể sống độc lập ngoài tế bào chủ", correct: true },
+            { text: "Là các tế bào sống có khả năng tự nhân đôi", correct: false },
+            { text: "Là các phân tử hữu cơ có khả năng tự tổng hợp protein", correct: false },
+            { text: "Là các vi khuẩn có kích thước nhỏ hơn bình thường", correct: false }
+        ],
+        explanation: "Virus là các tác nhân gây bệnh nhỏ hơn vi khuẩn và không thể sống độc lập ngoài tế bào chủ, cần một tế bào chủ để nhân bản."
+    },
+    {
+        question: "Câu 2: Cấu trúc cơ bản của một virus bao gồm những thành phần nào?",
+        answers: [
+            { text: "Lõi axit nucleic và vỏ protein", correct: true },
+            { text: "Lõi DNA và màng tế bào", correct: false },
+            { text: "Lõi RNA và các ribosome", correct: false },
+            { text: "Lõi protein và lớp lipid", correct: false }
+        ],
+        explanation: "Cấu trúc cơ bản của một virus bao gồm lõi axit nucleic (DNA hoặc RNA) và vỏ protein bảo vệ bên ngoài."
+    },
+    {
+        question: "Câu 3: Virus nhân bản như thế nào?",
+        answers: [
+            { text: "Nhân bản bằng cách xâm nhập vào tế bào chủ và sử dụng cơ chế tế bào để tạo ra các bản sao của mình", correct: true },
+            { text: "Tự nhân đôi mà không cần tế bào chủ", correct: false },
+            { text: "Sử dụng ánh sáng để tổng hợp năng lượng", correct: false },
+            { text: "Phân chia giống như vi khuẩn", correct: false }
+        ],
+        explanation: "Virus nhân bản bằng cách xâm nhập vào tế bào chủ và sử dụng cơ chế tế bào để tạo ra các bản sao của mình."
+    },
+    {
+        question: "Câu 4: Lõi axit nucleic của virus có thể là gì?",
+        answers: [
+            { text: "DNA hoặc RNA", correct: true },
+            { text: "Chỉ có DNA", correct: false },
+            { text: "Chỉ có RNA", correct: false },
+            { text: "Protein và lipid", correct: false }
+        ],
+        explanation: "Lõi axit nucleic của virus có thể là DNA hoặc RNA, tùy thuộc vào loại virus."
+    },
+    {
+        question: "Câu 5: Vỏ protein của virus còn được gọi là gì?",
+        answers: [
+            { text: "Capsid", correct: true },
+            { text: "Envelope", correct: false },
+            { text: "Cell wall", correct: false },
+            { text: "Membrane", correct: false }
+        ],
+        explanation: "Vỏ protein của virus được gọi là capsid, bao bọc và bảo vệ lõi axit nucleic."
+    },
+    {
+        question: "Câu 6: Virus có thể xâm nhập vào cơ thể bằng cách nào?",
+        answers: [
+            { text: "Qua tiếp xúc trực tiếp, qua đường hô hấp, tiêu hóa hoặc qua vết thương", correct: true },
+            { text: "Chỉ qua đường hô hấp", correct: false },
+            { text: "Chỉ qua vết thương", correct: false },
+            { text: "Chỉ qua đường tiêu hóa", correct: false }
+        ],
+        explanation: "Virus có thể xâm nhập vào cơ thể qua tiếp xúc trực tiếp, qua đường hô hấp, tiêu hóa hoặc qua vết thương."
+    },
+    {
+        question: "Câu 7: Một số bệnh do virus gây ra là gì?",
+        answers: [
+            { text: "Cảm cúm, HIV/AIDS, viêm gan B", correct: true },
+            { text: "Viêm phổi, nhiễm trùng đường tiết niệu, lao phổi", correct: false },
+            { text: "Tiểu đường, huyết áp cao, tim mạch", correct: false },
+            { text: "Loãng xương, viêm khớp, bệnh thận", correct: false }
+        ],
+        explanation: "Một số bệnh do virus gây ra bao gồm cảm cúm, HIV/AIDS, và viêm gan B."
+    },
+    {
+        question: "Câu 8: Phân loại virus dựa trên tiêu chí nào?",
+        answers: [
+            { text: "Loại axit nucleic, hình dạng capsid, và phương thức nhân bản", correct: true },
+            { text: "Môi trường sống, kích thước, và màu sắc", correct: false },
+            { text: "Loại tế bào chủ, phương thức di chuyển, và tuổi thọ", correct: false },
+            { text: "Khả năng gây bệnh, tốc độ lây lan, và độ bền", correct: false }
+        ],
+        explanation: "Virus được phân loại dựa trên loại axit nucleic, hình dạng capsid, và phương thức nhân bản."
+    },
+    {
+        question: "Câu 9: Phương pháp phòng ngừa bệnh do virus gây ra bao gồm gì?",
+        answers: [
+            { text: "Tiêm chủng, vệ sinh cá nhân, và tránh tiếp xúc với người bệnh", correct: true },
+            { text: "Chỉ tiêm chủng", correct: false },
+            { text: "Chỉ vệ sinh cá nhân", correct: false },
+            { text: "Chỉ tránh tiếp xúc với người bệnh", correct: false }
+        ],
+        explanation: "Phương pháp phòng ngừa bệnh do virus gây ra bao gồm tiêm chủng, vệ sinh cá nhân, và tránh tiếp xúc với người bệnh."
+    },
+    {
+        question: "Câu 10: Virus HIV gây ra bệnh gì?",
+        answers: [
+            { text: "Bệnh AIDS", correct: true },
+            { text: "Bệnh cúm", correct: false },
+            { text: "Bệnh viêm gan B", correct: false },
+            { text: "Bệnh sốt rét", correct: false }
+        ],
+        explanation: "Virus HIV gây ra bệnh AIDS, làm suy giảm hệ miễn dịch của cơ thể."
+    },
+    {
+        question: "Câu 11: Vaccine hoạt động như thế nào để phòng ngừa bệnh do virus?",
+        answers: [
+            { text: "Kích thích hệ miễn dịch sản xuất kháng thể để chống lại virus", correct: true },
+            { text: "Giết chết virus ngay khi tiêm", correct: false },
+            { text: "Chuyển đổi cấu trúc di truyền của virus", correct: false },
+            { text: "Ngăn virus xâm nhập vào cơ thể", correct: false }
+        ],
+        explanation: "Vaccine hoạt động bằng cách kích thích hệ miễn dịch sản xuất kháng thể để chống lại virus khi xâm nhập vào cơ thể."
+    },
+    {
+        question: "Câu 12: Virus cúm lây lan chủ yếu qua đường nào?",
+        answers: [
+            { text: "Đường hô hấp", correct: true },
+            { text: "Đường tiêu hóa", correct: false },
+            { text: "Qua vết thương", correct: false },
+            { text: "Qua da", correct: false }
+        ],
+        explanation: "Virus cúm lây lan chủ yếu qua đường hô hấp khi người bệnh ho, hắt hơi, hoặc nói chuyện."
+    },
+    {
+        question: "Câu 13: Phương pháp điều trị chính cho bệnh do virus là gì?",
+        answers: [
+            { text: "Sử dụng thuốc kháng virus", correct: true },
+            { text: "Sử dụng kháng sinh", correct: false },
+            { text: "Sử dụng thuốc chống viêm", correct: false },
+            { text: "Sử dụng thuốc giảm đau", correct: false }
+        ],
+        explanation: "Phương pháp điều trị chính cho bệnh do virus là sử dụng thuốc kháng virus để ức chế sự phát triển của virus."
+    },
+    {
+        question: "Câu 14: Virus có thể gây ra bệnh cho các loại sinh vật nào?",
+        answers: [
+            { text: "Con người, động vật, thực vật và vi sinh vật", correct: true },
+            { text: "Chỉ con người và động vật", correct: false },
+            { text: "Chỉ con người và thực vật", correct: false },
+            { text: "Chỉ động vật và thực vật", correct: false }
+        ],
+        explanation: "Virus có thể gây ra bệnh cho nhiều loại sinh vật, bao gồm con người, động vật, thực vật và vi sinh vật."
+    },
+    {
+        question: "Câu 15: Virus lây truyền từ động vật sang người được gọi là gì?",
+        answers: [
+            { text: "Zoonosis", correct: true },
+            { text: "Epidemic", correct: false },
+            { text: "Pandemic", correct: false },
+            { text: "Endemic", correct: false }
+        ],
+        explanation: "Virus lây truyền từ động vật sang người được gọi là zoonosis."
+    },
+    {
+        question: "Câu 16: Virus nào gây ra bệnh thủy đậu?",
+        answers: [
+            { text: "Varicella-zoster virus", correct: true },
+            { text: "Influenza virus", correct: false },
+            { text: "Hepatitis B virus", correct: false },
+            { text: "Dengue virus", correct: false }
+        ],
+        explanation: "Virus gây ra bệnh thủy đậu là Varicella-zoster virus."
+    },
+    {
+        question: "Câu 17: Sự khác biệt chính giữa virus và vi khuẩn là gì?",
+        answers: [
+            { text: "Virus không thể sống độc lập, trong khi vi khuẩn có thể tự nhân đôi", correct: true },
+            { text: "Virus nhỏ hơn vi khuẩn", correct: false },
+            { text: "Virus có thể tự sản xuất protein", correct: false },
+            { text: "Vi khuẩn gây bệnh cho con người, còn virus thì không", correct: false }
+        ],
+        explanation: "Sự khác biệt chính giữa virus và vi khuẩn là virus không thể sống độc lập và cần tế bào chủ để nhân bản, trong khi vi khuẩn có thể tự nhân đôi."
+    },
+    {
+        question: "Câu 18: Virus có thể tồn tại bao lâu bên ngoài tế bào chủ?",
+        answers: [
+            { text: "Thời gian tồn tại phụ thuộc vào loại virus và điều kiện môi trường", correct: true },
+            { text: "Virus không thể tồn tại bên ngoài tế bào chủ", correct: false },
+            { text: "Chỉ vài giây", correct: false },
+            { text: "Vô thời hạn", correct: false }
+        ],
+        explanation: "Thời gian tồn tại của virus bên ngoài tế bào chủ phụ thuộc vào loại virus và điều kiện môi trường."
+    },
+    {
+        question: "Câu 19: Virus SARS-CoV-2 gây ra bệnh gì?",
+        answers: [
+            { text: "COVID-19", correct: true },
+            { text: "Cúm mùa", correct: false },
+            { text: "Sốt xuất huyết", correct: false },
+            { text: "Viêm gan A", correct: false }
+        ],
+        explanation: "Virus SARS-CoV-2 gây ra bệnh COVID-19, một bệnh truyền nhiễm đường hô hấp."
+    },
+    {
+        question: "Câu 20: Virus Epstein-Barr (EBV) chủ yếu lây truyền qua đường nào?",
+        answers: [
+            { text: "Nước bọt", correct: true },
+            { text: "Đường máu", correct: false },
+            { text: "Qua da", correct: false },
+            { text: "Đường tiêu hóa", correct: false }
+        ],
+        explanation: "Virus Epstein-Barr (EBV) chủ yếu lây truyền qua nước bọt."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

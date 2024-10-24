@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Đột biến gen thường ảnh hưởng đến quá trình nào?",
+        answers: [
+            { text: "Sao chép DNA", correct: true },
+            { text: "Quá trình phân chia tế bào", correct: false },
+            { text: "Tổng hợp protein", correct: false},
+            { text: "Tạo mạch mới DNA", correct: false }
+        ],
+        explanation: "Đột biến gen thường ảnh hưởng đến quá trình sao chép DNA, dẫn đến sự thay đổi trong cấu trúc gen."
+    },
+    {
+        question: "Câu 2: Bệnh di truyền nào do đột biến gen trội trên nhiễm sắc thể thường gây ra?",
+        answers: [
+            { text: "Hội chứng Down", correct: false },
+            { text: "Bệnh Huntington", correct: true },
+            { text: "Bệnh máu khó đông", correct: false},
+            { text: "Bệnh loạn dưỡng cơ", correct: false }
+        ],
+        explanation: "Bệnh Huntington là bệnh di truyền do đột biến gen trội trên nhiễm sắc thể thường."
+    },
+    {
+        question: "Câu 3: Các bệnh di truyền nào sau đây là do đột biến gen lặn trên nhiễm sắc thể thường?",
+        answers: [
+            { text: "Bệnh Thalassemia", correct: true },
+            { text: "Bệnh loạn dưỡng cơ Duchenne", correct: false },
+            { text: "Bệnh Huntington", correct: false},
+            { text: "Hội chứng Down", correct: false }
+        ],
+        explanation: "Bệnh Thalassemia là do đột biến gen lặn trên nhiễm sắc thể thường."
+    },
+    {
+        question: "Câu 4: Phương pháp nào được sử dụng để phát hiện đột biến gen gây bệnh di truyền?",
+        answers: [
+            { text: "Sàng lọc trước sinh", correct: false },
+            { text: "Kỹ thuật PCR", correct: true },
+            { text: "Xét nghiệm máu thông thường", correct: false},
+            { text: "Đo lường hoạt tính enzyme", correct: false }
+        ],
+        explanation: "Kỹ thuật PCR (Polymerase Chain Reaction) được sử dụng để phát hiện đột biến gen gây bệnh di truyền."
+    },
+    {
+        question: "Câu 5: Bệnh nào do đột biến gen trên nhiễm sắc thể X gây ra?",
+        answers: [
+            { text: "Bệnh máu khó đông", correct: true },
+            { text: "Bệnh Thalassemia", correct: false },
+            { text: "Bệnh Huntington", correct: false},
+            { text: "Hội chứng Down", correct: false }
+        ],
+        explanation: "Bệnh máu khó đông là do đột biến gen trên nhiễm sắc thể X gây ra."
+    },
+    {
+        question: "Câu 6: Gen lặn chỉ biểu hiện thành bệnh khi nào?",
+        answers: [
+            { text: "Khi có một gen đột biến", correct: false },
+            { text: "Khi cả hai gen đều đột biến", correct: true },
+            { text: "Khi không có gen nào đột biến", correct: false},
+            { text: "Khi có một gen đột biến trên nhiễm sắc thể X", correct: false }
+        ],
+        explanation: "Gen lặn chỉ biểu hiện thành bệnh khi cả hai gen đều đột biến."
+    },
+    {
+        question: "Câu 7: Liệu pháp gen là gì?",
+        answers: [
+            { text: "Phương pháp điều trị bằng thuốc", correct: false },
+            { text: "Phương pháp sửa đổi gen gây bệnh", correct: true },
+            { text: "Phương pháp phẫu thuật", correct: false},
+            { text: "Phương pháp hóa trị", correct: false }
+        ],
+        explanation: "Liệu pháp gen là phương pháp sửa đổi gen gây bệnh để điều trị bệnh di truyền."
+    },
+    {
+        question: "Câu 8: Bệnh nào sau đây là do đột biến gen lặn trên nhiễm sắc thể X?",
+        answers: [
+            { text: "Bệnh máu khó đông", correct: true },
+            { text: "Bệnh Thalassemia", correct: false },
+            { text: "Bệnh Huntington", correct: false},
+            { text: "Hội chứng Down", correct: false }
+        ],
+        explanation: "Bệnh máu khó đông là do đột biến gen lặn trên nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 9: Bệnh di truyền nào sau đây không phải do đột biến gen gây ra?",
+        answers: [
+            { text: "Hội chứng Turner", correct: true },
+            { text: "Bệnh Huntington", correct: false },
+            { text: "Bệnh máu khó đông", correct: false},
+            { text: "Bệnh loạn dưỡng cơ Duchenne", correct: false }
+        ],
+        explanation: "Hội chứng Turner không phải do đột biến gen gây ra mà do thiếu một nhiễm sắc thể X."
+    },
+    {
+        question: "Câu 10: Phương pháp nào sau đây không được sử dụng để phát hiện bệnh di truyền?",
+        answers: [
+            { text: "Kỹ thuật PCR", correct: false },
+            { text: "Xét nghiệm máu thông thường", correct: true },
+            { text: "Giải trình tự gen", correct: false},
+            { text: "Sàng lọc trước sinh", correct: false }
+        ],
+        explanation: "Xét nghiệm máu thông thường không thể phát hiện bệnh di truyền."
+    },
+    {
+        question: "Câu 11: Đột biến nào sau đây có thể dẫn đến bệnh ung thư?",
+        answers: [
+            { text: "Đột biến gen ức chế khối u", correct: true },
+            { text: "Đột biến gen lặn", correct: false },
+            { text: "Đột biến gen trên nhiễm sắc thể X", correct: false},
+            { text: "Đột biến gen trên nhiễm sắc thể thường", correct: false }
+        ],
+        explanation: "Đột biến gen ức chế khối u có thể dẫn đến bệnh ung thư."
+    },
+    {
+        question: "Câu 12: Trong y học, kỹ thuật nào được sử dụng để chỉnh sửa gen gây bệnh?",
+        answers: [
+            { text: "Kỹ thuật CRISPR-Cas9", correct: true },
+            { text: "Kỹ thuật PCR", correct: false },
+            { text: "Kỹ thuật giải trình tự gen", correct: false},
+            { text: "Kỹ thuật sàng lọc trước sinh", correct: false }
+        ],
+        explanation: "Kỹ thuật CRISPR-Cas9 được sử dụng để chỉnh sửa gen gây bệnh."
+    },
+    {
+        question: "Câu 13: Bệnh nào sau đây do đột biến gen lặn gây ra?",
+        answers: [
+            { text: "Bệnh xơ nang (Cystic Fibrosis)", correct: true },
+            { text: "Bệnh Huntington", correct: false },
+            { text: "Bệnh máu khó đông", correct: false},
+            { text: "Hội chứng Down", correct: false }
+        ],
+        explanation: "Bệnh xơ nang (Cystic Fibrosis) là do đột biến gen lặn gây ra."
+    },
+    {
+        question: "Câu 14: Gen ức chế khối u có chức năng gì?",
+        answers: [
+            { text: "Ngăn chặn sự phát triển của khối u", correct: true },
+            { text: "Kích thích sự phát triển của khối u", correct: false },
+            { text: "Sửa chữa DNA", correct: false},
+            { text: "Tạo ra protein mới", correct: false }
+        ],
+        explanation: "Gen ức chế khối u có chức năng ngăn chặn sự phát triển của khối u."
+    },
+    {
+        question: "Câu 15: Hội chứng nào sau đây do thừa nhiễm sắc thể gây ra?",
+        answers: [
+            { text: "Hội chứng Down", correct: true },
+            { text: "Bệnh Huntington", correct: false },
+            { text: "Bệnh máu khó đông", correct: false},
+            { text: "Bệnh Thalassemia", correct: false }
+        ],
+        explanation: "Hội chứng Down là do thừa một nhiễm sắc thể 21."
+    },
+    {
+        question: "Câu 16: Trong y học, phương pháp nào sau đây được sử dụng để phát hiện các bất thường về nhiễm sắc thể?",
+        answers: [
+            { text: "Xét nghiệm karyotype", correct: true },
+            { text: "Xét nghiệm máu thông thường", correct: false },
+            { text: "Xét nghiệm nước tiểu", correct: false},
+            { text: "Xét nghiệm gen", correct: false }
+        ],
+        explanation: "Xét nghiệm karyotype được sử dụng để phát hiện các bất thường về nhiễm sắc thể."
+    },
+    {
+        question: "Câu 17: Đột biến gen nào sau đây có thể di truyền từ thế hệ này sang thế hệ khác?",
+        answers: [
+            { text: "Đột biến trong tế bào mầm", correct: true },
+            { text: "Đột biến trong tế bào soma", correct: false },
+            { text: "Đột biến trong tế bào ung thư", correct: false},
+            { text: "Đột biến trong tế bào máu", correct: false }
+        ],
+        explanation: "Đột biến trong tế bào mầm có thể di truyền từ thế hệ này sang thế hệ khác."
+    },
+    {
+        question: "Câu 18: Hội chứng Klinefelter là do bất thường về nhiễm sắc thể nào?",
+        answers: [
+            { text: "XXY", correct: true },
+            { text: "XO", correct: false },
+            { text: "XXX", correct: false},
+            { text: "XYY", correct: false }
+        ],
+        explanation: "Hội chứng Klinefelter là do bất thường về nhiễm sắc thể XXY."
+    },
+    {
+        question: "Câu 19: Trong y học, liệu pháp gen được sử dụng để điều trị bệnh nào sau đây?",
+        answers: [
+            { text: "Bệnh ung thư", correct: true },
+            { text: "Bệnh cúm", correct: false },
+            { text: "Bệnh tim", correct: false},
+            { text: "Bệnh tiểu đường", correct: false }
+        ],
+        explanation: "Liệu pháp gen được sử dụng để điều trị bệnh ung thư."
+    },
+    {
+        question: "Câu 20: Đột biến gen nào sau đây có thể dẫn đến bệnh di truyền?",
+        answers: [
+            { text: "Đột biến điểm", correct: true },
+            { text: "Đột biến đoạn", correct: false },
+            { text: "Đột biến nhiễm sắc thể", correct: false},
+            { text: "Đột biến tứ bội", correct: false }
+        ],
+        explanation: "Đột biến điểm có thể dẫn đến bệnh di truyền."
+    }
+];
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

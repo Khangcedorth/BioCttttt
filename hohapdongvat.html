@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Hô hấp là gì?",
+                answers: [
+                    { text: "Quá trình lấy vào O2 và thải ra CO2", correct: true },
+                    { text: "Quá trình lấy vào CO2 và thải ra O2", correct: false },
+                    { text: "Quá trình lấy vào O2 và thải ra O2", correct: false },
+                    { text: "Quá trình lấy vào CO2 và thải ra CO2", correct: false }
+                ],
+                explanation: "Hô hấp là quá trình lấy vào O2 và thải ra CO2."
+            },
+            {
+                question: "Câu 2: Phổi có chức năng gì trong hệ hô hấp?",
+                answers: [
+                    { text: "Chuyển đổi CO2 thành O2", correct: false },
+                    { text: "Trao đổi khí giữa cơ thể và môi trường", correct: true },
+                    { text: "Lọc máu", correct: false },
+                    { text: "Tiết ra enzyme tiêu hóa", correct: false }
+                ],
+                explanation: "Phổi có chức năng trao đổi khí giữa cơ thể và môi trường."
+            },
+            {
+                question: "Câu 3: Khí quản là gì?",
+                answers: [
+                    { text: "Là đường dẫn khí từ mũi xuống phế quản", correct: true },
+                    { text: "Là nơi trao đổi khí chính", correct: false },
+                    { text: "Là nơi dự trữ khí", correct: false },
+                    { text: "Là đường dẫn khí từ phế quản ra ngoài", correct: false }
+                ],
+                explanation: "Khí quản là đường dẫn khí từ mũi xuống phế quản."
+            },
+            {
+                question: "Câu 4: Phế quản là gì?",
+                answers: [
+                    { text: "Là các nhánh nhỏ của khí quản vào phổi", correct: true },
+                    { text: "Là nơi sản xuất khí CO2", correct: false },
+                    { text: "Là nơi dự trữ khí O2", correct: false },
+                    { text: "Là phần trên của khí quản", correct: false }
+                ],
+                explanation: "Phế quản là các nhánh nhỏ của khí quản vào phổi."
+            },
+            {
+                question: "Câu 5: Phổi người có bao nhiêu thùy?",
+                answers: [
+                    { text: "2 thùy", correct: false },
+                    { text: "3 thùy", correct: false },
+                    { text: "4 thùy", correct: false },
+                    { text: "5 thùy", correct: true }
+                ],
+                explanation: "Phổi người có 5 thùy, 3 thùy ở phổi phải và 2 thùy ở phổi trái."
+            },
+            {
+                question: "Câu 6: Đơn vị chức năng của phổi là gì?",
+                answers: [
+                    { text: "Tiểu phế quản", correct: false },
+                    { text: "Phế nang", correct: true },
+                    { text: "Mạch máu", correct: false },
+                    { text: "Màng phổi", correct: false }
+                ],
+                explanation: "Đơn vị chức năng của phổi là phế nang."
+            },
+            {
+                question: "Câu 7: Chức năng chính của hồng cầu trong hệ hô hấp là gì?",
+                answers: [
+                    { text: "Vận chuyển CO2", correct: false },
+                    { text: "Vận chuyển O2", correct: true },
+                    { text: "Đào thải khí độc", correct: false },
+                    { text: "Phòng ngừa bệnh", correct: false }
+                ],
+                explanation: "Chức năng chính của hồng cầu là vận chuyển O2."
+            },
+            {
+                question: "Câu 8: Hemoglobin là gì?",
+                answers: [
+                    { text: "Một loại enzyme tiêu hóa", correct: false },
+                    { text: "Một loại protein trong hồng cầu giúp vận chuyển O2", correct: true },
+                    { text: "Một loại hormone điều hòa nhịp tim", correct: false },
+                    { text: "Một loại vitamin cần thiết cho sự phát triển", correct: false }
+                ],
+                explanation: "Hemoglobin là một loại protein trong hồng cầu giúp vận chuyển O2."
+            },
+            {
+                question: "Câu 9: Tại sao CO2 cần được loại bỏ khỏi cơ thể?",
+                answers: [
+                    { text: "CO2 là khí độc gây hại cho cơ thể", correct: true },
+                    { text: "CO2 không có vai trò gì trong cơ thể", correct: false },
+                    { text: "CO2 cản trở sự hấp thu O2", correct: false },
+                    { text: "CO2 làm cơ thể nóng lên", correct: false }
+                ],
+                explanation: "CO2 là khí độc gây hại cho cơ thể, cần được loại bỏ."
+            },
+            {
+                question: "Câu 10: Quá trình hô hấp ngoài là gì?",
+                answers: [
+                    { text: "Trao đổi khí giữa máu và tế bào", correct: false },
+                    { text: "Trao đổi khí giữa phế nang và máu", correct: true },
+                    { text: "Trao đổi khí giữa khí quản và phế quản", correct: false },
+                    { text: "Trao đổi khí giữa mũi và phổi", correct: false }
+                ],
+                explanation: "Quá trình hô hấp ngoài là trao đổi khí giữa phế nang và máu."
+            },
+            {
+                question: "Câu 11: Hô hấp trong là gì?",
+                answers: [
+                    { text: "Trao đổi khí giữa máu và tế bào", correct: true },
+                    { text: "Trao đổi khí giữa phế nang và máu", correct: false },
+                    { text: "Trao đổi khí giữa khí quản và phế quản", correct: false },
+                    { text: "Trao đổi khí giữa mũi và phổi", correct: false }
+                ],
+                explanation: "Hô hấp trong là quá trình trao đổi khí giữa máu và tế bào."
+            },
+            {
+                question: "Câu 12: Thể tích khí lưu thông là gì?",
+                answers: [
+                    { text: "Lượng khí thở ra mạnh nhất", correct: false },
+                    { text: "Lượng khí thở vào mạnh nhất", correct: false },
+                    { text: "Lượng khí trao đổi trong mỗi chu kỳ thở", correct: true },
+                    { text: "Lượng khí còn lại sau khi thở ra mạnh nhất", correct: false }
+                ],
+                explanation: "Thể tích khí lưu thông là lượng khí trao đổi trong mỗi chu kỳ thở."
+            },
+            {
+                question: "Câu 13: Lượng khí cặn là gì?",
+                answers: [
+                    { text: "Lượng khí thở ra mạnh nhất", correct: false },
+                    { text: "Lượng khí thở vào mạnh nhất", correct: false },
+                    { text: "Lượng khí trao đổi trong mỗi chu kỳ thở", correct: false },
+                    { text: "Lượng khí còn lại sau khi thở ra mạnh nhất", correct: true }
+                ],
+                explanation: "Lượng khí cặn là lượng khí còn lại sau khi thở ra mạnh nhất."
+            },
+            {
+                question: "Câu 14: Tại sao người ta cần tập thở sâu?",
+                answers: [
+                    { text: "Để tăng cường khả năng trao đổi khí", correct: true },
+                    { text: "Để giảm lượng khí cặn trong phổi", correct: true },
+                    { text: "Để tăng lượng khí cặn trong phổi", correct: false },
+                    { text: "Để giảm lượng khí lưu thông", correct: false }
+                ],
+                explanation: "Tập thở sâu giúp tăng cường khả năng trao đổi khí và giảm lượng khí cặn trong phổi."
+            },
+            {
+                question: "Câu 15: Phổi hoạt động dựa trên nguyên lý gì?",
+                answers: [
+                    { text: "Nguyên lý áp suất âm trong khoang ngực", correct: true },
+                    { text: "Nguyên lý áp suất dương trong khoang ngực", correct: false },
+                    { text: "Nguyên lý trao đổi nhiệt", correct: false },
+                    { text: "Nguyên lý hấp thụ", correct: false }
+                ],
+                explanation: "Phổi hoạt động dựa trên nguyên lý áp suất âm trong khoang ngực."
+            },
+            {
+                question: "Câu 16: Chức năng của màng phổi là gì?",
+                answers: [
+                    { text: "Bảo vệ phổi khỏi các tác động cơ học", correct: true },
+                    { text: "Trao đổi khí với môi trường", correct: false },
+                    { text: "Lọc máu", correct: false },
+                    { text: "Sản xuất enzyme tiêu hóa", correct: false }
+                ],
+                explanation: "Chức năng của màng phổi là bảo vệ phổi khỏi các tác động cơ học."
+            },
+            {
+                question: "Câu 17: Tại sao không khí trong phổi không bao giờ hoàn toàn được thay thế?",
+                answers: [
+                    { text: "Vì phổi luôn chứa một lượng khí cặn", correct: true },
+                    { text: "Vì phổi không thể co giãn hoàn toàn", correct: false },
+                    { text: "Vì khí quản không đủ dài", correct: false },
+                    { text: "Vì không có đủ oxy trong không khí", correct: false }
+                ],
+                explanation: "Không khí trong phổi không bao giờ hoàn toàn được thay thế vì phổi luôn chứa một lượng khí cặn."
+            },
+            {
+                question: "Câu 18: Nguyên nhân chính gây ra bệnh phổi tắc nghẽn mãn tính (COPD) là gì?",
+                answers: [
+                    { text: "Hút thuốc lá", correct: true },
+                    { text: "Ô nhiễm không khí", correct: true },
+                    { text: "Di truyền", correct: false },
+                    { text: "Thiếu hoạt động thể chất", correct: false }
+                ],
+                explanation: "Nguyên nhân chính gây ra bệnh phổi tắc nghẽn mãn tính (COPD) là hút thuốc lá và ô nhiễm không khí."
+            },
+            {
+                question: "Câu 19: Tại sao phổi phải thường lớn hơn phổi trái?",
+                answers: [
+                    { text: "Do phổi trái phải nhường chỗ cho tim", correct: true },
+                    { text: "Do phổi phải phải làm việc nhiều hơn", correct: false },
+                    { text: "Do phổi trái nhỏ hơn ngay từ khi sinh ra", correct: false },
+                    { text: "Do phổi trái không quan trọng bằng", correct: false }
+                ],
+                explanation: "Phổi phải thường lớn hơn phổi trái vì phổi trái phải nhường chỗ cho tim."
+            },
+            {
+                question: "Câu 20: Tế bào nào chịu trách nhiệm trong việc làm sạch đường hô hấp?",
+                answers: [
+                    { text: "Tế bào lông chuyển", correct: true },
+                    { text: "Tế bào hồng cầu", correct: false },
+                    { text: "Tế bào bạch cầu", correct: false },
+                    { text: "Tế bào phế quản", correct: false }
+                ],
+                explanation: "Tế bào lông chuyển chịu trách nhiệm trong việc làm sạch đường hô hấp."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

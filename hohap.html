@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE BIOLOGY - SINH HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Hô hấp ở thực vật là gì?",
+                answers: [
+                    { text: "Quá trình trao đổi khí giữa thực vật và môi trường", correct: true },
+                    { text: "Quá trình tổng hợp chất hữu cơ từ chất vô cơ", correct: false },
+                    { text: "Quá trình phân giải chất hữu cơ để tạo năng lượng", correct: false },
+                    { text: "Quá trình hấp thụ nước và khoáng", correct: false }
+                ],
+                explanation: "Hô hấp ở thực vật là quá trình trao đổi khí giữa thực vật và môi trường, trong đó thực vật hấp thụ O2 và thải CO2."
+            },
+            {
+                question: "Câu 2: Vai trò chính của hô hấp ở thực vật là gì?",
+                answers: [
+                    { text: "Cung cấp năng lượng cho các hoạt động sống của cây", correct: true },
+                    { text: "Tổng hợp chất diệp lục", correct: false },
+                    { text: "Hấp thụ nước", correct: false },
+                    { text: "Thải các chất độc hại", correct: false }
+                ],
+                explanation: "Hô hấp cung cấp năng lượng cho các hoạt động sống của cây bằng cách phân giải các chất hữu cơ."
+            },
+            {
+                question: "Câu 3: Sản phẩm cuối cùng của hô hấp ở thực vật là gì?",
+                answers: [
+                    { text: "CO2 và H2O", correct: true },
+                    { text: "O2 và H2O", correct: false },
+                    { text: "Glucose và CO2", correct: false },
+                    { text: "Năng lượng và O2", correct: false }
+                ],
+                explanation: "Sản phẩm cuối cùng của hô hấp ở thực vật là CO2 và H2O."
+            },
+            {
+                question: "Câu 4: Quá trình hô hấp ở thực vật diễn ra ở đâu trong tế bào?",
+                answers: [
+                    { text: "Trong lục lạp", correct: false },
+                    { text: "Trong màng tế bào", correct: false },
+                    { text: "Trong ty thể", correct: true },
+                    { text: "Trong nhân tế bào", correct: false }
+                ],
+                explanation: "Quá trình hô hấp ở thực vật diễn ra chủ yếu trong ty thể của tế bào."
+            },
+            {
+                question: "Câu 5: Quá trình nào là bước đầu tiên của hô hấp ở thực vật?",
+                answers: [
+                    { text: "Chu trình Krebs", correct: false },
+                    { text: "Chuỗi truyền điện tử", correct: false },
+                    { text: "Đường phân (glycolysis)", correct: true },
+                    { text: "Tổng hợp ATP", correct: false }
+                ],
+                explanation: "Bước đầu tiên của hô hấp ở thực vật là đường phân (glycolysis), nơi glucose được phân giải thành pyruvate."
+            },
+            {
+                question: "Câu 6: Hô hấp kị khí ở thực vật xảy ra trong điều kiện nào?",
+                answers: [
+                    { text: "Khi có nhiều O2", correct: false },
+                    { text: "Khi có ít O2 hoặc không có O2", correct: true },
+                    { text: "Khi có nhiều ánh sáng", correct: false },
+                    { text: "Khi có nhiều nước", correct: false }
+                ],
+                explanation: "Hô hấp kị khí xảy ra khi có ít hoặc không có O2, dẫn đến việc phân giải glucose mà không cần oxy."
+            },
+            {
+                question: "Câu 7: Chu trình Krebs trong hô hấp ở thực vật diễn ra ở đâu?",
+                answers: [
+                    { text: "Trong chất nền ty thể (matrix)", correct: true },
+                    { text: "Trong màng trong của ty thể", correct: false },
+                    { text: "Trong lục lạp", correct: false },
+                    { text: "Trong không bào", correct: false }
+                ],
+                explanation: "Chu trình Krebs diễn ra trong chất nền ty thể (matrix) của tế bào thực vật."
+            },
+            {
+                question: "Câu 8: Sản phẩm nào sau đây không phải là sản phẩm của hô hấp hiếu khí ở thực vật?",
+                answers: [
+                    { text: "CO2", correct: false },
+                    { text: "H2O", correct: false },
+                    { text: "ATP", correct: false },
+                    { text: "O2", correct: true }
+                ],
+                explanation: "O2 không phải là sản phẩm của hô hấp hiếu khí; ngược lại, O2 là chất cần thiết cho quá trình này."
+            },
+            {
+                question: "Câu 9: Hô hấp kị khí ở thực vật tạo ra sản phẩm chính là gì?",
+                answers: [
+                    { text: "Glucose", correct: false },
+                    { text: "Ethanol và CO2", correct: true },
+                    { text: "Lactic acid", correct: false },
+                    { text: "ATP và H2O", correct: false }
+                ],
+                explanation: "Hô hấp kị khí ở thực vật tạo ra ethanol và CO2."
+            },
+            {
+                question: "Câu 10: Khi nhiệt độ tăng cao, tốc độ hô hấp ở thực vật sẽ như thế nào?",
+                answers: [
+                    { text: "Giảm", correct: false },
+                    { text: "Không thay đổi", correct: false },
+                    { text: "Tăng lên đến một mức nào đó rồi giảm", correct: true },
+                    { text: "Tăng liên tục", correct: false }
+                ],
+                explanation: "Khi nhiệt độ tăng, tốc độ hô hấp ở thực vật tăng đến một mức nào đó rồi giảm do enzyme bị ức chế hoặc bị phá huỷ."
+            },
+            {
+                question: "Câu 11: Hô hấp sáng ở thực vật diễn ra ở cơ quan nào?",
+                answers: [
+                    { text: "Rễ", correct: false },
+                    { text: "Thân", correct: false },
+                    { text: "Lá", correct: true },
+                    { text: "Hoa", correct: false }
+                ],
+                explanation: "Hô hấp sáng ở thực vật chủ yếu diễn ra ở lá."
+            },
+            {
+                question: "Câu 12: Yếu tố nào sau đây không ảnh hưởng đến quá trình hô hấp ở thực vật?",
+                answers: [
+                    { text: "Ánh sáng", correct: false },
+                    { text: "Nhiệt độ", correct: false },
+                    { text: "Độ ẩm", correct: true },
+                    { text: "Nồng độ CO2", correct: false }
+                ],
+                explanation: "Độ ẩm không ảnh hưởng trực tiếp đến quá trình hô hấp, trong khi ánh sáng, nhiệt độ và nồng độ CO2 có ảnh hưởng rõ rệt."
+            },
+            {
+                question: "Câu 13: Hô hấp kị khí khác với hô hấp hiếu khí như thế nào?",
+                answers: [
+                    { text: "Hô hấp kị khí không cần O2", correct: true },
+                    { text: "Hô hấp kị khí tạo ra nhiều năng lượng hơn", correct: false },
+                    { text: "Hô hấp kị khí chỉ xảy ra ở động vật", correct: false },
+                    { text: "Hô hấp kị khí cần O2", correct: false }
+                ],
+                explanation: "Hô hấp hiếu khí cần O2 để xảy ra, trong khi hô hấp kị khí không cần O2."
+            },
+            {
+                question: "Câu 14: Quá trình lên men ở thực vật là một dạng của?",
+                answers: [
+                    { text: "Hô hấp hiếu khí", correct: false },
+                    { text: "Hô hấp kị khí", correct: true },
+                    { text: "Quang hợp", correct: false },
+                    { text: "Sự thoát hơi nước", correct: false }
+                ],
+                explanation: "Lên men là một dạng của hô hấp kị khí, xảy ra khi không có O2."
+            },
+            {
+                question: "Câu 15: Trong điều kiện thiếu oxy, thực vật thuỷ sinh sẽ thực hiện quá trình quang hợp tạo năng lượng?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Trong điều kiện thiếu oxy, thực vật thuỷ sinh sẽ thực hiện quá trình lên men để tạo năng lượng."
+            },
+            {
+                question: "Câu 16: Ethanol là sản phẩm của quá trình lên men ở nấm men?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Sản phẩm của quá trình lên men ở nấm men là ethanol và CO2."
+            },
+            {
+                question: "Câu 17: Trong quá trình hô hấp, chu trình Krebs tạo ra nhiều ATP nhất?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: false },  
+                ],
+                explanation: "Giai đoạn tạo ra nhiều ATP nhất trong quá trình hô hấp là chuỗi electron."
+            },
+            {
+                question: "Câu 18: Hô hấp sáng khác với hô hấp thông thường như thế nào?",
+                answers: [
+                    { text: "Xảy ra chủ yếu vào ban đêm", correct: false },
+                    { text: "Sử dụng O2 và thải CO2 mà không tạo ra năng lượng", correct: true },
+                    { text: "Chỉ xảy ra ở động vật", correct: false },
+                    { text: "Tạo ra nhiều ATP hơn", correct: false }
+                ],
+                explanation: "Hô hấp sáng sử dụng O2 và thải CO2 mà không tạo ra năng lượng, chủ yếu xảy ra ở thực vật."
+            },
+            {
+                question: "Câu 19: Tại sao nồng độ CO2 cao có thể ảnh hưởng đến tốc độ hô hấp của thực vật?",
+                answers: [
+                    { text: "CO2 gây ức chế enzyme liên quan đến hô hấp", correct: true },
+                    { text: "CO2 tăng cường quá trình quang hợp", correct: false },
+                    { text: "CO2 không ảnh hưởng đến hô hấp", correct: false },
+                    { text: "CO2 chỉ ảnh hưởng đến quang hợp", correct: false }
+                ],
+                explanation: "Nồng độ CO2 cao có thể gây ức chế enzyme liên quan đến quá trình hô hấp của thực vật."
+            },
+            {
+                question: "Câu 20: Hô hấp ở thực vật cung cấp năng lượng dưới dạng nào?",
+                answers: [
+                    { text: "NADPH", correct: false },
+                    { text: "ATP", correct: true },
+                    { text: "Glucose", correct: false },
+                    { text: "Starch", correct: false }
+                ],
+                explanation: "Hô hấp ở thực vật cung cấp năng lượng dưới dạng ATP."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
