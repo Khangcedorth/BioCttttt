@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Quá Trình Ủ Phân Bón với Trichoderma</title>
+    <link rel="stylesheet" href="trichoderma.css">
+</head>
+<body>
+    <section class="introduction">
+        <h1>Giới Thiệu về Ủ Phân Bón</h1>
+        <p>Ủ phân bón hữu cơ là một quá trình tự nhiên giúp phân hủy các chất hữu cơ để tạo ra phân bón giàu dinh dưỡng cho cây trồng. Khi kết hợp với chế phẩm vi sinh Trichoderma, quá trình này được tăng cường hiệu quả, giúp phân bón nhanh chóng hoai mục và bảo vệ cây trồng khỏi các bệnh do nấm gây ra.</p>
+        
+        <div class="exercise-link">
+            <a href="btphanbon.html" class="custom-button">Làm Bài Tập về Ủ Phân Bón</a>
+            <a href="https://www.youtube.com/watch?v=PMhWz6qb9z8" class="custom-button">Hướng dẫn ủ phân bằng Trichoderma</a>
+        </div>
+
+        <div class="guidelines">
+            <h2>Hướng Dẫn Ủ Phân Bón với Trichoderma</h2>
+            <p>B1: Chuẩn bị các nguyên liệu như chất hữu cơ xanh (rau củ, lá cây tươi) và nâu (lá khô, rơm rạ). Ngoài ra, bạn cần chế phẩm Trichoderma và đảm bảo các điều kiện về độ ẩm, nhiệt độ.</p>
+            <p>B2: Trộn chế phẩm Trichoderma vào đống ủ theo từng lớp nguyên liệu. Đảo đều và giữ độ ẩm cho đống ủ.</p>
+            <p>B3: Sau 2-3 tháng, phân bón sẽ hoai mục và sẵn sàng sử dụng cho cây trồng. Hãy kiểm tra và đảo đống ủ thường xuyên để tăng hiệu quả.</p>
+        </div>
+
+        <div class="upload-section">
+            <h2>Đăng Tải Hình Ảnh hoặc Video</h2>
+            <form id="uploadForm" action="http://localhost:3000/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file" accept="image/*,video/*">
+                <button type="submit" id="uploadButton" class="custom-button">Tải Lên</button>
+            </form>
+            <div id="preview"></div>
+        </div>
+
+        <div class="task-section">
+            <h2>Các Công Việc Liên Quan đến Ủ Phân Bón</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Công Việc</th>
+                        <th>Đánh Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Chuẩn bị nguyên liệu và Trichoderma</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Thực hiện trộn nguyên liệu và Trichoderma</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kiểm soát nhiệt độ và độ ẩm trong quá trình ủ</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kiểm tra chất lượng phân bón sau khi hoàn thành</td>
+                        <td>
+                            <select class="task-result">
+                                <option value="Không Đạt">Không Đạt</option>
+                                <option value="Đạt">Đạt</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                                <option value="Xuất Sắc">Xuất Sắc</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="printButton" class="custom-button">In Kết Quả</button>
+        </div>
+        <div id="result"></div>
+    </section>
+
+    <script>
+        document.getElementById('printButton').addEventListener('click', function() {
+            var results = document.querySelectorAll('.task-result');
+            var result = document.getElementById('result');
+            var completedTasks = [];
+            var totalScore = 0;
+            var maxScore = results.length * 3; // Maximum score based on the number of tasks
+            var scores = {
+                "Không Đạt": 0,
+                "Đạt": 1,
+                "Hoàn Thành": 2,
+                "Xuất Sắc": 3
+            };
+
+            results.forEach((select, index) => {
+                var taskResult = select.value;
+                completedTasks.push({
+                    task: select.parentElement.previousElementSibling.textContent,
+                    result: taskResult,
+                    score: scores[taskResult]
+                });
+                totalScore += scores[taskResult];
+            });
+
+            var percentageScore = (totalScore / maxScore) * 100;
+
+            result.innerHTML = '<h2>Kết Quả Công Việc</h2>';
+            if (completedTasks.length > 0) {
+                var ul = document.createElement('ul');
+                completedTasks.forEach(task => {
+                    var li = document.createElement('li');
+                    li.textContent = `${task.task}: ${task.result} (Điểm: ${task.score})`;
+                    ul.appendChild(li);
+                });
+                result.appendChild(ul);
+                result.innerHTML += `<h3>Tổng Điểm: ${totalScore} / ${maxScore} (${percentageScore.toFixed(2)}%)</h3>`;
+            } else {
+                result.innerHTML += '<p>Không có công việc nào được hoàn thành.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

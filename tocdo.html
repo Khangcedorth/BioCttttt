@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Tốc độ phản ứng hóa học là gì?",
+        answers: [
+            { text: "Là sự thay đổi nồng độ chất phản ứng hoặc sản phẩm theo thời gian", correct: true },
+            { text: "Là sự thay đổi khối lượng của chất phản ứng", correct: false },
+            { text: "Là sự thay đổi thể tích của chất phản ứng", correct: false },
+            { text: "Là sự thay đổi số mol của sản phẩm", correct: false }
+        ],
+        explanation: "Tốc độ phản ứng hóa học được định nghĩa là sự thay đổi nồng độ của chất phản ứng hoặc sản phẩm theo thời gian."
+    },
+    {
+        question: "Câu 2: Yếu tố nào ảnh hưởng đến tốc độ phản ứng hóa học?",
+        answers: [
+            { text: "Nồng độ chất phản ứng", correct: true },
+            { text: "Khối lượng chất phản ứng", correct: false },
+            { text: "Áp suất chất phản ứng", correct: false },
+            { text: "Thể tích chất phản ứng", correct: false }
+        ],
+        explanation: "Nồng độ chất phản ứng là một trong những yếu tố quan trọng ảnh hưởng đến tốc độ phản ứng hóa học."
+    },
+    {
+        question: "Câu 3: Tại sao tăng nhiệt độ lại làm tăng tốc độ phản ứng hóa học?",
+        answers: [
+            { text: "Vì làm tăng động năng của các phân tử", correct: true },
+            { text: "Vì làm tăng khối lượng phân tử", correct: false },
+            { text: "Vì làm giảm thể tích phân tử", correct: false },
+            { text: "Vì làm giảm động năng của các phân tử", correct: false }
+        ],
+        explanation: "Tăng nhiệt độ làm tăng động năng của các phân tử, dẫn đến số va chạm hiệu quả tăng và do đó tăng tốc độ phản ứng."
+    },
+    {
+        question: "Câu 4: Yếu tố nào không ảnh hưởng đến tốc độ phản ứng hóa học?",
+        answers: [
+            { text: "Màu sắc chất phản ứng", correct: true },
+            { text: "Nồng độ chất phản ứng", correct: false },
+            { text: "Nhiệt độ", correct: false },
+            { text: "Diện tích bề mặt", correct: false }
+        ],
+        explanation: "Màu sắc chất phản ứng không ảnh hưởng đến tốc độ phản ứng hóa học."
+    },
+    {
+        question: "Câu 5: Chất xúc tác ảnh hưởng đến tốc độ phản ứng hóa học như thế nào?",
+        answers: [
+            { text: "Tăng tốc độ phản ứng bằng cách giảm năng lượng hoạt hóa", correct: true },
+            { text: "Giảm tốc độ phản ứng bằng cách tăng năng lượng hoạt hóa", correct: false },
+            { text: "Không ảnh hưởng đến tốc độ phản ứng", correct: false },
+            { text: "Tăng tốc độ phản ứng bằng cách tăng năng lượng hoạt hóa", correct: false }
+        ],
+        explanation: "Chất xúc tác tăng tốc độ phản ứng bằng cách giảm năng lượng hoạt hóa cần thiết cho phản ứng xảy ra."
+    },
+    {
+        question: "Câu 6: Tại sao diện tích bề mặt của chất phản ứng ảnh hưởng đến tốc độ phản ứng?",
+        answers: [
+            { text: "Vì làm tăng số lượng va chạm giữa các phân tử", correct: true },
+            { text: "Vì làm tăng khối lượng phân tử", correct: false },
+            { text: "Vì làm giảm nhiệt độ", correct: false },
+            { text: "Vì làm giảm động năng phân tử", correct: false }
+        ],
+        explanation: "Diện tích bề mặt lớn hơn làm tăng số lượng va chạm giữa các phân tử, dẫn đến tăng tốc độ phản ứng."
+    },
+    {
+        question: "Câu 7: Phương trình tốc độ phản ứng hóa học là gì?",
+        answers: [
+            { text: "Phương trình biểu diễn mối quan hệ giữa tốc độ phản ứng và nồng độ các chất phản ứng", correct: true },
+            { text: "Phương trình biểu diễn mối quan hệ giữa khối lượng và thể tích các chất phản ứng", correct: false },
+            { text: "Phương trình biểu diễn mối quan hệ giữa nhiệt độ và áp suất", correct: false },
+            { text: "Phương trình biểu diễn mối quan hệ giữa năng lượng và khối lượng", correct: false }
+        ],
+        explanation: "Phương trình tốc độ biểu diễn mối quan hệ giữa tốc độ phản ứng và nồng độ các chất phản ứng."
+    },
+    {
+        question: "Câu 8: Đơn vị của tốc độ phản ứng hóa học là gì?",
+        answers: [
+            { text: "mol/(L·s)", correct: true },
+            { text: "mol/L", correct: false },
+            { text: "L/mol", correct: false },
+            { text: "mol/s", correct: false }
+        ],
+        explanation: "Đơn vị của tốc độ phản ứng hóa học thường là mol/(L·s), biểu thị số mol chất phản ứng hoặc sản phẩm thay đổi trên một đơn vị thể tích và thời gian."
+    },
+    {
+        question: "Câu 9: Một phản ứng có phương trình tốc độ là rate = k[A][B]. Bậc của phản ứng này là bao nhiêu?",
+        answers: [
+            { text: "Bậc 2", correct: true },
+            { text: "Bậc 1", correct: false },
+            { text: "Bậc 0", correct: false },
+            { text: "Bậc 3", correct: false }
+        ],
+        explanation: "Bậc của phản ứng là tổng số mũ của nồng độ các chất phản ứng trong phương trình tốc độ, trong trường hợp này là 1 + 1 = 2."
+    },
+    {
+        question: "Câu 10: Phản ứng có tốc độ giảm dần theo thời gian được gọi là gì?",
+        answers: [
+            { text: "Phản ứng bậc 1", correct: true },
+            { text: "Phản ứng bậc 2", correct: false },
+            { text: "Phản ứng bậc 0", correct: false },
+            { text: "Phản ứng bậc 3", correct: false }
+        ],
+        explanation: "Phản ứng bậc 1 có tốc độ giảm dần theo thời gian vì tốc độ phản ứng phụ thuộc tuyến tính vào nồng độ của chất phản ứng."
+    },
+    {
+        question: "Câu 11: Tại sao tăng nồng độ chất phản ứng thường làm tăng tốc độ phản ứng?",
+        answers: [
+            { text: "Vì làm tăng số va chạm hiệu quả giữa các phân tử", correct: true },
+            { text: "Vì làm giảm khối lượng phân tử", correct: false },
+            { text: "Vì làm tăng áp suất", correct: false },
+            { text: "Vì làm giảm động năng của phân tử", correct: false }
+        ],
+        explanation: "Tăng nồng độ chất phản ứng làm tăng số va chạm hiệu quả giữa các phân tử, từ đó tăng tốc độ phản ứng."
+    },
+    {
+        question: "Câu 12: Phản ứng có phương trình tốc độ là rate = k[A]^2[B]. Bậc của phản ứng này là bao nhiêu?",
+        answers: [
+            { text: "Bậc 3", correct: true },
+            { text: "Bậc 2", correct: false },
+            { text: "Bậc 1", correct: false },
+            { text: "Bậc 0", correct: false }
+        ],
+        explanation: "Bậc của phản ứng là tổng số mũ của nồng độ các chất phản ứng trong phương trình tốc độ, trong trường hợp này là 2 + 1 = 3."
+    },
+    {
+        question: "Câu 13: Phản ứng bậc 0 có đặc điểm gì?",
+        answers: [
+            { text: "Tốc độ phản ứng không phụ thuộc vào nồng độ chất phản ứng", correct: true },
+            { text: "Tốc độ phản ứng phụ thuộc vào nồng độ chất phản ứng", correct: false },
+            { text: "Tốc độ phản ứng tỷ lệ thuận với nồng độ sản phẩm", correct: false },
+            { text: "Tốc độ phản ứng tỷ lệ nghịch với nồng độ sản phẩm", correct: false }
+        ],
+        explanation: "Phản ứng bậc 0 có tốc độ không phụ thuộc vào nồng độ chất phản ứng, tốc độ phản ứng là hằng số."
+    },
+    {
+        question: "Câu 14: Năng lượng hoạt hóa là gì?",
+        answers: [
+            { text: "Là năng lượng tối thiểu cần thiết để phản ứng xảy ra", correct: true },
+            { text: "Là năng lượng tối đa phản ứng có thể đạt được", correct: false },
+            { text: "Là năng lượng tối thiểu để phá vỡ liên kết", correct: false },
+            { text: "Là năng lượng tối đa để tạo liên kết mới", correct: false }
+        ],
+        explanation: "Năng lượng hoạt hóa là năng lượng tối thiểu cần thiết để phản ứng hóa học xảy ra, thường là năng lượng cần thiết để phá vỡ liên kết trong các phân tử chất phản ứng."
+    },
+    {
+        question: "Câu 15: Chất xúc tác đồng thể là gì?",
+        answers: [
+            { text: "Là chất xúc tác tồn tại cùng pha với chất phản ứng", correct: true },
+            { text: "Là chất xúc tác tồn tại khác pha với chất phản ứng", correct: false },
+            { text: "Là chất xúc tác không thay đổi pha", correct: false },
+            { text: "Là chất xúc tác chỉ tồn tại trong pha lỏng", correct: false }
+        ],
+        explanation: "Chất xúc tác đồng thể là chất xúc tác tồn tại cùng pha với chất phản ứng, thường là cả hai đều ở pha lỏng hoặc khí."
+    },
+    {
+        question: "Câu 16: Ảnh hưởng của áp suất đối với tốc độ phản ứng hóa học như thế nào?",
+        answers: [
+            { text: "Tăng áp suất làm tăng tốc độ phản ứng", correct: true },
+            { text: "Tăng áp suất làm giảm tốc độ phản ứng", correct: false },
+            { text: "Áp suất không ảnh hưởng đến tốc độ phản ứng", correct: false },
+            { text: "Áp suất làm giảm nồng độ chất phản ứng", correct: false }
+        ],
+        explanation: "Tăng áp suất thường làm tăng tốc độ phản ứng, đặc biệt là đối với các phản ứng trong pha khí, do làm tăng nồng độ các phân tử phản ứng."
+    },
+    {
+        question: "Câu 17: Phản ứng có tốc độ không thay đổi theo thời gian gọi là gì?",
+        answers: [
+            { text: "Phản ứng bậc 0", correct: true },
+            { text: "Phản ứng bậc 1", correct: false },
+            { text: "Phản ứng bậc 2", correct: false },
+            { text: "Phản ứng bậc 3", correct: false }
+        ],
+        explanation: "Phản ứng bậc 0 có tốc độ không thay đổi theo thời gian vì tốc độ phản ứng không phụ thuộc vào nồng độ chất phản ứng."
+    },
+    {
+        question: "Câu 18: Ảnh hưởng của nồng độ chất phản ứng đến tốc độ phản ứng trong phản ứng bậc nhất là gì?",
+        answers: [
+            { text: "Tốc độ phản ứng tỷ lệ thuận với nồng độ chất phản ứng", correct: true },
+            { text: "Tốc độ phản ứng không thay đổi", correct: false },
+            { text: "Tốc độ phản ứng tỷ lệ nghịch với nồng độ chất phản ứng", correct: false },
+            { text: "Tốc độ phản ứng tỷ lệ với bình phương nồng độ chất phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng bậc nhất, tốc độ phản ứng tỷ lệ thuận với nồng độ chất phản ứng."
+    },
+    {
+        question: "Câu 19: Vai trò của chất xúc tác trong phản ứng hóa học là gì?",
+        answers: [
+            { text: "Giảm năng lượng hoạt hóa và tăng tốc độ phản ứng", correct: true },
+            { text: "Tăng năng lượng hoạt hóa và giảm tốc độ phản ứng", correct: false },
+            { text: "Không thay đổi năng lượng hoạt hóa và tốc độ phản ứng", correct: false },
+            { text: "Giảm nồng độ chất phản ứng", correct: false }
+        ],
+        explanation: "Chất xúc tác có vai trò giảm năng lượng hoạt hóa cần thiết cho phản ứng, từ đó tăng tốc độ phản ứng."
+    },
+    {
+        question: "Câu 20: Phản ứng bậc hai có tốc độ phụ thuộc như thế nào vào nồng độ chất phản ứng?",
+        answers: [
+            { text: "Tốc độ phản ứng tỷ lệ với bình phương nồng độ chất phản ứng", correct: true },
+            { text: "Tốc độ phản ứng tỷ lệ thuận với nồng độ chất phản ứng", correct: false },
+            { text: "Tốc độ phản ứng không phụ thuộc vào nồng độ chất phản ứng", correct: false },
+            { text: "Tốc độ phản ứng tỷ lệ nghịch với nồng độ chất phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng bậc hai, tốc độ phản ứng tỷ lệ với bình phương nồng độ chất phản ứng."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

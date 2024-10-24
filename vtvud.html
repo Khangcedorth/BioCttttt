@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Vi sinh vật có vai trò gì trong quá trình phân hủy chất hữu cơ?",
+        answers: [
+            { text: "Phân hủy các chất hữu cơ thành các chất vô cơ", correct: true },
+            { text: "Chuyển hóa các chất vô cơ thành chất hữu cơ", correct: false },
+            { text: "Sản xuất các chất hữu cơ từ năng lượng mặt trời", correct: false },
+            { text: "Sản xuất oxy từ quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật giúp phân hủy các chất hữu cơ thành các chất vô cơ như CO2 và nước trong quá trình phân hủy sinh học."
+    },
+    {
+        question: "Câu 2: Vi sinh vật có vai trò gì trong quá trình lên men?",
+        answers: [
+            { text: "Chuyển đổi các chất hữu cơ thành sản phẩm có giá trị", correct: true },
+            { text: "Phân hủy các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật lên men chuyển đổi các chất hữu cơ thành sản phẩm có giá trị như rượu, acid và khí CO2."
+    },
+    {
+        question: "Câu 3: Vi sinh vật có vai trò gì trong quá trình sinh tổng hợp các hợp chất hữu cơ từ CO2 và nước?",
+        answers: [
+            { text: "Sản xuất các hợp chất hữu cơ từ CO2 và nước", correct: true },
+            { text: "Phân hủy các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Chuyển đổi các hợp chất hữu cơ thành năng lượng", correct: false },
+            { text: "Phân hủy nước để sản xuất oxy", correct: false }
+        ],
+        explanation: "Vi sinh vật thực hiện quá trình quang hợp, trong đó chúng sử dụng năng lượng ánh sáng để tổng hợp các hợp chất hữu cơ từ CO2 và nước."
+    },
+    {
+        question: "Câu 4: Vi sinh vật có vai trò gì trong quá trình cải tạo đất?",
+        answers: [
+            { text: "Cải tạo cấu trúc đất và cung cấp dinh dưỡng cho cây trồng", correct: true },
+            { text: "Phân hủy các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất oxy từ quang hợp", correct: false },
+            { text: "Sản xuất năng lượng từ CO2 và nước", correct: false }
+        ],
+        explanation: "Vi sinh vật cải tạo đất bằng cách cải thiện cấu trúc đất và cung cấp dinh dưỡng cần thiết cho cây trồng."
+    },
+    {
+        question: "Câu 5: Vi sinh vật có vai trò gì trong quá trình làm dây chuyền thực phẩm?",
+        answers: [
+            { text: "Làm dây chuyền chuyển hóa năng lượng từ nguồn ngoại lai thành năng lượng sinh học", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật tham gia vào dây chuyền thực phẩm bằng cách chuyển hóa năng lượng từ nguồn ngoài thành năng lượng sinh học."
+    },
+    {
+        question: "Câu 6: Vi sinh vật có vai trò gì trong sản xuất sinh học?",
+        answers: [
+            { text: "Sản xuất các sản phẩm sinh học như enzyme và hormone", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng để sản xuất các sản phẩm sinh học như enzyme và hormone trong ngành công nghiệp sinh học."
+    },
+    {
+        question: "Câu 7: Vi sinh vật có vai trò gì trong ngành công nghiệp thực phẩm?",
+        answers: [
+            { text: "Lên men thực phẩm để cải thiện hương vị và bảo quản", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp thực phẩm để lên men các sản phẩm để cải thiện hương vị và bảo quản."
+    },
+    {
+        question: "Câu 8: Vi sinh vật có vai trò gì trong ngành công nghiệp dược phẩm?",
+        answers: [
+            { text: "Sản xuất thuốc và kháng sinh từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp dược phẩm để sản xuất thuốc và kháng sinh."
+    },
+    {
+        question: "Câu 9: Vi sinh vật có vai trò gì trong quá trình bioremediation?",
+        answers: [
+            { text: "Phân hủy chất ô nhiễm để làm sạch môi trường", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong bioremediation để phân hủy các chất ô nhiễm và làm sạch môi trường."
+    },
+    {
+        question: "Câu 10: Vi sinh vật có vai trò gì trong sản xuất sinh học và phân bón?",
+        answers: [
+            { text: "Sản xuất phân bón hữu cơ từ chất hữu cơ", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong sản xuất sinh học và phân bón để chuyển đổi chất hữu cơ thành phân bón hữu cơ."
+    },
+    {
+        question: "Câu 11: Vi sinh vật có vai trò gì trong ngành công nghiệp sản xuất rượu và bia?",
+        answers: [
+            { text: "Lên men để sản xuất rượu và bia từ các nguyên liệu tinh khiết", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật tham gia vào quá trình lên men để sản xuất rượu và bia từ các nguyên liệu tinh khiết như mạch nha và lúa mạch."
+    },
+    {
+        question: "Câu 12: Vi sinh vật có vai trò gì trong ngành công nghiệp sản xuất enzyme?",
+        answers: [
+            { text: "Sản xuất các enzyme từ vi sinh vật để sử dụng trong ngành công nghiệp", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp để sản xuất các enzyme có nhiều ứng dụng khác nhau, từ thực phẩm đến dược phẩm."
+    },
+    {
+        question: "Câu 13: Vi sinh vật có vai trò gì trong ngành công nghiệp sinh học phân tử?",
+        answers: [
+            { text: "Sản xuất phân tử sinh học như DNA và RNA", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp sinh học phân tử để sản xuất các phân tử quan trọng như DNA và RNA."
+    },
+    {
+        question: "Câu 14: Vi sinh vật có vai trò gì trong nghiên cứu và sản xuất vaccine?",
+        answers: [
+            { text: "Sản xuất vaccine từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng để nghiên cứu và sản xuất vaccine để phòng ngừa các bệnh do vi rút và vi khuẩn gây ra."
+    },
+    {
+        question: "Câu 15: Vi sinh vật có vai trò gì trong ngành công nghiệp sản xuất sinh tố và hormone?",
+        answers: [
+            { text: "Sản xuất sinh tố và hormone từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp để sản xuất các sinh tố và hormone có ảnh hưởng đến sự phát triển và chức năng của cơ thể."
+    },
+    {
+        question: "Câu 16: Vi sinh vật có vai trò gì trong sản xuất chất điều vị và phụ gia thực phẩm?",
+        answers: [
+            { text: "Sản xuất chất điều vị và phụ gia thực phẩm từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng để sản xuất các chất điều vị và phụ gia thực phẩm để cải thiện hương vị và độ bền của sản phẩm thực phẩm."
+    },
+    {
+        question: "Câu 17: Vi sinh vật có vai trò gì trong ngành công nghiệp xử lý nước thải?",
+        answers: [
+            { text: "Phân hủy chất hữu cơ trong nước thải để làm sạch nước", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp xử lý nước thải để phân hủy các chất hữu cơ và làm sạch nước thải trước khi thải ra môi trường."
+    },
+    {
+        question: "Câu 18: Vi sinh vật có vai trò gì trong ngành công nghiệp dược phẩm sinh học?",
+        answers: [
+            { text: "Sản xuất các sản phẩm dược phẩm sinh học từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp dược phẩm sinh học để sản xuất các sản phẩm dược phẩm từ các quy trình sinh học."
+    },
+    {
+        question: "Câu 19: Vi sinh vật có vai trò gì trong ngành công nghiệp sản xuất chất sát khuẩn và chất kháng sinh?",
+        answers: [
+            { text: "Sản xuất chất sát khuẩn và chất kháng sinh từ vi sinh vật", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được sử dụng trong ngành công nghiệp để sản xuất các chất sát khuẩn và kháng sinh có tác dụng chống lại vi khuẩn và vi rút."
+    },
+    {
+        question: "Câu 20: Vi sinh vật có vai trò gì trong công nghệ môi trường?",
+        answers: [
+            { text: "Ứng dụng trong quá trình xử lý nước thải và bioremediation", correct: true },
+            { text: "Chuyển đổi các chất hữu cơ thành CO2 và nước", correct: false },
+            { text: "Sản xuất năng lượng từ nước và CO2", correct: false },
+            { text: "Sản xuất oxy trong quá trình quang hợp", correct: false }
+        ],
+        explanation: "Vi sinh vật được áp dụng trong công nghệ môi trường để xử lý nước thải và thực hiện các quá trình bioremediation để làm sạch môi trường."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

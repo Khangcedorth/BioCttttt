@@ -1,0 +1,134 @@
+/* Đặt lại margin và padding mặc định cho toàn bộ trang */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Sử dụng font chữ hiện đại */
+    background-color: #e9f7e9; /* Màu nền gợi nhớ đến thiên nhiên và môi trường xanh */
+}
+
+/* Thiết lập kiểu cho phần giới thiệu */
+.introduction {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Tăng độ mờ của bóng đổ */
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    border: 2px solid #b2d8b2; /* Đường viền xanh lá nhẹ nhàng */
+}
+
+/* Thiết lập kiểu cho tiêu đề chính */
+.introduction h1 {
+    color: #2f7d32; /* Màu xanh lá đậm, liên quan đến thiên nhiên */
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    letter-spacing: 1px; /* Tăng khoảng cách giữa các chữ cái */
+}
+
+/* Thiết lập kiểu cho đoạn văn bản */
+.introduction p {
+    color: #333;
+    line-height: 1.8;
+    font-size: 1.1em;
+}
+
+/* Thiết lập kiểu cho liên kết dẫn đến bài tập */
+.exercise-link {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Thiết lập kiểu cho nút bấm tùy chỉnh */
+.custom-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #4caf50; /* Màu xanh lá cây nổi bật */
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Hiệu ứng khi di chuột qua nút bấm */
+.custom-button:hover {
+    background-color: #388e3c; /* Xanh lá đậm hơn khi hover */
+    transform: translateY(-3px);
+}
+
+/* Thiết lập kiểu cho phần tải lên */
+.upload-section {
+    margin-top: 40px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 40px auto;
+    border: 2px solid #b2d8b2; /* Đường viền xanh lá nhẹ */
+}
+
+/* Thiết lập kiểu cho tiêu đề phần tải lên */
+.upload-section h2 {
+    color: #2f7d32;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Thiết lập kiểu cho phần xem trước */
+#preview {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Thiết lập kiểu cho phần công việc */
+.task-section {
+    margin-top: 40px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 40px auto;
+    border: 2px solid #b2d8b2;
+}
+
+/* Thiết lập kiểu cho tiêu đề phần công việc */
+.task-section h2 {
+    color: #2f7d32;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Thiết lập kiểu cho bảng công việc */
+.task-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.task-section th, .task-section td {
+    padding: 10px;
+    border: 1px solid #b2d8b2;
+}
+
+.task-section th {
+    background-color: #e0f2e0; /* Màu nền gợi nhớ đến màu lá cây */
+    color: #2f7d32;
+    text-align: left;
+}
+
+.task-section td {
+    text-align: center;
+}
+
+/* Hiệu ứng khi di chuột qua bảng công việc */
+.task-section tr:hover {
+    background-color: #f9f9f9;
+}

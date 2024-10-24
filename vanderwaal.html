@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Liên kết hydrogen là gì?",
+        answers: [
+            { text: "Sự tạo thành liên kết giữa hydrogen với một nguyên tố electronegative khác", correct: true },
+            { text: "Sự tạo thành liên kết giữa hai nguyên tử hydrogen", correct: false },
+            { text: "Sự trao đổi electron giữa hai nguyên tử hydrogen", correct: false },
+            { text: "Sự trao đổi proton giữa hai nguyên tử hydrogen", correct: false }
+        ],
+        explanation: "Liên kết hydrogen là sự tạo thành liên kết giữa một nguyên tử hydrogen với một nguyên tố electronegative khác như oxygen, nitrogen, hoặc fluorine."
+    },
+    {
+        question: "Câu 2: Trong nước (H2O), liên kết hydrogen xảy ra giữa hydrogen và nguyên tố nào?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Carbon", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Trong nước, liên kết hydrogen xảy ra giữa nguyên tử hydrogen với nguyên tử oxygen."
+    },
+    {
+        question: "Câu 3: Đặc tính nào của nước có thể được giải thích bằng liên kết hydrogen?",
+        answers: [
+            { text: "Tính tan trong nước của các chất có nhiều liên kết hydrogen", correct: true },
+            { text: "Màu sắc của nước", correct: false },
+            { text: "Hàm lượng oxy hòa tan trong nước", correct: false },
+            { text: "Điểm nóng chảy của nước", correct: false }
+        ],
+        explanation: "Tính tan trong nước của các chất có nhiều liên kết hydrogen có thể giải thích bằng khả năng hình thành liên kết hydrogen với nước."
+    },
+    {
+        question: "Câu 4: Liên kết hydrogen có mức độ mạnh như thế nào so với liên kết ion?",
+        answers: [
+            { text: "Yếu hơn liên kết ion", correct: true },
+            { text: "Mạnh hơn liên kết ion", correct: false },
+            { text: "Bằng nhau với liên kết ion", correct: false },
+            { text: "Không thể so sánh được", correct: false }
+        ],
+        explanation: "Liên kết hydrogen yếu hơn liên kết ion nhưng mạnh hơn liên kết van der Waals."
+    },
+    {
+        question: "Câu 5: Liên kết hydrogen có tính chất nào gần với liên kết ion?",
+        answers: [
+            { text: "Có tính chất điện tích", correct: true },
+            { text: "Chỉ có tính chất cơ học", correct: false },
+            { text: "Chỉ có tính chất vật lý", correct: false },
+            { text: "Không có tính chất nào gần với liên kết ion", correct: false }
+        ],
+        explanation: "Liên kết hydrogen có tính chất điện tích, tương tự như liên kết ion trong việc tạo ra sự hấp dẫn giữa các phân tử."
+    },
+    {
+        question: "Câu 6: Liên kết hydrogen trong DNA làm gì?",
+        answers: [
+            { text: "Giữ các sợi DNA cùng với nhau", correct: true },
+            { text: "Làm cho DNA mất cấu trúc", correct: false },
+            { text: "Biến đổi cấu trúc của DNA", correct: false },
+            { text: "Làm cho DNA dễ phân hủy", correct: false }
+        ],
+        explanation: "Liên kết hydrogen giữ các sợi DNA cùng với nhau, làm cho DNA có cấu trúc ổn định."
+    },
+    {
+        question: "Câu 7: Liên kết hydrogen thường xảy ra giữa các phân tử nào trong protein?",
+        answers: [
+            { text: "Giữa nguyên tử hydrogen của nhóm amino và nguyên tử oxy của nhóm carboxyl", correct: true },
+            { text: "Giữa các nguyên tử hydrogen trong cùng một phân tử protein", correct: false },
+            { text: "Giữa nguyên tử hydrogen và nguyên tử nitrogen trong protein", correct: false },
+            { text: "Giữa nguyên tử hydrogen và nguyên tử carbon trong protein", correct: false }
+        ],
+        explanation: "Trong protein, liên kết hydrogen thường xảy ra giữa nguyên tử hydrogen của nhóm amino và nguyên tử oxy của nhóm carboxyl trong các chuỗi polypeptit."
+    },
+    {
+        question: "Câu 8: Van der Waals là gì?",
+        answers: [
+            { text: "Lực hấp dẫn giữa các phân tử do sự tạo thành dipole tạm thời", correct: true },
+            { text: "Liên kết mạnh giữa các nguyên tử hydrogen", correct: false },
+            { text: "Tính chất cơ học của các chất", correct: false },
+            { text: "Tính chất vật lý của các chất", correct: false }
+        ],
+        explanation: "Van der Waals là lực hấp dẫn giữa các phân tử do sự tạo thành dipole tạm thời, bao gồm lực van der Waals và liên kết hydrophobic."
+    },
+    {
+        question: "Câu 9: Đặc tính nào của các chất có thể giải thích bằng van der Waals?",
+        answers: [
+            { text: "Điểm nóng chảy và sự bay hơi của chất", correct: true },
+            { text: "Màu sắc của chất", correct: false },
+            { text: "Tính tan của chất trong nước", correct: false },
+            { text: "Tính chất điện tích của chất", correct: false }
+        ],
+        explanation: "Van der Waals giải thích điểm nóng chảy và sự bay hơi của các chất do sự tương tác giữa các dipole tạm thời."
+    },
+    {
+        question: "Câu 10: Van der Waals có mức độ mạnh như thế nào so với liên kết hydrogen?",
+        answers: [
+            { text: "Yếu hơn liên kết hydrogen", correct: true },
+            { text: "Mạnh hơn liên kết hydrogen", correct: false },
+            { text: "Bằng nhau với liên kết hydrogen", correct: false },
+            { text: "Không thể so sánh được", correct: false }
+        ],
+        explanation: "Van der Waals yếu hơn liên kết hydrogen nhưng cũng có vai trò quan trọng trong tạo cấu trúc và tính chất của các phân tử."
+    },
+    {
+    question: "Câu 11: Liên kết hydrogen xảy ra khi nào giữa các phân tử?",
+    answers: [
+        { text: "Khi một nguyên tử hydrogen được liên kết với một nguyên tử có độ âm điện lớn hơn", correct: true },
+        { text: "Khi một nguyên tử carbon được liên kết với một nguyên tử có độ âm điện lớn hơn", correct: false },
+        { text: "Khi một nguyên tử oxy được liên kết với một nguyên tử có độ âm điện lớn hơn", correct: false },
+        { text: "Khi một nguyên tử nitơ được liên kết với một nguyên tử có độ âm điện lớn hơn", correct: false }
+    ],
+    explanation: "Liên kết hydrogen xảy ra khi một nguyên tử hydrogen (trong một phân tử) được liên kết với một nguyên tử có độ âm điện lớn hơn, chẳng hạn như oxy, nitơ hoặc flor."
+},
+{
+        question: "Câu 12: Tại sao liên kết hydrogen giữa các phân tử nước làm cho nước có nhiệt độ nóng chảy và nhiệt độ sôi cao?",
+        answers: [
+            { text: "Do liên kết hydrogen làm cho các phân tử nước gần nhau hơn", correct: true },
+            { text: "Do liên kết hydrogen làm cho nước mất đi nhiệt độ cao", correct: false },
+            { text: "Do liên kết hydrogen làm cho các phân tử nước xa nhau hơn", correct: false },
+            { text: "Do liên kết hydrogen không ảnh hưởng đến nhiệt độ của nước", correct: false }
+        ],
+        explanation: "Liên kết hydrogen làm cho các phân tử nước gần nhau hơn, điều này dẫn đến nhiệt độ nóng chảy và sôi của nước cao hơn so với các chất khác."
+    },
+    {
+        question: "Câu 13: Van der Waals có mức độ yếu hơn liên kết hydrogen vì:",
+        answers: [
+            { text: "Nó phụ thuộc vào sự tạo thành dipole tạm thời", correct: true },
+            { text: "Nó có sự trao đổi electron giữa các nguyên tử", correct: false },
+            { text: "Nó tương tác mạnh hơn với các nguyên tử", correct: false },
+            { text: "Nó là hợp chất với liên kết ion", correct: false }
+        ],
+        explanation: "Van der Waals yếu hơn liên kết hydrogen vì nó dựa vào sự tạo thành dipole tạm thời giữa các phân tử."
+    },
+    {
+        question: "Câu 14: Liên kết hydrogen và van der Waals đều làm cho các phân tử tạo thành cấu trúc phân tử như thế nào?",
+        answers: [
+            { text: "Giữ các phân tử cùng với nhau", correct: true },
+            { text: "Phá vỡ cấu trúc của phân tử", correct: false },
+            { text: "Tạo thành các cấu trúc phân tử mới", correct: false },
+            { text: "Làm cho phân tử dễ tan vào trong nước", correct: false }
+        ],
+        explanation: "Cả liên kết hydrogen và van der Waals đều giữ các phân tử cùng với nhau để tạo thành các cấu trúc phân tử ổn định."
+    },
+    {
+        question: "Câu 15: Tính chất nào của chất phụ thuộc nhiều vào van der Waals?",
+        answers: [
+            { text: "Tính chất phân tử khí và lỏng", correct: true },
+            { text: "Tính chất điện hóa của chất", correct: false },
+            { text: "Tính chất vật lý của chất", correct: false },
+            { text: "Tính chất hóa học của chất", correct: false }
+        ],
+        explanation: "Van der Waals quyết định tính chất phân tử của khí và lỏng, bao gồm cả điểm nóng chảy và sự bay hơi."
+    },
+    {
+        question: "Câu 16: Liên kết hydrogen làm cho protein có cấu trúc như thế nào?",
+        answers: [
+            { text: "Giữ các chuỗi polypeptit cùng với nhau", correct: true },
+            { text: "Phá vỡ cấu trúc của protein", correct: false },
+            { text: "Làm cho protein mất đi cấu trúc", correct: false },
+            { text: "Tạo ra cấu trúc mới của protein", correct: false }
+        ],
+        explanation: "Liên kết hydrogen giữ các chuỗi polypeptit cùng với nhau để tạo thành cấu trúc bền của protein."
+    },
+    {
+        question: "Câu 17: Sự khác biệt giữa liên kết hydrogen và van der Waals là gì?",
+        answers: [
+            { text: "Liên kết hydrogen là tương tác giữa nguyên tử, trong khi van der Waals là tương tác giữa phân tử", correct: true },
+            { text: "Liên kết hydrogen là tương tác giữa phân tử, trong khi van der Waals là tương tác giữa nguyên tử", correct: false },
+            { text: "Liên kết hydrogen là tương tác cơ học, trong khi van der Waals là tương tác vật lý", correct: false },
+            { text: "Không có sự khác biệt nào giữa chúng", correct: false }
+        ],
+        explanation: "Liên kết hydrogen xảy ra giữa các nguyên tử, trong khi van der Waals xảy ra giữa các phân tử thông qua sự tạo thành dipole tạm thời."
+    },
+    {
+        question: "Câu 18: Tại sao van der Waals được gọi là tương tác dipole tạm thời?",
+        answers: [
+            { text: "Do các phân tử tạo ra dipole tạm thời khi tiếp xúc gần nhau", correct: true },
+            { text: "Do các phân tử không tạo ra dipole khi tiếp xúc gần nhau", correct: false },
+            { text: "Do van der Waals không liên quan đến sự tạo ra dipole", correct: false },
+            { text: "Do các phân tử luôn tạo ra dipole khi tiếp xúc gần nhau", correct: false }
+        ],
+        explanation: "Van der Waals được gọi là tương tác dipole tạm thời vì các phân tử tạo ra dipole nhờ vào sự chuyển động của electron khi tiếp xúc gần nhau."
+    },
+    {
+        question: "Câu 19: Liên kết hydrogen làm cho ADN có cấu trúc như thế nào?",
+        answers: [
+            { text: "Giữ các sợi ADN cùng với nhau", correct: true },
+            { text: "Phá vỡ cấu trúc của ADN", correct: false },
+            { text: "Làm cho ADN mất đi cấu trúc", correct: false },
+            { text: "Tạo ra cấu trúc mới của ADN", correct: false }
+        ],
+        explanation: "Liên kết hydrogen giữ các sợi ADN cùng với nhau để tạo thành cấu trúc hai xoắn của ADN."
+    },
+    {
+        question: "Câu 20: Tính chất nào của nước có thể giải thích bằng van der Waals?",
+        answers: [
+            { text: "Sự bay hơi nhanh và sự hình thành nước ngưng tụ", correct: true },
+            { text: "Màu sắc của nước", correct: false },
+            { text: "Tính tan của nước trong các chất khác", correct: false },
+            { text: "Tính chất điện hóa của nước", correct: false }
+        ],
+        explanation: "Van der Waals giải thích sự bay hơi nhanh và sự hình thành nước ngưng tụ do sự tương tác giữa các phân tử nước."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Bằng chứng tiến hóa nào chứng minh rằng các loài có nguồn gốc chung?",
+        answers: [
+            { text: "Bằng chứng hóa thạch", correct: true },
+            { text: "Bằng chứng di truyền", correct: false },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng mô học", correct: false }
+        ],
+        explanation: "Bằng chứng hóa thạch chứng minh rằng các loài có nguồn gốc chung bằng cách cung cấp thông tin về các dạng sống cổ xưa và sự thay đổi qua thời gian."
+    },
+    {
+        question: "Câu 2: Bằng chứng nào cho thấy sự tương đồng trong cấu trúc cơ thể của các loài khác nhau?",
+        answers: [
+            { text: "Bằng chứng mô học", correct: true },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng di truyền", correct: false }
+        ],
+        explanation: "Bằng chứng mô học cho thấy sự tương đồng trong cấu trúc cơ thể của các loài khác nhau, chứng minh nguồn gốc chung."
+    },
+    {
+        question: "Câu 3: Bằng chứng tiến hóa nào dựa trên sự phân tích trình tự DNA của các loài?",
+        answers: [
+            { text: "Bằng chứng di truyền", correct: true },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng mô học", correct: false }
+        ],
+        explanation: "Bằng chứng di truyền dựa trên sự phân tích trình tự DNA để so sánh và xác định sự liên quan giữa các loài."
+    },
+    {
+        question: "Câu 4: Sự tồn tại của các cơ quan tàn dư là bằng chứng của điều gì?",
+        answers: [
+            { text: "Nguồn gốc chung", correct: true },
+            { text: "Chọn lọc tự nhiên", correct: false },
+            { text: "Di truyền học", correct: false },
+            { text: "Tự chọn", correct: false }
+        ],
+        explanation: "Các cơ quan tàn dư là bằng chứng của nguồn gốc chung, cho thấy sự tiến hóa từ tổ tiên có chung cấu trúc cơ thể."
+    },
+    {
+        question: "Câu 5: Bằng chứng nào giúp chứng minh rằng các loài có nguồn gốc chung thông qua sự phát triển của phôi?",
+        answers: [
+            { text: "Bằng chứng phôi học", correct: true },
+            { text: "Bằng chứng di truyền", correct: false },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng mô học", correct: false }
+        ],
+        explanation: "Bằng chứng phôi học chứng minh nguồn gốc chung thông qua sự tương đồng trong giai đoạn phát triển phôi của các loài khác nhau."
+    },
+    {
+        question: "Câu 6: Bằng chứng nào cho thấy các loài đã thích nghi với môi trường sống của chúng qua thời gian?",
+        answers: [
+            { text: "Bằng chứng sinh lý học", correct: true },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng mô học", correct: false },
+            { text: "Bằng chứng di truyền", correct: false }
+        ],
+        explanation: "Bằng chứng sinh lý học cho thấy sự thích nghi của các loài với môi trường sống của chúng qua sự điều chỉnh chức năng và cấu trúc cơ thể."
+    },
+    {
+        question: "Câu 7: Phân tích các mẫu hóa thạch có thể cho chúng ta biết điều gì về lịch sử tiến hóa của các loài?",
+        answers: [
+            { text: "Sự thay đổi và phát triển của các loài qua thời gian", correct: true },
+            { text: "Sự tương đồng trong cấu trúc tế bào", correct: false },
+            { text: "Sự phân bố của các loài hiện tại", correct: false },
+            { text: "Sự thay đổi trong hành vi của các loài", correct: false }
+        ],
+        explanation: "Phân tích các mẫu hóa thạch giúp chúng ta hiểu về sự thay đổi và phát triển của các loài qua thời gian."
+    },
+    {
+        question: "Câu 8: Sự xuất hiện các loài mới trong cùng một nhóm sinh vật là bằng chứng của điều gì?",
+        answers: [
+            { text: "Sự phân hóa tiến hóa", correct: true },
+            { text: "Sự đồng hóa sinh lý", correct: false },
+            { text: "Sự chọn lọc tự nhiên", correct: false },
+            { text: "Sự tương đồng di truyền", correct: false }
+        ],
+        explanation: "Sự xuất hiện các loài mới trong cùng một nhóm sinh vật là bằng chứng của sự phân hóa tiến hóa, cho thấy sự đa dạng và phát triển của các loài."
+    },
+    {
+        question: "Câu 9: Bằng chứng nào cho thấy các loài có thể phát triển tương tự nhau dù không có nguồn gốc chung?",
+        answers: [
+            { text: "Sự tiến hóa hội tụ", correct: true },
+            { text: "Sự tiến hóa phân kỳ", correct: false },
+            { text: "Sự chọn lọc tự nhiên", correct: false },
+            { text: "Sự đồng hóa di truyền", correct: false }
+        ],
+        explanation: "Sự tiến hóa hội tụ là bằng chứng cho thấy các loài có thể phát triển tương tự nhau dù không có nguồn gốc chung."
+    },
+    {
+        question: "Câu 10: Bằng chứng mô học cho chúng ta biết điều gì về sự tiến hóa của các loài?",
+        answers: [
+            { text: "Sự tương đồng về cấu trúc cơ thể giữa các loài", correct: true },
+            { text: "Sự thay đổi trong cấu trúc gene của các loài", correct: false },
+            { text: "Sự phân bố của các loài trong môi trường sống", correct: false },
+            { text: "Sự xuất hiện của các loài mới trong lịch sử", correct: false }
+        ],
+        explanation: "Bằng chứng mô học cho chúng ta biết về sự tương đồng về cấu trúc cơ thể giữa các loài, chứng minh nguồn gốc chung."
+    },
+    {
+        question: "Câu 11: Các hiện tượng di truyền như đột biến và di truyền liên kết có vai trò gì trong tiến hóa?",
+        answers: [
+            { text: "Góp phần tạo ra sự đa dạng di truyền", correct: true },
+            { text: "Kìm hãm sự thay đổi di truyền", correct: false },
+            { text: "Tạo ra sự đồng nhất di truyền trong quần thể", correct: false },
+            { text: "Loại bỏ các allele có lợi khỏi quần thể", correct: false }
+        ],
+        explanation: "Các hiện tượng di truyền như đột biến và di truyền liên kết góp phần tạo ra sự đa dạng di truyền, thúc đẩy quá trình tiến hóa."
+    },
+    {
+        question: "Câu 12: Bằng chứng nào cho thấy các loài có nguồn gốc chung qua sự phân tích trình tự protein?",
+        answers: [
+            { text: "Bằng chứng sinh hóa", correct: true },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng mô học", correct: false },
+            { text: "Bằng chứng phôi học", correct: false }
+        ],
+        explanation: "Bằng chứng sinh hóa, như phân tích trình tự protein, cho thấy sự tương đồng giữa các loài và chứng minh nguồn gốc chung."
+    },
+    {
+        question: "Câu 13: Bằng chứng nào cho thấy các loài có thể phát triển độc lập nhưng vẫn giữ những đặc điểm tương đồng?",
+        answers: [
+            { text: "Sự tiến hóa phân kỳ", correct: true },
+            { text: "Sự tiến hóa hội tụ", correct: false },
+            { text: "Sự chọn lọc tự nhiên", correct: false },
+            { text: "Sự đồng hóa di truyền", correct: false }
+        ],
+        explanation: "Sự tiến hóa phân kỳ cho thấy các loài có thể phát triển độc lập nhưng vẫn giữ những đặc điểm tương đồng do nguồn gốc chung."
+    },
+    {
+        question: "Câu 14: Phát hiện các loài hóa thạch có cấu trúc giống như các loài hiện tại là bằng chứng của điều gì?",
+        answers: [
+            { text: "Sự liên tục trong lịch sử tiến hóa", correct: true },
+            { text: "Sự phân hóa tiến hóa", correct: false },
+            { text: "Sự hội tụ tiến hóa", correct: false },
+            { text: "Sự phân tách môi trường sống", correct: false }
+        ],
+        explanation: "Phát hiện các loài hóa thạch có cấu trúc giống như các loài hiện tại cho thấy sự liên tục trong lịch sử tiến hóa của các loài."
+    },
+    {
+        question: "Câu 15: Bằng chứng nào chứng minh sự thay đổi của các loài qua thời gian dựa trên so sánh các cấu trúc cơ thể của chúng?",
+        answers: [
+            { text: "Bằng chứng cấu trúc", correct: true },
+            { text: "Bằng chứng di truyền", correct: false },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng phôi học", correct: false }
+        ],
+        explanation: "Bằng chứng cấu trúc chứng minh sự thay đổi của các loài qua thời gian dựa trên sự so sánh cấu trúc cơ thể của chúng."
+    },
+    {
+        question: "Câu 16: Bằng chứng nào cho thấy các loài đã phát triển các đặc điểm tương tự dù có nguồn gốc khác nhau?",
+        answers: [
+            { text: "Sự tiến hóa hội tụ", correct: true },
+            { text: "Sự tiến hóa phân kỳ", correct: false },
+            { text: "Sự di truyền di lệch", correct: false },
+            { text: "Sự đồng hóa di truyền", correct: false }
+        ],
+        explanation: "Sự tiến hóa hội tụ cho thấy các loài phát triển các đặc điểm tương tự dù có nguồn gốc khác nhau, do thích nghi với môi trường tương tự."
+    },
+    {
+        question: "Câu 17: Bằng chứng nào chứng minh sự tiến hóa qua phân tích các đặc điểm phát triển của phôi trong các loài khác nhau?",
+        answers: [
+            { text: "Bằng chứng phôi học", correct: true },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng di truyền", correct: false },
+            { text: "Bằng chứng hóa thạch", correct: false }
+        ],
+        explanation: "Bằng chứng phôi học chứng minh sự tiến hóa qua phân tích các đặc điểm phát triển của phôi trong các loài khác nhau."
+    },
+    {
+        question: "Câu 18: Sự tồn tại của các cơ quan tương đồng giữa các loài chứng minh điều gì?",
+        answers: [
+            { text: "Nguồn gốc chung", correct: true },
+            { text: "Sự tiến hóa hội tụ", correct: false },
+            { text: "Sự thích nghi với môi trường", correct: false },
+            { text: "Sự đồng hóa di truyền", correct: false }
+        ],
+        explanation: "Sự tồn tại của các cơ quan tương đồng giữa các loài chứng minh nguồn gốc chung của các loài đó."
+    },
+    {
+        question: "Câu 19: Bằng chứng nào cho thấy sự thay đổi và phát triển của các loài qua thời gian dựa trên mẫu hóa thạch?",
+        answers: [
+            { text: "Bằng chứng hóa thạch", correct: true },
+            { text: "Bằng chứng sinh lý học", correct: false },
+            { text: "Bằng chứng di truyền", correct: false },
+            { text: "Bằng chứng mô học", correct: false }
+        ],
+        explanation: "Bằng chứng hóa thạch chứng minh sự thay đổi và phát triển của các loài qua thời gian thông qua việc phân tích các mẫu hóa thạch."
+    },
+    {
+        question: "Câu 20: Bằng chứng nào giúp chúng ta hiểu sự thích nghi của các loài với môi trường sống của chúng?",
+        answers: [
+            { text: "Bằng chứng sinh lý học", correct: true },
+            { text: "Bằng chứng hóa thạch", correct: false },
+            { text: "Bằng chứng phôi học", correct: false },
+            { text: "Bằng chứng di truyền", correct: false }
+        ],
+        explanation: "Bằng chứng sinh lý học giúp chúng ta hiểu sự thích nghi của các loài với môi trường sống của chúng qua sự điều chỉnh chức năng và cấu trúc cơ thể."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

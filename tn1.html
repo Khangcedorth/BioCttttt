@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+    
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Khi nói về thường biến, phát biểu nào dưới đây là sai?",
+        answers: [
+            { text: "Xảy ra đồng loạt, theo một hướng xác định", correct: false },
+            { text: "Là nguyên liệu của chọn giống và tiến hóa", correct: true },
+            { text: "Giúp cơ thể thích nghi với môi trường", correct: false },
+            { text: "Có thể dự đoán trước", correct: false }
+        ],
+        explanation: "Thường biến là những thay đổi về kiểu hình không di truyền qua thế hệ, nên không là nguyên liệu cho chọn giống và tiến hóa."
+    },
+    {
+        question: "Câu 2: Bộ ba nào dưới đây làm nhiệm vụ kết thúc quá trình dịch mã?",
+        answers: [
+            { text: "5’UAA3’", correct: true },
+            { text: "5’AUA3’", correct: false },
+            { text: "3’UAG5’", correct: false },
+            { text: "3’UGA5’", correct: false }
+        ],
+        explanation: "Bộ ba kết thúc quá trình dịch mã là 5’UAA3’."
+    },
+    {
+        question: "Câu 3: Phép lai giữa cá thể mang tính trạng trội với cá thể mang tính trạng lặn nhằm xác định kiểu gen của cá thể trội gọi là gì?",
+        answers: [
+            { text: "Lai cải tiến giống", correct: false },
+            { text: "Lai khác dòng đơn", correct: false },
+            { text: "Lai thuận nghịch", correct: false },
+            { text: "Lai phân tích", correct: true }
+        ],
+        explanation: "Lai phân tích là phép lai nhằm xác định kiểu gen của cá thể mang tính trạng trội."
+    },
+    {
+        question: "Câu 4: Quần thể nào dưới đây ở trạng thái cân bằng di truyền?",
+        answers: [
+            { text: "0,16AA : 0,48Aa : 0,36aa", correct: true },
+            { text: "0,5AA : 0,5aa", correct: false },
+            { text: "0,25AA : 0,35Aa : 0,4aa", correct: false },
+            { text: "0,2AA : 0,4Aa : 0,2aa", correct: false }
+        ],
+        explanation: "Quần thể cân bằng di truyền phải thỏa mãn định luật Hac đi – Vanbec, với tỉ lệ x^2AA + 2x.yAa + y^2aa = 1."
+    },
+    {
+        question: "Câu 5: Quần thể ban đầu có thành phần kiểu gen là 0,5AA : 0,5Aa. Khi tự thụ phấn bắt buộc qua 3 thế hệ, tỉ lệ kiểu gen aa ở F3 là bao nhiêu?",
+        answers: [
+            { text: "0,21575", correct: false },
+            { text: "0,4375", correct: false },
+            { text: "0,21875", correct: true },
+            { text: "0,4025", correct: false }
+        ],
+        explanation: "Tỉ lệ kiểu gen aa ở thế hệ F3 tính theo công thức b + (a - a(1/2)^n)/2, kết quả là 0,21875."
+    },
+    {
+        question: "Câu 6: Cải củ có bộ NST lưỡng bội 2n = 18. Trong mỗi tế bào sinh dưỡng của thể tứ bội loài này có bao nhiêu NST?",
+        answers: [
+            { text: "56", correct: false },
+            { text: "72", correct: false },
+            { text: "18", correct: false },
+            { text: "36", correct: true }
+        ],
+        explanation: "Với 2n = 18, thể tứ bội sẽ có số NST là 4n = 36."
+    },
+    {
+        question: "Câu 7: … là hiện tượng con lai có năng suất, phẩm chất, sức chống chịu vượt trội so với bố mẹ.",
+        answers: [
+            { text: "Thoái hóa giống", correct: false },
+            { text: "Ưu thế lai", correct: true },
+            { text: "Đột biến gen", correct: false },
+            { text: "Siêu trội", correct: false }
+        ],
+        explanation: "Ưu thế lai là hiện tượng con lai vượt trội so với bố mẹ về các tính trạng quan trọng."
+    },
+    {
+        question: "Câu 8: Ở người, alen A quy định mắt nâu trội hoàn toàn so với alen a quy định mắt đen. Kiểu gen của thế hệ P có thể là một trong bao nhiêu trường hợp?",
+        answers: [
+            { text: "4", correct: false },
+            { text: "1", correct: false },
+            { text: "2", correct: true },
+            { text: "3", correct: false }
+        ],
+        explanation: "Vì cặp vợ chồng sinh con mắt đen nên họ có alen a. Do con có mắt nâu nên ít nhất một trong hai phải có alen A, dẫn đến hai trường hợp Aa x Aa hoặc Aa x aa."
+    },
+    {
+        question: "Câu 9: Ở một loài lưỡng bội xét 3 gen, gen A nằm trên NST thường, có 3 alen. Gen B và gen D đều có 2 alen và nằm trên NST X. Quần thể này có thể có tối đa bao nhiêu kiểu gen?",
+        answers: [
+            { text: "132", correct: false },
+            { text: "120", correct: false },
+            { text: "156", correct: true },
+            { text: "142", correct: false }
+        ],
+        explanation: "Tính toán dựa trên số kiểu gen có thể có từ các gen đang xét cho thấy tổng số kiểu gen là 156."
+    },
+    {
+        question: "Câu 10: Hội chứng nào dưới đây không phải do đột biến số lượng NST gây ra?",
+        answers: [
+            { text: "Hội chứng Đao", correct: false },
+            { text: "Hội chứng Cushing", correct: true },
+            { text: "Hội chứng siêu nữ", correct: false },
+            { text: "Hội chứng Claiphentơ", correct: false }
+        ],
+        explanation: "Hội chứng Cushing không phải do đột biến NST mà do rối loạn hoạt động của tuyến thượng thận."
+    },
+    {
+        question: "Câu 11: Phương pháp lai nào giúp xác định tính trạng do gen nhân hay gen tế bào chất quy định?",
+        answers: [
+            { text: "Lai phân tích", correct: false },
+            { text: "Lai thuận nghịch", correct: true },
+            { text: "Lai khác thứ", correct: false },
+            { text: "Lai xa", correct: false }
+        ],
+        explanation: "Lai thuận nghịch giúp xác định tính trạng do gen nhân hay tế bào chất quyết định qua việc so sánh kết quả lai thuận và nghịch."
+    },
+    {
+        question: "Câu 12: Dạng đột biến nào dưới đây không làm thay đổi số lượng nucleotide của gen?",
+        answers: [
+            { text: "Thêm một cặp A – T", correct: false },
+            { text: "Thay thế cặp A – T bằng cặp G – X", correct: true },
+            { text: "Thêm một cặp G – X", correct: false },
+            { text: "Mất cặp G – X", correct: false }
+        ],
+        explanation: "Thay thế một cặp nucleotide không thay đổi số lượng nucleotide trong gen."
+    },
+    {
+        question: "Câu 13: Dạng đột biến cấu trúc NST nào làm tăng hoặc giảm mức độ biểu hiện tính trạng?",
+        answers: [
+            { text: "Lặp đoạn NST", correct: true },
+            { text: "Mất đoạn NST", correct: false },
+            { text: "Chuyển đoạn NST", correct: false },
+            { text: "Đảo đoạn NST", correct: false }
+        ],
+        explanation: "Lặp đoạn NST có thể làm tăng mức độ biểu hiện tính trạng do tăng số lượng gen."
+    },
+    {
+        question: "Câu 14: Khi cho lai cây thân cao, hoa vàng, hạt nhăn thuần chủng với cây thân thấp, hoa đỏ, hạt trơn, tần số hoán vị gen của cây F1 là bao nhiêu?",
+        answers: [
+            { text: "20%", correct: true },
+            { text: "30%", correct: false },
+            { text: "10%", correct: false },
+            { text: "40%", correct: false }
+        ],
+        explanation: "Tần số hoán vị gen của cây F1 được tính là 20% dựa trên tỉ lệ kiểu hình thu được ở F2."
+    },
+    {
+        question: "Câu 15: Một tế bào sinh trứng mang kiểu gen AaBbXDXd cho tối đa mấy loại trứng?",
+        answers: [
+            { text: "2", correct: false },
+            { text: "4", correct: false },
+            { text: "8", correct: true },
+            { text: "6", correct: false }
+        ],
+        explanation: "Tế bào có kiểu gen AaBbXDXd sẽ tạo ra tối đa 8 loại trứng khác nhau."
+    },
+    {
+        question: "Câu 16: Theo lý thuyết, phép lai nào dưới đây cho đời con có 100% kiểu hình đồng hợp lặn?",
+        answers: [
+            { text: "Aa x aa", correct: false },
+            { text: "Aa x Aa", correct: false },
+            { text: "aa x aa", correct: true },
+            { text: "AA x aa", correct: false }
+        ],
+        explanation: "Phép lai aa x aa sẽ cho ra 100% con cái đồng hợp lặn."
+    },
+    {
+        question: "Câu 17: Một gen có khối lượng là 9.10^5 đvC. Số lượng nucleotide mỗi loại của gen này là bao nhiêu?",
+        answers: [
+            { text: "450", correct: false },
+            { text: "1500", correct: false },
+            { text: "900", correct: true },
+            { text: "300", correct: false }
+        ],
+        explanation: "Khối lượng của gen được tính từ tổng số nucleotide, suy ra số nucleotide mỗi loại là 900."
+    },
+    {
+        question: "Câu 18: Cơ thể có kiểu gen AaBBddee tạo ra mấy loại giao tử?",
+        answers: [
+            { text: "4", correct: false },
+            { text: "2", correct: true },
+            { text: "8", correct: false },
+            { text: "6", correct: false }
+        ],
+        explanation: "Cơ thể AaBBddee sẽ tạo ra 2 loại giao tử là ABde và abde."
+    }
+];
+
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+let score = 0;
+const userAnswers = [];
+
+const quizForm = document.getElementById('quiz-form');
+const resultsSection = document.getElementById('results');
+const scoreDisplay = document.getElementById('score');
+const correctAnswersDisplay = document.getElementById('correct-answers');
+const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+const nextSubmitBtn = document.getElementById('next-submit-btn');
+const questionNavigation = document.getElementById('question-navigation');
+
+function startQuiz() {
+    showQuestion();
+    createQuestionNavigation();
+}
+
+function showQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    quizForm.innerHTML = `
+        <h2>${currentQuestion.question}</h2>
+        ${currentQuestion.answers.map((answer, index) => `
+            <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+            <label for="option${index + 1}">${answer.text}</label></p>
+        `).join('')}`;
+
+    nextSubmitBtn.textContent = currentQuestionIndex === questions.length - 1 ? "Nộp bài" : "Tiếp theo";
+    updateQuestionNavigation();
+}
+
+function submitAnswer() {
+    const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        // Cập nhật điểm số mỗi câu đúng là 0.25
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score += 0.25;
+        }
+
+        updateQuestionNavigation();
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+function showResults() {
+    quizForm.style.display = 'none';
+    resultsSection.style.display = 'block';
+
+    // Hiển thị điểm số
+    scoreDisplay.textContent = `Bạn đã đạt ${score.toFixed(2)}/${(questions.length * 0.25).toFixed(2)} điểm.`;
+
+    // Hiển thị các câu trả lời đúng
+    correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+        const correctAnswer = question.answers.find(answer => answer.correct).text;
+        return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+    }).join('');
+
+    // Hiển thị các câu trả lời sai
+    incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+        if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+            const correctAnswer = question.answers.find(answer => answer.correct).text;
+            return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+        }
+        return '';
+    }).join('');
+}
+
+function createQuestionNavigation() {
+    questionNavigation.innerHTML = '';
+    for (let i = 0; i < questions.length; i++) {
+        const questionLink = document.createElement('li');
+        questionLink.textContent = i + 1;
+        questionLink.onclick = () => goToQuestion(i);
+        questionNavigation.appendChild(questionLink);
+    }
+}
+
+function updateQuestionNavigation() {
+    const questionLinks = questionNavigation.children;
+    for (let i = 0; i < questionLinks.length; i++) {
+        if (userAnswers[i] !== undefined) {
+            questionLinks[i].style.backgroundColor = 'green';
+            questionLinks[i].style.color = 'white';
+        } else {
+            questionLinks[i].style.backgroundColor = 'transparent';
+            questionLinks[i].style.color = 'black';
+        }
+    }
+}
+
+function goToQuestion(index) {
+    currentQuestionIndex = index;
+    showQuestion();
+}
+
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers.length = 0;
+    resultsSection.style.display = 'none';
+    quizForm.style.display = 'block';
+    startQuiz();
+}
+
+// Bắt đầu quiz khi trang tải
+window.onload = startQuiz;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+= vbnm,./`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+   <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+               question: "Câu 1: Chất nào sau đây không phải acid béo?",
+                answers: [
+                    { text: "acetic acid.", correct: true },
+                    { text: "stearic acid.", correct: false },
+                    { text: "oleic acid.", correct: false},
+                    { text: "linoleic acid.", correct: false }
+                ],
+                explanation: "acid béo là các monocarboxylic acid no hoặc không no. Hau het chúng có mạch carbon không phân nhánh với số nguyên tử carbon trong phân tứ là số chẵn (thường từ 12 đến 24 nguyên tử C)."
+            },
+            {
+question: "Câu 2: Chất béo là trieste của acid béo với",
+                answers: [
+                    { text: "ethylene glycol.", correct: false },
+                    { text: "glycerol.", correct: true },
+                    { text: "ethanol.", correct: false},
+                    { text: "phenol.", correct: false }
+                ],
+                explanation: "Chất béo là trieste của acid béo với glycerol."
+            },
+            {
+question: "Câu 3: Số nguyên tử hydrogen trong phân tử oleic acid là",
+                answers: [
+                    { text: "36.", correct: false },
+                    { text: "31.", correct: false },
+                    { text: "35.", correct: false},
+                    { text: "34.", correct: true }
+                ],
+                explanation: "oleic acid là C17H33COOH nên số nguyên tử hydrogen là 34."
+            },
+            {
+question: "Câu 4: Số nguyên tử carbon trong phân tử palmitic acid là",
+                answers: [
+                    { text: "17.", correct: false },
+                    { text: "18.", correct: false},
+                    { text: "19.", correct: false},
+                    { text: "16.", correct: true }
+                ],
+                explanation: "palmitic acid là C15H31COOH nên số nguyên tử carbon là 16"
+            },
+            {
+question: "Câu 5: Thủy phân hoàn toàn triglyceride X trong dung dịch NaOH, thu được C17H35COONa và C3H5(OH)3. Công thức của X là",
+                answers: [
+                    { text: "(C15H31COO)3C3H5.", correct: false },
+                    { text: "(C17H31COO)3C3H5.", correct: false },
+                    { text: "(C17H35COO)3C3H5.", correct: true},
+                    { text: "(C17H33COO)3C3H5.", correct: false }
+                ],
+                explanation: "Thủy phân hoàn toàn (C17H35COO)3C3H5 trong dung dịch NaOHthu được C17H35COONa và C3H5(OH)3"
+            },
+            {
+question: "Câu 6: Thủy phân triolein trong dung dịch NaOH, thu được glycerol và muối X. Công thức của X là",
+                answers: [
+                    { text: "C17H35COONa.", correct: false },
+                    { text: "C15H31COONa.", correct: false },
+                    { text: "C17H31COONa.", correct: false},
+                    { text: "C17H33COONa.", correct: true }
+                ],
+                explanation: " triolein là  (C17H33COO)3C3H5"
+            },
+            {
+question: "Câu 7: Khi thuỷ phân chất béo trong môi trường kiềm, thu được muối của acid béo và",
+                answers: [
+                    { text: "phenol.", correct: false },
+                    { text: "glycerol.", correct: true },
+                    { text: "alcohol đơn chức.", correct: false},
+                    { text: "ester đơn chức.", correct: false }
+                ],
+                explanation: "Khi thuỷ phân chất béo trong môi trường kiềm, thu được muối của acid béo và glycerol."
+            },
+            {
+question: "Câu 8: Cấu tạo phổ biến của xà phòng và chất giặt rửa tổng hợp gồm mấy phần?",
+                answers: [
+                    { text: "1 phần.", correct: false },
+                    { text: "2 phần.", correct: true },
+                    { text: "3 phần.", correct: false},
+                    { text: "4 phần.", correct: false }
+                ],
+                explanation: "Cấu tạo phổ biến của xà phòng và chất giặt rửa tổng hợp hai phần là phần ưa nước và phần kị nước"
+            },
+            {
+question: "Câu 9: Phản ứng điều chế xà phòng từ chất béo được gọi là phản ứng",
+                answers: [
+                    { text: "ester hóa.", correct: false },
+                    { text: "hydrate hóa.", correct: false },
+                    { text: "hydrogen hoá.", correct: false},
+                    { text: "xà phòng hóa.", correct: true }
+                ],
+                explanation: "Phản ứng điều chế xà phòng từ chất béo được gọi là phản ứng xà phòng hóa "
+            },
+            {
+question: "Câu 10: Nguyên liệu nào sau đây dùng để điều chế chất giặt rửa tổng hợp?",
+                answers: [
+                    { text: "Dầu mỏ.", correct: false },
+                    { text: "Mỡ động vật.", correct: true },
+                    { text: "Dầu thực vật.", correct: false},
+                    { text: "Tinh bột.", correct: false }
+                ],
+explanation: "Nguyên liệu để điều chế chất giặt rửa tổng hợp là dầu mỏ."
+            },
+            {
+question: "Câu 11: Chất béo là thức ăn quan trọng của con người, là nguồn cung cấp dinh dưỡng và năng lượng đáng kể cho cơ thể hoạt động. Ngoài ra một lượng lớn chất béo được dùng trong công nghiệp để sản xuất",
+                answers: [
+                    { text: "glucose và glycerol.", correct: false },
+                    { text: "xà phòng và glycerol.", correct: true },
+                    { text: "glucose và ethanol.", correct: false},
+                    { text: "xà phòng và ethanol.", correct: false}
+                ],
+                explanation: " chất béo được dùng trong công nghiệp để sản xuất xà phòng và glycerol."
+            },             {
+question: "Câu 12: Triolein không tác dụng với chất (hoặc dung dịch) nào sau đây?",
+                answers: [
+                    { text: "H2O (xúc tác H2SO4 loãng, đun nóng).", correct: false },
+                    { text: "Cu(OH)2 (ở điều kiện thường).", correct: true },
+                    { text: "Dung dịch NaOH (đun nóng).", correct: false},
+                    { text: "H2 (xt, to, p).", correct: false}
+                ],
+                explanation: "Triolein không tác dụng với Cu(OH)2 (ở điều kiện thường)."
+            },
+            {
+question: "Câu 13: Để biến một số dầu thành mỡ rắn hoặc bơ nhân tạo người ta thực hiện quá trình nào sau đây?",
+                answers: [
+                    { text: "Cô cạn ở nhiệt độ cao.", correct: false },
+                    { text: "Hydrogen hóa (xt, to, p). ", correct: true },
+                    { text: "Làm lạnh.", correct: false},
+                    { text: "Phản ứng xà phòng hóa.", correct: false}
+                ],
+                explanation: "Để biến một số dầu thành mỡ rắn hoặc bơ nhân tạo người ta thực hiện quá trình hydrogen hóa (xt, to, p)."
+            },
+            {
+question: "Câu 14: Dầu mỡ để lâu bị ôi thiu là do",
+                answers: [
+                    { text: "chất béo bị vữa ra.", correct: false },
+                    { text: "chất béo bị thủy phân với nước trong không khí.", correct: false },
+                    { text: "bị vi khuẩn tấn công.", correct: false},
+                    { text: "chất béo bị oxi hóa chậm bởi oxygen không khí.", correct: true}
+                ],
+                explanation: "Dầu mỡ để lâu bị ôi thiu là do chất béo bị oxi hóa chậm bởi oxygen không khí."
+            },
+            {
+question: "Câu 15: Xà phòng là",
+                answers: [
+                    { text: "muối calcium của acid béo.", correct: false },
+                    { text: "muối sodium hoặc potassium của các acid béo.", correct: true },
+                    { text: "muối của acid hữu cơ.", correct: false},
+                    { text: "muối sodium hoặc potassium của acetic acid.", correct: false }
+                ],
+                explanation: "Xà phòng là muối sodium hoặc potassium của các acid béo."
+            },
+            {
+question: "Câu 16: Chất giặt rửa tổng hợp là",
+                answers: [
+                    { text: "muối sodium hoặc potassium của các acid béo.", correct: false },
+                    { text: "muối calcium của acid béo.", correct: false },
+                    { text: "muối của acid hữu cơ.", correct: false},
+                    { text: "muối sodium alkyl sulfate hoặc alkylbezene sulfonate.", correct: true }
+                ],
+                explanation: "Chất giặt rửa tổng hợp là muối sodium alkyl sulfate hoặc alkylbezene sulfonate."
+            },
+            {
+              question: "Câu 17: Chất nào dưới đây không phải là một nguyên liệu để điều chế xà phòng?",
+                answers: [
+                    { text: "mỡ động vật.", correct: false },
+                    { text: "nước bồ hòn, bồ kết.", correct: true },
+                    { text: "sodium chloride.", correct: false},
+                    { text: "dầu thực vật.", correct: false }
+                ],
+                explanation: "nước bồ hòn, bồ kết là nguyên liệu để sản xuất chất giặt rửa tự nhiên"
+            },
+            {
+                question: "Câu 18: Phát biểu nào sau đây đúng?",
+                answers: [
+                    { text: "Tripalmitin có khả năng tham gia phản ứng cộng hydrogen khi đun nóng có xúc tác, áp suất", correct: false },
+                    { text: "Các chất béo thường không tan trong nước và nhẹ hơn nước.", correct: true },
+                    { text: "Chất béo bị thủy phân trong môi trường acid, không bị thủy phân trong môi trường kiềm.", correct: false},
+                    { text: "Chất béo là triester của ethylen glicol với các acid béo.", correct: false }
+                ],
+                explanation: "Tripalmitin là béo rắn nên không có khả năng tham gia phản ứng cộng hydrogen. Chất béo bị thủy phân trong môi trường acid và môi trường kiềm. Chất béo là triester của glycerol với các acid béo. "
+            },
+            {
+                question: "Câu 19: Phần kị nước trong xà phòng và chất giặt rửa là",
+                answers: [
+                    { text: "nhóm carboxylate..", correct: false },
+                    { text: "nhóm sulfate.", correct: false },
+                    { text: "gốc hydrocarbon dài.", correct: true },
+                    { text: "nhóm sulfonate.", correct: false}
+                ],
+                explanation: "Phần kị nước trong xà phòng và chất giặt rửa là gốc hydrocarbon dài"
+            },
+            {
+                question: "Câu 20: Phản ứng điều chế xà phòng từ chất béo được gọi là phản ứng",
+                answers: [
+                    { text: "ester hóa", correct: false },
+                    { text: "trung hòa.", correct: false},
+                    { text: "hydrate hóa.", correct: false},
+                    { text: "xà phòng hóa.", correct: true }
+                ],
+                explanation: "Phản ứng điều chế xà phòng từ chất béo được gọi là phản ứng xà phòng hóa"
+            },
+            {
+                question: "Câu 21:Chất béo là triester của glycerol với các acid béo. a. Công thức của chất béo tạo bởi stearic acid và glycerol là (C17H35COO)3C3H5. b. Chất béo là nguồn cung cấp và dự trữ năng lượng ở người và động vật. c. Oleic acid và linoleic acid đều là các acid béo không no chứa C=C đều ở dạng cis. d. Palmitic acid và stearic acid là các acid béo no. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: false } ,
+                    { text: "4", correct: true },  
+                ],
+                explanation: "Tất cả các phát biểu đều đúng"
+            },
+            {
+ question: "Câu 22:Chất béo có nhiều tính chất hóa học quan trọng. a. Thủy phân chất béo trong môi trường kiềm, thu được muối của acid béo và glycerol. b. Thủy phân hoàn toàn 1 mol trilinolein trong dung dịch NaOH dư (đun nóng), thu được 1 mol glycerol và 3 mol muối. c. Để chuyển chất béo lỏng thành chất béo rắn người ra dùng phản ứng hydrogen hóa. d. Ở điều kiện thích hợp, triolein tác dụng với H2 theo tỉ lệ mol 1 : 6. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false},
+                    { text: "3", correct: true  }, 
+                    { text: "4", correct: false },  
+                ],
+                explanation: "Phát biểu đúng là a, b,c. d sai vì ở điều kiện thích hợp, triolein tác dụng với H2 theo tỉ lệ mol 1 : 3."
+            },
+            {
+ question: "Câu 23:Xà phòng có tác dụng rửa tay, tắm, giặt quần áo,... a. Các muối trong xà phòng thường là của acid béo no như palmitic acid và stearic acid. b. Đầu ưa nước và đuôi kị nước của xà phòng lần lượt là COOM (M là Na, K) và gốc hydrocarbon R. c. Các phụ gia trong xà phòng thường là chất độn làm tăng độ cứng, dễ đúc thành bánh, chất tạo màu và chất tạo hương,… d. Phản ứng thủy phân chất béo trong môi trường kiềm tạo ra xà phòng nên được gọi là phản ứng xà phòng hóa. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: false } ,
+                    { text: "4", correct: true },            
+                ],
+                explanation: "Tất cả các phát biểu đều đúng."
+            },
+            {
+ question: "Câu 24:Chất giặt rửa tự nhiên và tổng hợp cũng có tác dụng giặt rửa như xà phòng. a. Trong chất giặt rửa tự nhiên, thành phần quan trọng có tác dụng giặt rửa là saponin. b. Trong chất giặt rửa tổng hợp, thành phần có tác dụng giặc rửa là muối sodium alkylsulfate (ROSO3Na) hoặc  sodium alkylbenzenesulfonate (RSO3Na). c. Nước bồ hòn, bồ kết là các chất giặt rửa tự nhiên. d. Chất giặt rửa tổng hợp có thể dùng trong nước cứng. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: false } ,
+                    { text: "4", correct: true },
+                ],
+                explanation: "Tất cả các phát biểu đều đúng."
+            },
+            {
+ question: "Câu 25:Tiến hành thí nghiệm theo các bước sau: - Bước 1: Cho vào cốc thủy tinh chịu nhiệt khoảng 5 gam mỡ lợn và 10 mL dung dịch NaOH 40%. - Bước 2: Đun sôi nhẹ hỗn hợp, liên tục khuấy đều bằng đũa thủy tinh khoảng 30 phút và thỉnh thoảng thêm nước cất để giữ cho thể tích hỗn hợp không đổi. Để nguội hỗn hợp. - Bước 3: Rót vào hỗn hợp 15 - 20 mL dung dịch NaCl bão hòa, nóng, khuấy nhẹ, rồi để yên. a. Ở bước 1, nếu thay mỡ lợn bằng dầu dừa thì hiện tượng sau bước 3 vẫn xảy ra tương tự. b. Ở bước 2, có thể thay việc đun sôi nhẹ bằng đun cách thủy (ngâm trong nước nóng). c. Ở bước 3, thêm dung dịch NaCl bão hòa để tách muối của acid béo ra khỏi hỗn hợp. d. Ở bước 3, có thể thay dung dịch NaCl bão hòa bằng dung dịch CaCl2 bão hòa. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false},
+                    { text: "3", correct: true  } ,
+                    { text: "4", correct: false },  
+                ],
+              explanation: "Phát biểu đúng là a, b,c. d sai vì dung dịch CaCl2 bão hòa tạo kết tủa với xà phòng"  
+                      },
+                      {
+  question: "Câu 26:Thủy phân hoàn toàn m gam chất béo bằng dung dịch NaOH, đun nóng thu được 9,2 gam glycerol và 91,8 gam muối. Giá trị của m là",
+                answers: [
+                    { text: "101.", correct: false },
+                    { text: "89.", correct: true },
+                    { text: "85.", correct: false},
+                    { text: "93.", correct: false }
+                ],
+                explanation: "nNaOH=3nglycerol= 0.3 (mol). m = 9,2+91,8-0,3.40=89 gam."
+            },
+{
+		                question: "Câu 27: Để tác dụng hết với a mol triolein cần tối đa 0,6 mol H2. Giá trị của a là",
+                answers: [
+                    { text: "0,12.", correct: false },
+                    { text: "0,2.", correct: true },
+                    { text: "0,15.", correct: false},
+                    { text: "0,3.", correct: false }
+                ],
+                explanation: "ntriolein= nH2/3= 0,2 (mol)."
+            },
+            {
+		    question: "Câu 28:Cho các chất: CH3[CH2]14COONa, CH3[CH2]10CH2OSO3Na, CH3[CH2]16COOK, CH3[CH2]11C6H4SO3Na, CH3COONa, CH3[CH2]14COONa, (C15H31COO)3C3H5. Có bao nhiêu chất là xà phòng?",
+                   answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: true },
+                    { text: "3", correct: false} ,
+                    { text: "4", correct: false },  
+                ],
+                explanation: "CH3[CH2]14COONa và CH3[CH2]16COOK là xà phòng."
+            },            
+        {
+question: "Câu 29:Cho các chất: palmitic acid, tristearin, sodium hydroxide, chlohidric acid, sodium chloride, glycerol. Số hóa chất được sử dụng trong quá trình điều chế xà phòng bằng phản ứng xà phòng hóa là bao nhiêu?",
+                answers: [
+                   { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: true} ,
+                    { text: "4", correct: false }, 
+                ],
+                explanation: "tristearin, sodium hydroxide, sodium chloride được sử dụng trong quá trình điều chế xà phòng bằng phản ứng xà phòng hóa  "
+            },            
+        {
+question: "Câu 30: Cho các chất: xà phòng, chất giặt rửa tự nhiên, chất giặt rửa tổng hợp, glycerol. Trong công nghiệp, có bao nhiêu chất được điều chế từ dầu mỏ?",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: true },
+                    { text: "3", correct: false} ,
+                    { text: "4", correct: false }, 
+               ],
+                explanation: "xà phòng, chất giặt rửa tổng hợpđược điều chế từ dầu mỏ. "
+            },            
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
+

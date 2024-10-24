@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Hệ tuần hoàn của động vật có nhiệm vụ gì?",
+                answers: [
+                    { text: "Vận chuyển máu và các chất dinh dưỡng", correct: true },
+                    { text: "Trao đổi khí", correct: false },
+                    { text: "Tiêu hóa thức ăn", correct: false },
+                    { text: "Điều khiển cơ thể", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của động vật có nhiệm vụ vận chuyển máu và các chất dinh dưỡng."
+            },
+            {
+                question: "Câu 2: Động vật nào sau đây có hệ tuần hoàn hở?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: false },
+                    { text: "Côn trùng", correct: true },
+                    { text: "Chim", correct: false }
+                ],
+                explanation: "Côn trùng có hệ tuần hoàn hở."
+            },
+            {
+                question: "Câu 3: Hệ tuần hoàn kín khác với hệ tuần hoàn hở ở điểm nào?",
+                answers: [
+                    { text: "Máu chảy trong mạch kín", correct: true },
+                    { text: "Máu tiếp xúc trực tiếp với các cơ quan", correct: false },
+                    { text: "Có nhiều tim", correct: false },
+                    { text: "Không có máu", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn kín khác với hệ tuần hoàn hở ở chỗ máu chảy trong mạch kín."
+            },
+            {
+                question: "Câu 4: Tim của động vật nào có 4 ngăn?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: false },
+                    { text: "Chim", correct: true },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Tim của chim có 4 ngăn."
+            },
+            {
+                question: "Câu 5: Máu chảy qua tim mấy lần trong hệ tuần hoàn đơn?",
+                answers: [
+                    { text: "1 lần", correct: true },
+                    { text: "2 lần", correct: false },
+                    { text: "3 lần", correct: false },
+                    { text: "4 lần", correct: false }
+                ],
+                explanation: "Máu chảy qua tim 1 lần trong hệ tuần hoàn đơn."
+            },
+            {
+                question: "Câu 6: Động vật nào sau đây có hệ tuần hoàn kép?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: true },
+                    { text: "Côn trùng", correct: false },
+                    { text: "Chim", correct: true }
+                ],
+                explanation: "Ếch và chim có hệ tuần hoàn kép."
+            },
+            {
+                question: "Câu 7: Tại sao hệ tuần hoàn của động vật có xương sống phát triển hơn động vật không xương sống?",
+                answers: [
+                    { text: "Do kích thước cơ thể lớn hơn", correct: true },
+                    { text: "Do sống dưới nước", correct: false },
+                    { text: "Do không cần máu", correct: false },
+                    { text: "Do có nhiều chân", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của động vật có xương sống phát triển hơn do kích thước cơ thể lớn hơn."
+            },
+            {
+                question: "Câu 8: Động vật nào sau đây có hệ tuần hoàn kín và máu lạnh?",
+                answers: [
+                    { text: "Cá", correct: true },
+                    { text: "Ếch", correct: true },
+                    { text: "Chim", correct: false },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Cá và ếch có hệ tuần hoàn kín và máu lạnh."
+            },
+            {
+                question: "Câu 9: Hệ tuần hoàn của động vật nào có 3 ngăn tim?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: true },
+                    { text: "Chim", correct: false },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của ếch có 3 ngăn tim."
+            },
+            {
+                question: "Câu 10: Trong hệ tuần hoàn kép, máu đi từ tim đến phổi để làm gì?",
+                answers: [
+                    { text: "Nhận O2 và thải CO2", correct: true },
+                    { text: "Nhận CO2 và thải O2", correct: false },
+                    { text: "Trao đổi chất dinh dưỡng", correct: false },
+                    { text: "Đào thải các chất cặn bã", correct: false }
+                ],
+                explanation: "Trong hệ tuần hoàn kép, máu đi từ tim đến phổi để nhận O2 và thải CO2."
+            },
+            {
+                question: "Câu 11: Động vật nào sau đây có hệ tuần hoàn đơn?",
+                answers: [
+                    { text: "Cá", correct: true },
+                    { text: "Ếch", correct: false },
+                    { text: "Chim", correct: false },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Cá có hệ tuần hoàn đơn."
+            },
+            {
+                question: "Câu 12: Hệ tuần hoàn của động vật nào có 2 vòng tuần hoàn?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: true },
+                    { text: "Chim", correct: true },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của ếch và chim có 2 vòng tuần hoàn."
+            },
+            {
+                question: "Câu 13: Động vật nào có hệ tuần hoàn phát triển nhất?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: false },
+                    { text: "Chim", correct: true },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Chim có hệ tuần hoàn phát triển nhất."
+            },
+            {
+                question: "Câu 14: Hệ tuần hoàn của động vật nào có sự phân tách hoàn toàn giữa máu giàu O2 và máu giàu CO2?",
+                answers: [
+                    { text: "Cá", correct: false },
+                    { text: "Ếch", correct: false },
+                    { text: "Chim", correct: true },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của chim có sự phân tách hoàn toàn giữa máu giàu O2 và máu giàu CO2."
+            },
+            {
+                question: "Câu 15: Tại sao hệ tuần hoàn của chim lại hiệu quả hơn so với các động vật khác?",
+                answers: [
+                    { text: "Do có hệ thống mạch máu phức tạp", correct: false },
+                    { text: "Do tim có 4 ngăn và phân tách máu giàu O2 và CO2", correct: true },
+                    { text: "Do máu không cần đi qua phổi", correct: false },
+                    { text: "Do có nhiều máu hơn", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của chim hiệu quả hơn do tim có 4 ngăn và phân tách máu giàu O2 và CO2."
+            },
+            {
+                question: "Câu 16: Tại sao cá lại có hệ tuần hoàn đơn?",
+                answers: [
+                    { text: "Do sống trong nước và hô hấp qua mang", correct: true },
+                    { text: "Do có kích thước nhỏ", correct: false },
+                    { text: "Do không cần máu", correct: false },
+                    { text: "Do có nhiều tim", correct: false }
+                ],
+                explanation: "Cá có hệ tuần hoàn đơn do sống trong nước và hô hấp qua mang."
+            },
+            {
+                question: "Câu 17: Máu trong hệ tuần hoàn hở của côn trùng di chuyển như thế nào?",
+                answers: [
+                    { text: "Tiếp xúc trực tiếp với các mô và cơ quan", correct: true },
+                    { text: "Chảy trong mạch máu kín", correct: false },
+                    { text: "Không di chuyển", correct: false },
+                    { text: "Chảy qua hệ thống tim", correct: false }
+                ],
+                explanation: "Máu trong hệ tuần hoàn hở của côn trùng di chuyển bằng cách tiếp xúc trực tiếp với các mô và cơ quan."
+            },
+            {
+                question: "Câu 18: Tại sao máu trong hệ tuần hoàn kép của động vật có vú không trộn lẫn giữa máu giàu O2 và máu giàu CO2?",
+                answers: [
+                    { text: "Do tim có 4 ngăn và phân tách rõ ràng", correct: true },
+                    { text: "Do không có hệ thống mạch máu", correct: false },
+                    { text: "Do có 2 tim", correct: false },
+                    { text: "Do máu không đi qua phổi", correct: false }
+                ],
+                explanation: "Máu trong hệ tuần hoàn kép của động vật có vú không trộn lẫn do tim có 4 ngăn và phân tách rõ ràng."
+            },
+            {
+                question: "Câu 19: Hệ tuần hoàn của động vật nào có khả năng thích nghi tốt nhất với điều kiện môi trường thay đổi?",
+                answers: [
+                    { text: "Chim", correct: true },
+                    { text: "Ếch", correct: false },
+                    { text: "Cá", correct: false },
+                    { text: "Côn trùng", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn của chim có khả năng thích nghi tốt nhất với điều kiện môi trường thay đổi."
+            },
+            {
+                question: "Câu 20: Hệ tuần hoàn kép của động vật có vú có ưu điểm gì so với hệ tuần hoàn đơn?",
+                answers: [
+                    { text: "Hiệu suất cao hơn do máu đi qua tim hai lần", correct: true },
+                    { text: "Tiết kiệm năng lượng hơn", correct: false },
+                    { text: "Cấu trúc đơn giản hơn", correct: false },
+                    { text: "Không có ưu điểm nào", correct: false }
+                ],
+                explanation: "Hệ tuần hoàn kép của động vật có vú có ưu điểm hiệu suất cao hơn do máu đi qua tim hai lần."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

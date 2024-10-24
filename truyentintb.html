@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Truyền tin tế bào là gì?",
+        answers: [
+            { text: "Quá trình tế bào nhận và phản hồi các tín hiệu từ môi trường ngoài", correct: true },
+            { text: "Quá trình tế bào phân chia và sinh sản", correct: false },
+            { text: "Quá trình tế bào chuyển hóa năng lượng", correct: false },
+            { text: "Quá trình tế bào tạo ra các protein", correct: false }
+        ],
+        explanation: "Truyền tin tế bào là quá trình tế bào nhận và phản hồi các tín hiệu từ môi trường ngoài để điều chỉnh các hoạt động sinh học."
+    },
+    {
+        question: "Câu 2: Chức năng của các thụ thể màng tế bào trong quá trình truyền tin là gì?",
+        answers: [
+            { text: "Nhận các tín hiệu hóa học từ môi trường ngoài và truyền vào tế bào", correct: true },
+            { text: "Sản xuất năng lượng cho tế bào", correct: false },
+            { text: "Tạo ra các protein cho tế bào", correct: false },
+            { text: "Vận chuyển các chất qua màng tế bào", correct: false }
+        ],
+        explanation: "Các thụ thể màng tế bào nhận các tín hiệu hóa học từ môi trường ngoài và truyền vào tế bào để kích hoạt các phản ứng sinh học."
+    },
+    {
+        question: "Câu 3: Giai đoạn đầu tiên của quá trình truyền tin tế bào là gì?",
+        answers: [
+            { text: "Nhận tín hiệu", correct: true },
+            { text: "Phản ứng tín hiệu", correct: false },
+            { text: "Chuyển đổi tín hiệu", correct: false },
+            { text: "Tạo ra đáp ứng tế bào", correct: false }
+        ],
+        explanation: "Giai đoạn đầu tiên của quá trình truyền tin tế bào là nhận tín hiệu, khi các thụ thể trên màng tế bào nhận các tín hiệu từ môi trường ngoài."
+    },
+    {
+        question: "Câu 4: Giai đoạn thứ hai của quá trình truyền tin tế bào là gì?",
+        answers: [
+            { text: "Chuyển đổi tín hiệu", correct: true },
+            { text: "Nhận tín hiệu", correct: false },
+            { text: "Tạo ra đáp ứng tế bào", correct: false },
+            { text: "Phản ứng tín hiệu", correct: false }
+        ],
+        explanation: "Giai đoạn thứ hai của quá trình truyền tin tế bào là chuyển đổi tín hiệu, khi tín hiệu được truyền từ thụ thể đến các phân tử nội bào."
+    },
+    {
+        question: "Câu 5: Giai đoạn cuối cùng của quá trình truyền tin tế bào là gì?",
+        answers: [
+            { text: "Tạo ra đáp ứng tế bào", correct: true },
+            { text: "Chuyển đổi tín hiệu", correct: false },
+            { text: "Nhận tín hiệu", correct: false },
+            { text: "Phản ứng tín hiệu", correct: false }
+        ],
+        explanation: "Giai đoạn cuối cùng của quá trình truyền tin tế bào là tạo ra đáp ứng tế bào, khi tế bào thực hiện các phản ứng cụ thể dựa trên tín hiệu nhận được."
+    },
+    {
+        question: "Câu 6: Các loại tín hiệu truyền tin tế bào gồm những gì?",
+        answers: [
+            { text: "Tín hiệu hormone, tín hiệu thần kinh, tín hiệu cận tiết", correct: true },
+            { text: "Tín hiệu điện, tín hiệu cơ học, tín hiệu ánh sáng", correct: false },
+            { text: "Tín hiệu nhiệt, tín hiệu âm thanh, tín hiệu điện từ", correct: false },
+            { text: "Tín hiệu vật lý, tín hiệu hóa học, tín hiệu sinh học", correct: false }
+        ],
+        explanation: "Các loại tín hiệu truyền tin tế bào bao gồm tín hiệu hormone (endocrine), tín hiệu thần kinh (neuronal), và tín hiệu cận tiết (paracrine)."
+    },
+    {
+        question: "Câu 7: Thụ thể nào trên màng tế bào thường tham gia vào quá trình truyền tin?",
+        answers: [
+            { text: "Thụ thể G-protein", correct: true },
+            { text: "Thụ thể ion", correct: false },
+            { text: "Thụ thể enzyme", correct: false },
+            { text: "Thụ thể hormone", correct: false }
+        ],
+        explanation: "Thụ thể G-protein là loại thụ thể trên màng tế bào thường tham gia vào quá trình truyền tin, hoạt động bằng cách kích hoạt các protein G."
+    },
+    {
+        question: "Câu 8: Vai trò của các protein G trong truyền tin tế bào là gì?",
+        answers: [
+            { text: "Chuyển đổi tín hiệu từ thụ thể sang các phản ứng nội bào", correct: true },
+            { text: "Sản xuất năng lượng cho tế bào", correct: false },
+            { text: "Tạo ra các protein cho tế bào", correct: false },
+            { text: "Vận chuyển các chất qua màng tế bào", correct: false }
+        ],
+        explanation: "Các protein G chuyển đổi tín hiệu từ thụ thể sang các phản ứng nội bào, giúp kích hoạt hoặc ức chế các quá trình sinh học khác nhau trong tế bào."
+    },
+    {
+        question: "Câu 9: Các phân tử tín hiệu thứ cấp là gì?",
+        answers: [
+            { text: "Các phân tử truyền tín hiệu từ thụ thể đến các mục tiêu nội bào", correct: true },
+            { text: "Các phân tử tạo ra tín hiệu ban đầu từ môi trường ngoài", correct: false },
+            { text: "Các phân tử đóng vai trò bảo vệ tế bào", correct: false },
+            { text: "Các phân tử giúp tế bào phân chia và sinh sản", correct: false }
+        ],
+        explanation: "Các phân tử tín hiệu thứ cấp truyền tín hiệu từ thụ thể đến các mục tiêu nội bào, giúp khuếch đại và điều tiết tín hiệu ban đầu."
+    },
+    {
+        question: "Câu 10: cAMP là một phân tử tín hiệu thứ cấp quan trọng trong quá trình nào?",
+        answers: [
+            { text: "Chuyển đổi tín hiệu từ thụ thể G-protein", correct: true },
+            { text: "Vận chuyển các ion qua màng tế bào", correct: false },
+            { text: "Tổng hợp protein trong tế bào", correct: false },
+            { text: "Phân chia tế bào", correct: false }
+        ],
+        explanation: "cAMP là một phân tử tín hiệu thứ cấp quan trọng trong quá trình chuyển đổi tín hiệu từ thụ thể G-protein, tham gia vào nhiều quá trình sinh học trong tế bào."
+    },
+    {
+        question: "Câu 11: Tín hiệu calcium (Ca2+) có vai trò gì trong truyền tin tế bào?",
+        answers: [
+            { text: "Tham gia vào nhiều quá trình sinh học như co cơ và phân chia tế bào", correct: true },
+            { text: "Tạo ra năng lượng cho tế bào", correct: false },
+            { text: "Tổng hợp protein trong tế bào", correct: false },
+            { text: "Vận chuyển các chất qua màng tế bào", correct: false }
+        ],
+        explanation: "Tín hiệu calcium (Ca2+) tham gia vào nhiều quá trình sinh học như co cơ, phân chia tế bào và các phản ứng enzym khác nhau."
+    },
+    {
+        question: "Câu 12: Quá trình phosphoryl hóa trong truyền tin tế bào là gì?",
+        answers: [
+            { text: "Thêm nhóm phosphate vào protein để kích hoạt hoặc ức chế hoạt động của chúng", correct: true },
+            { text: "Loại bỏ nhóm phosphate từ protein để kích hoạt hoặc ức chế hoạt động của chúng", correct: false },
+            { text: "Tạo ra năng lượng ATP từ ADP và phosphate", correct: false },
+            { text: "Phân giải các phân tử lớn thành các phân tử nhỏ hơn", correct: false }
+        ],
+        explanation: "Phosphoryl hóa là quá trình thêm nhóm phosphate vào protein để kích hoạt hoặc ức chế hoạt động của chúng, điều chỉnh các phản ứng sinh học trong tế bào."
+    },
+    {
+        question: "Câu 13: Tín hiệu kinase là gì?",
+        answers: [
+            { text: "Enzyme chuyển nhóm phosphate từ ATP sang protein", correct: true },
+            { text: "Protein truyền tín hiệu từ màng tế bào vào trong tế bào", correct: false },
+            { text: "Phân tử tín hiệu thứ cấp khuếch đại tín hiệu ban đầu", correct: false },
+            { text: "Phân tử tham gia vào quá trình phân chia tế bào", correct: false }
+        ],
+        explanation: "Tín hiệu kinase là enzyme chuyển nhóm phosphate từ ATP sang protein, giúp kích hoạt hoặc ức chế các phản ứng sinh học trong tế bào."
+    },
+    {
+        question: "Câu 14: Tín hiệu phosphatase là gì?",
+        answers: [
+            { text: "Enzyme loại bỏ nhóm phosphate từ protein", correct: true },
+            { text: "Enzyme chuyển nhóm phosphate từ ATP sang protein", correct: false },
+            { text: "Phân tử truyền tín hiệu từ màng tế bào vào trong tế bào", correct: false },
+            { text: "Phân tử tham gia vào quá trình phân chia tế bào", correct: false }
+        ],
+        explanation: "Tín hiệu phosphatase là enzyme loại bỏ nhóm phosphate từ protein, giúp điều chỉnh hoạt động của các protein và các phản ứng sinh học trong tế bào."
+    },
+    {
+        question: "Câu 15: Tín hiệu qua con đường MAPK là gì?",
+        answers: [
+            { text: "Con đường truyền tin tế bào liên quan đến sự kích hoạt của MAP kinases", correct: true },
+            { text: "Con đường truyền tin tế bào qua ion calcium (Ca2+)", correct: false },
+            { text: "Con đường truyền tin tế bào qua cAMP", correct: false },
+            { text: "Con đường truyền tin tế bào qua các hormone steroid", correct: false }
+        ],
+        explanation: "Con đường MAPK (Mitogen-Activated Protein Kinase) là con đường truyền tin tế bào liên quan đến sự kích hoạt của MAP kinases, tham gia vào nhiều quá trình sinh học như phân chia và biệt hóa tế bào."
+    },
+    {
+        question: "Câu 16: Vai trò của con đường truyền tin PI3K-Akt là gì?",
+        answers: [
+            { text: "Điều tiết sự sống còn và tăng trưởng của tế bào", correct: true },
+            { text: "Điều tiết sự co cơ và phân chia tế bào", correct: false },
+            { text: "Điều tiết sự vận chuyển các ion qua màng tế bào", correct: false },
+            { text: "Điều tiết sự tổng hợp protein trong tế bào", correct: false }
+        ],
+        explanation: "Con đường truyền tin PI3K-Akt điều tiết sự sống còn và tăng trưởng của tế bào, tham gia vào quá trình chuyển hóa glucose và tổng hợp protein."
+    },
+    {
+        question: "Câu 17: Thụ thể tyrosine kinase có vai trò gì trong truyền tin tế bào?",
+        answers: [
+            { text: "Kích hoạt các con đường truyền tin nội bào khi liên kết với tín hiệu bên ngoài", correct: true },
+            { text: "Vận chuyển các ion qua màng tế bào", correct: false },
+            { text: "Tạo ra năng lượng ATP từ ADP và phosphate", correct: false },
+            { text: "Phân giải các phân tử lớn thành các phân tử nhỏ hơn", correct: false }
+        ],
+        explanation: "Thụ thể tyrosine kinase kích hoạt các con đường truyền tin nội bào khi liên kết với tín hiệu bên ngoài, tham gia vào quá trình phát triển và phân chia tế bào."
+    },
+    {
+        question: "Câu 18: Vai trò của tín hiệu NOTCH trong phát triển tế bào là gì?",
+        answers: [
+            { text: "Điều tiết sự biệt hóa và phân chia tế bào", correct: true },
+            { text: "Điều tiết sự co cơ và phân chia tế bào", correct: false },
+            { text: "Điều tiết sự vận chuyển các ion qua màng tế bào", correct: false },
+            { text: "Điều tiết sự tổng hợp protein trong tế bào", correct: false }
+        ],
+        explanation: "Tín hiệu NOTCH điều tiết sự biệt hóa và phân chia tế bào, đóng vai trò quan trọng trong phát triển tế bào và tổ chức mô."
+    },
+    {
+        question: "Câu 19: Quá trình apoptosis là gì?",
+        answers: [
+            { text: "Quá trình chết tế bào có chương trình, giúp loại bỏ các tế bào không cần thiết hoặc bị tổn thương", correct: true },
+            { text: "Quá trình phân chia tế bào", correct: false },
+            { text: "Quá trình tổng hợp protein trong tế bào", correct: false },
+            { text: "Quá trình vận chuyển các chất qua màng tế bào", correct: false }
+        ],
+        explanation: "Apoptosis là quá trình chết tế bào có chương trình, giúp loại bỏ các tế bào không cần thiết hoặc bị tổn thương để duy trì sự cân bằng trong cơ thể."
+    },
+    {
+        question: "Câu 20: Con đường truyền tin tế bào nào liên quan đến việc kích hoạt gen để đáp ứng với tín hiệu bên ngoài?",
+        answers: [
+            { text: "Con đường JAK-STAT", correct: true },
+            { text: "Con đường MAPK", correct: false },
+            { text: "Con đường PI3K-Akt", correct: false },
+            { text: "Con đường cAMP", correct: false }
+        ],
+        explanation: "Con đường JAK-STAT liên quan đến việc kích hoạt gen để đáp ứng với tín hiệu bên ngoài, tham gia vào nhiều quá trình miễn dịch và phát triển tế bào."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

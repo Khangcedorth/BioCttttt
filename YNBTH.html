@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Định luật tuần hoàn được phát hiện bởi nhà hóa học nào?",
+        answers: [
+            { text: "Dmitri Mendeleev", correct: true },
+            { text: "Marie Curie", correct: false },
+            { text: "John Dalton", correct: false },
+            { text: "Antoine Lavoisier", correct: false }
+        ],
+        explanation: "Định luật tuần hoàn được phát hiện bởi Dmitri Mendeleev vào năm 1869."
+    },
+    {
+        question: "Câu 2: Ý nghĩa của bảng tuần hoàn là gì?",
+        answers: [
+            { text: "Giúp dự đoán tính chất hóa học của các nguyên tố", correct: true },
+            { text: "Chỉ để ghi nhớ nguyên tử khối", correct: false },
+            { text: "Chỉ để ghi nhớ số hiệu nguyên tử", correct: false },
+            { text: "Không có ý nghĩa thực tiễn", correct: false }
+        ],
+        explanation: "Bảng tuần hoàn giúp dự đoán tính chất hóa học của các nguyên tố và mối quan hệ giữa chúng."
+    },
+    {
+        question: "Câu 3: Các nguyên tố trong cùng một nhóm có đặc điểm gì chung?",
+        answers: [
+            { text: "Có cùng số electron lớp ngoài cùng", correct: true },
+            { text: "Có cùng số proton", correct: false },
+            { text: "Có cùng khối lượng nguyên tử", correct: false },
+            { text: "Có cùng tính chất vật lý", correct: false }
+        ],
+        explanation: "Các nguyên tố trong cùng một nhóm có cùng số electron lớp ngoài cùng."
+    },
+    {
+        question: "Câu 4: Các nguyên tố trong cùng một chu kì có đặc điểm gì chung?",
+        answers: [
+            { text: "Có cùng số lớp electron", correct: true },
+            { text: "Có cùng số proton", correct: false },
+            { text: "Có cùng tính kim loại", correct: false },
+            { text: "Có cùng tính phi kim", correct: false }
+        ],
+        explanation: "Các nguyên tố trong cùng một chu kì có cùng số lớp electron."
+    },
+    {
+        question: "Câu 5: Đặc điểm của các nguyên tố nhóm 1 (nhóm IA) là gì?",
+        answers: [
+            { text: "Tính kim loại mạnh, dễ mất 1 electron", correct: true },
+            { text: "Tính phi kim mạnh", correct: false },
+            { text: "Tính chất không thay đổi", correct: false },
+            { text: "Khó phản ứng với các chất khác", correct: false }
+        ],
+        explanation: "Các nguyên tố nhóm 1 có tính kim loại mạnh và dễ mất 1 electron để tạo thành ion dương."
+    },
+    {
+        question: "Câu 6: Các nguyên tố nhóm 17 (nhóm VIIA) có tính chất gì đặc trưng?",
+        answers: [
+            { text: "Tính phi kim mạnh, dễ nhận 1 electron", correct: true },
+            { text: "Tính kim loại mạnh", correct: false },
+            { text: "Không phản ứng với các chất khác", correct: false },
+            { text: "Khó nhận electron", correct: false }
+        ],
+        explanation: "Các nguyên tố nhóm 17 có tính phi kim mạnh và dễ nhận 1 electron để tạo thành ion âm."
+    },
+    {
+        question: "Câu 7: Đặc điểm của các nguyên tố nhóm 18 (nhóm VIIIA) là gì?",
+        answers: [
+            { text: "Khí trơ, không phản ứng với các chất khác", correct: true },
+            { text: "Tính kim loại mạnh", correct: false },
+            { text: "Dễ mất electron", correct: false },
+            { text: "Tính phi kim mạnh", correct: false }
+        ],
+        explanation: "Các nguyên tố nhóm 18 là các khí trơ, có cấu hình electron bền vững và không phản ứng với các chất khác."
+    },
+    {
+        question: "Câu 8: Trong bảng tuần hoàn, các nguyên tố được sắp xếp theo thứ tự nào?",
+        answers: [
+            { text: "Theo số hiệu nguyên tử tăng dần", correct: true },
+            { text: "Theo khối lượng nguyên tử giảm dần", correct: false },
+            { text: "Theo tính chất hóa học", correct: false },
+            { text: "Theo tính chất vật lý", correct: false }
+        ],
+        explanation: "Các nguyên tố trong bảng tuần hoàn được sắp xếp theo số hiệu nguyên tử tăng dần."
+    },
+    {
+        question: "Câu 9: Nhóm nguyên tố nào được gọi là nhóm kim loại kiềm?",
+        answers: [
+            { text: "Nhóm 1 (nhóm IA)", correct: true },
+            { text: "Nhóm 2 (nhóm IIA)", correct: false },
+            { text: "Nhóm 17 (nhóm VIIA)", correct: false },
+            { text: "Nhóm 18 (nhóm VIIIA)", correct: false }
+        ],
+        explanation: "Nhóm 1 (nhóm IA) gồm các kim loại kiềm như lithium, sodium, potassium."
+    },
+    {
+        question: "Câu 10: Nhóm nguyên tố nào được gọi là nhóm halogen?",
+        answers: [
+            { text: "Nhóm 17 (nhóm VIIA)", correct: true },
+            { text: "Nhóm 18 (nhóm VIIIA)", correct: false },
+            { text: "Nhóm 1 (nhóm IA)", correct: false },
+            { text: "Nhóm 2 (nhóm IIA)", correct: false }
+        ],
+        explanation: "Nhóm 17 (nhóm VIIA) gồm các halogen như fluorine, chlorine, bromine."
+    },
+    {
+        question: "Câu 11: Bảng tuần hoàn hiện đại được sắp xếp dựa trên nguyên tắc nào?",
+        answers: [
+            { text: "Nguyên tắc tăng dần của số hiệu nguyên tử", correct: true },
+            { text: "Nguyên tắc tăng dần của khối lượng nguyên tử", correct: false },
+            { text: "Nguyên tắc tăng dần của tính chất hóa học", correct: false },
+            { text: "Nguyên tắc tăng dần của tính chất vật lý", correct: false }
+        ],
+        explanation: "Bảng tuần hoàn hiện đại được sắp xếp dựa trên nguyên tắc tăng dần của số hiệu nguyên tử."
+    },
+    {
+        question: "Câu 12: Các nguyên tố chuyển tiếp nằm ở vị trí nào trong bảng tuần hoàn?",
+        answers: [
+            { text: "Giữa nhóm II và nhóm III", correct: true },
+            { text: "Ở đầu bảng", correct: false },
+            { text: "Ở cuối bảng", correct: false },
+            { text: "Nằm rải rác trong bảng", correct: false }
+        ],
+        explanation: "Các nguyên tố chuyển tiếp nằm ở giữa nhóm II và nhóm III trong bảng tuần hoàn."
+    },
+    {
+        question: "Câu 13: Nhóm nguyên tố nào có tính chất hóa học tương tự nhau?",
+        answers: [
+            { text: "Nhóm IA", correct: true },
+            { text: "Chu kỳ 3", correct: false },
+            { text: "Các nguyên tố chuyển tiếp", correct: false },
+            { text: "Nhóm IIA", correct: false }
+        ],
+        explanation: "Nhóm IA gồm các nguyên tố có tính chất hóa học tương tự nhau như tính kim loại mạnh, dễ mất electron."
+    },
+    {
+        question: "Câu 14: Tính chất hóa học của nguyên tố phụ thuộc vào yếu tố nào trong bảng tuần hoàn?",
+        answers: [
+            { text: "Cấu hình electron của nguyên tử", correct: true },
+            { text: "Khối lượng nguyên tử", correct: false },
+            { text: "Số hiệu nguyên tử", correct: false },
+            { text: "Vị trí trong bảng tuần hoàn", correct: false }
+        ],
+        explanation: "Tính chất hóa học của nguyên tố phụ thuộc vào cấu hình electron của nguyên tử."
+    },
+    {
+        question: "Câu 15: Ý nghĩa của nhóm nguyên tố là gì?",
+        answers: [
+            { text: "Các nguyên tố trong cùng một nhóm có tính chất hóa học tương tự", correct: true },
+            { text: "Các nguyên tố trong cùng một nhóm có cùng số proton", correct: false },
+            { text: "Các nguyên tố trong cùng một nhóm có cùng khối lượng nguyên tử", correct: false },
+            { text: "Các nguyên tố trong cùng một nhóm có cùng tính chất vật lý", correct: false }
+        ],
+        explanation: "Các nguyên tố trong cùng một nhóm có tính chất hóa học tương tự do có cùng số electron lớp ngoài cùng."
+    },
+    {
+        question: "Câu 16: Ý nghĩa của chu kì trong bảng tuần hoàn là gì?",
+        answers: [
+            { text: "Các nguyên tố trong cùng một chu kì có cùng số lớp electron", correct: true },
+            { text: "Các nguyên tố trong cùng một chu kì có cùng số proton", correct: false },
+            { text: "Các nguyên tố trong cùng một chu kì có cùng tính chất hóa học", correct: false },
+            { text: "Các nguyên tố trong cùng một chu kì có cùng khối lượng nguyên tử", correct: false }
+        ],
+        explanation: "Các nguyên tố trong cùng một chu kì có cùng số lớp electron, cho thấy sự thay đổi tuần hoàn của tính chất hóa học."
+    },
+    {
+        question: "Câu 17: Đặc điểm của các nguyên tố nhóm II (nhóm IIA) là gì?",
+        answers: [
+            { text: "Tính kim loại, dễ mất 2 electron", correct: true },
+            { text: "Tính phi kim", correct: false },
+            { text: "Khí trơ", correct: false },
+            { text: "Tính chất không thay đổi", correct: false }
+        ],
+        explanation: "Các nguyên tố nhóm II có tính kim loại và dễ mất 2 electron để tạo thành ion dương."
+    },
+    {
+        question: "Câu 18: Tại sao các nguyên tố trong cùng một nhóm lại có tính chất hóa học tương tự nhau?",
+        answers: [
+            { text: "Vì chúng có cùng số electron lớp ngoài cùng", correct: true },
+            { text: "Vì chúng có cùng số proton", correct: false },
+            { text: "Vì chúng có cùng khối lượng nguyên tử", correct: false },
+            { text: "Vì chúng có cùng số lớp electron", correct: false }
+        ],
+        explanation: "Các nguyên tố trong cùng một nhóm có tính chất hóa học tương tự nhau vì chúng có cùng số electron lớp ngoài cùng."
+    },
+    {
+        question: "Câu 19: Bảng tuần hoàn giúp chúng ta dự đoán được điều gì về các nguyên tố?",
+        answers: [
+            { text: "Tính chất hóa học và vật lý của các nguyên tố", correct: true },
+            { text: "Màu sắc của các nguyên tố", correct: false },
+            { text: "Hình dạng của các nguyên tố", correct: false },
+            { text: "Kích thước của các nguyên tố", correct: false }
+        ],
+        explanation: "Bảng tuần hoàn giúp chúng ta dự đoán tính chất hóa học và vật lý của các nguyên tố dựa trên vị trí của chúng trong bảng."
+    },
+    {
+        question: "Câu 20: Ý nghĩa của số hiệu nguyên tử trong bảng tuần hoàn là gì?",
+        answers: [
+            { text: "Là số proton trong hạt nhân của nguyên tử", correct: true },
+            { text: "Là số neutron trong hạt nhân của nguyên tử", correct: false },
+            { text: "Là khối lượng của nguyên tử", correct: false },
+            { text: "Là số electron trong nguyên tử", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử là số proton trong hạt nhân của nguyên tử và cũng bằng số electron trong nguyên tử trung hòa."
+    }
+];
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

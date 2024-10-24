@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Tiến hóa lớn là gì trong ngữ cảnh của sinh học tiến hóa?",
+        answers: [
+            { text: "Quá trình thay đổi lớn trong cấu trúc và chức năng của các nhóm sinh vật.", correct: true },
+            { text: "Quá trình thay đổi nhỏ trong di truyền của các cá thể.", correct: false },
+            { text: "Quá trình di cư của các loài đến các môi trường mới.", correct: false },
+            { text: "Quá trình giao phối giữa các loài khác nhau.", correct: false }
+        ],
+        explanation: "Tiến hóa lớn là quá trình thay đổi lớn trong cấu trúc và chức năng của các nhóm sinh vật, thường dẫn đến sự hình thành các loài mới."
+    },
+    {
+        question: "Câu 2: Quá trình phát sinh chủng loại xảy ra như thế nào?",
+        answers: [
+            { text: "Thông qua sự phân tách địa lý và sự thay đổi di truyền trong quần thể.", correct: true },
+            { text: "Thông qua sự giao phối giữa các loài khác nhau và sự di cư.", correct: false },
+            { text: "Thông qua sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Thông qua sự thay đổi trong cấu trúc cơ thể của cá thể.", correct: false }
+        ],
+        explanation: "Quá trình phát sinh chủng loại thường xảy ra thông qua sự phân tách địa lý và sự thay đổi di truyền trong quần thể."
+    },
+    {
+        question: "Câu 3: Yếu tố nào không liên quan đến quá trình phát sinh chủng loại?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự thay đổi di truyền.", correct: false },
+            { text: "Sự giao phối giữa các loài và sự di cư.", correct: false },
+            { text: "Sự thay đổi trong môi trường sống và sự phân hóa gen.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong cấu trúc DNA của cá thể.", correct: true }
+        ],
+        explanation: "Sự thay đổi ngẫu nhiên trong cấu trúc DNA của cá thể không phải là yếu tố chính liên quan đến quá trình phát sinh chủng loại."
+    },
+    {
+        question: "Câu 4: Hiện tượng nào có thể dẫn đến sự hình thành loài mới?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự tích lũy khác biệt di truyền.", correct: true },
+            { text: "Sự giao phối giữa các loài và sự thay đổi ngẫu nhiên trong môi trường.", correct: false },
+            { text: "Sự di cư của cá thể và sự chọn lọc tự nhiên.", correct: false },
+            { text: "Sự thay đổi trong các đặc điểm sinh học của cá thể.", correct: false }
+        ],
+        explanation: "Sự phân tách địa lý và sự tích lũy khác biệt di truyền có thể dẫn đến sự hình thành loài mới."
+    },
+    {
+        question: "Câu 5: Theo học thuyết tiến hóa, điều gì gây ra sự phân hóa loài?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự khác biệt trong điều kiện sống.", correct: true },
+            { text: "Sự giao phối giữa các loài và sự thay đổi ngẫu nhiên trong di truyền.", correct: false },
+            { text: "Sự di cư của cá thể và sự chọn lọc tự nhiên.", correct: false },
+            { text: "Sự thay đổi trong môi trường sống và sự giao phối giữa các quần thể.", correct: false }
+        ],
+        explanation: "Sự phân hóa loài có thể xảy ra do sự phân tách địa lý và sự khác biệt trong điều kiện sống."
+    },
+    {
+        question: "Câu 6: Đặc điểm nào không phải là kết quả của sự tiến hóa lớn?",
+        answers: [
+            { text: "Sự hình thành các nhóm loài mới với các đặc điểm khác biệt rõ rệt.", correct: false },
+            { text: "Sự thay đổi nhỏ trong cấu trúc di truyền của các cá thể.", correct: true },
+            { text: "Sự thay đổi trong chức năng và cấu trúc cơ thể của sinh vật.", correct: false },
+            { text: "Sự phân hóa di truyền giữa các quần thể khác nhau.", correct: false }
+        ],
+        explanation: "Sự thay đổi nhỏ trong cấu trúc di truyền của các cá thể không phải là kết quả của sự tiến hóa lớn."
+    },
+    {
+        question: "Câu 7: Khái niệm 'loài' trong sinh học tiến hóa thường được định nghĩa như thế nào?",
+        answers: [
+            { text: "Một nhóm cá thể có khả năng giao phối và sinh sản với nhau, tạo ra con cái có khả năng sinh sản.", correct: true },
+            { text: "Một nhóm cá thể sống trong cùng một môi trường và có các đặc điểm di truyền tương đồng.", correct: false },
+            { text: "Một nhóm cá thể có khả năng di cư và thích nghi với nhiều môi trường khác nhau.", correct: false },
+            { text: "Một nhóm cá thể có các đặc điểm sinh học và sinh lý tương đồng.", correct: false }
+        ],
+        explanation: "Khái niệm 'loài' thường được định nghĩa là một nhóm cá thể có khả năng giao phối và sinh sản với nhau, tạo ra con cái có khả năng sinh sản."
+    },
+    {
+        question: "Câu 8: Trong quá trình phát sinh chủng loại, yếu tố nào ảnh hưởng lớn đến sự hình thành loài mới?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự tích lũy các khác biệt di truyền.", correct: true },
+            { text: "Sự giao phối giữa các loài và sự thay đổi ngẫu nhiên trong môi trường.", correct: false },
+            { text: "Sự di cư của cá thể và sự chọn lọc tự nhiên.", correct: false },
+            { text: "Sự thay đổi trong cấu trúc di truyền của cá thể.", correct: false }
+        ],
+        explanation: "Sự phân tách địa lý và sự tích lũy các khác biệt di truyền là yếu tố ảnh hưởng lớn đến sự hình thành loài mới."
+    },
+    {
+        question: "Câu 9: Khái niệm 'đột biến' có vai trò gì trong quá trình tiến hóa?",
+        answers: [
+            { text: "Cung cấp nguồn nguyên liệu di truyền cho sự tiến hóa và đa dạng di truyền.", correct: true },
+            { text: "Gây ra sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Gây ra sự di cư của cá thể giữa các quần thể.", correct: false },
+            { text: "Gây ra sự thay đổi trong cấu trúc cơ thể của cá thể.", correct: false }
+        ],
+        explanation: "Đột biến cung cấp nguồn nguyên liệu di truyền cho sự tiến hóa và đa dạng di truyền."
+    },
+    {
+        question: "Câu 10: 'Chọn lọc tự nhiên' ảnh hưởng đến quá trình hình thành loài như thế nào?",
+        answers: [
+            { text: "Chọn lọc tự nhiên làm tăng sự sống sót và sinh sản của các cá thể có đặc điểm thích nghi.", correct: true },
+            { text: "Chọn lọc tự nhiên tạo ra sự giao phối giữa các loài khác nhau.", correct: false },
+            { text: "Chọn lọc tự nhiên thay đổi ngẫu nhiên trong di truyền của cá thể.", correct: false },
+            { text: "Chọn lọc tự nhiên làm giảm sự đa dạng di truyền trong quần thể.", correct: false }
+        ],
+        explanation: "Chọn lọc tự nhiên ảnh hưởng đến quá trình hình thành loài bằng cách làm tăng sự sống sót và sinh sản của các cá thể có đặc điểm thích nghi."
+    },
+    {
+        question: "Câu 11: 'Tái tổ hợp di truyền' trong tiến hóa lớn có nghĩa là gì?",
+        answers: [
+            { text: "Quá trình kết hợp các allele khác nhau từ các bố mẹ để tạo ra sự đa dạng di truyền.", correct: true },
+            { text: "Sự thay đổi ngẫu nhiên trong DNA do đột biến.", correct: false },
+            { text: "Sự thay đổi trong môi trường sống của loài.", correct: false },
+            { text: "Sự di cư của các cá thể giữa các quần thể.", correct: false }
+        ],
+        explanation: "'Tái tổ hợp di truyền' đề cập đến quá trình kết hợp các allele khác nhau từ các bố mẹ để tạo ra sự đa dạng di truyền."
+    },
+    {
+        question: "Câu 12: 'Sự phân tách địa lý' ảnh hưởng đến quá trình hình thành loài như thế nào?",
+        answers: [
+            { text: "Gây ra sự phân chia quần thể thành các nhóm khác nhau, dẫn đến sự khác biệt di truyền.", correct: true },
+            { text: "Tạo ra sự giao phối giữa các loài khác nhau.", correct: false },
+            { text: "Tạo ra sự thay đổi ngẫu nhiên trong cấu trúc di truyền của các cá thể.", correct: false },
+            { text: "Gây ra sự thay đổi trong môi trường sống của loài.", correct: false }
+        ],
+        explanation: "Sự phân tách địa lý có thể gây ra sự phân chia quần thể thành các nhóm khác nhau, dẫn đến sự khác biệt di truyền và sự hình thành loài mới."
+    },
+    {
+        question: "Câu 13: 'Sự phân hóa di truyền' trong quá trình tiến hóa lớn có nghĩa là gì?",
+        answers: [
+            { text: "Sự thay đổi trong cấu trúc di truyền của các quần thể do sự phân tách địa lý hoặc sự khác biệt trong môi trường sống.", correct: true },
+            { text: "Sự di cư của các cá thể giữa các quần thể khác nhau.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong cấu trúc cơ thể của cá thể.", correct: false },
+            { text: "Sự giao phối giữa các loài khác nhau.", correct: false }
+        ],
+        explanation: "'Sự phân hóa di truyền' là sự thay đổi trong cấu trúc di truyền của các quần thể do sự phân tách địa lý hoặc sự khác biệt trong môi trường sống."
+    },
+    {
+        question: "Câu 14: 'Sự tương tác giữa các loài' ảnh hưởng như thế nào đến quá trình phát sinh chủng loại?",
+        answers: [
+            { text: "Sự tương tác giữa các loài có thể dẫn đến sự thay đổi trong di truyền và hình thành loài mới.", correct: true },
+            { text: "Sự tương tác giữa các loài không ảnh hưởng đến sự phát sinh chủng loại.", correct: false },
+            { text: "Sự tương tác giữa các loài dẫn đến sự giao phối giữa các loài khác nhau.", correct: false },
+            { text: "Sự tương tác giữa các loài gây ra sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false }
+        ],
+        explanation: "Sự tương tác giữa các loài có thể dẫn đến sự thay đổi trong di truyền và hình thành loài mới."
+    },
+    {
+        question: "Câu 15: 'Sự chọn lọc tình cờ' trong tiến hóa có nghĩa là gì?",
+        answers: [
+            { text: "Chọn lọc tình cờ là sự thay đổi ngẫu nhiên trong di truyền không phụ thuộc vào sự thích nghi.", correct: true },
+            { text: "Chọn lọc tình cờ là sự chọn lọc các cá thể có đặc điểm thích nghi tốt nhất.", correct: false },
+            { text: "Chọn lọc tình cờ là sự giao phối giữa các loài khác nhau.", correct: false },
+            { text: "Chọn lọc tình cờ là sự thay đổi trong môi trường sống của loài.", correct: false }
+        ],
+        explanation: "'Chọn lọc tình cờ' là sự thay đổi ngẫu nhiên trong di truyền không phụ thuộc vào sự thích nghi."
+    },
+    {
+        question: "Câu 16: Trong bối cảnh tiến hóa, khái niệm 'loài sinh sản' có nghĩa là gì?",
+        answers: [
+            { text: "Loài sinh sản là một nhóm cá thể có khả năng giao phối và sinh sản với nhau, tạo ra con cái có khả năng sinh sản.", correct: true },
+            { text: "Loài sinh sản là một nhóm cá thể sống trong cùng một môi trường và có các đặc điểm di truyền tương đồng.", correct: false },
+            { text: "Loài sinh sản là một nhóm cá thể có khả năng di cư và thích nghi với nhiều môi trường khác nhau.", correct: false },
+            { text: "Loài sinh sản là một nhóm cá thể có các đặc điểm sinh học và sinh lý tương đồng.", correct: false }
+        ],
+        explanation: "Khái niệm 'loài sinh sản' đề cập đến nhóm cá thể có khả năng giao phối và sinh sản với nhau, tạo ra con cái có khả năng sinh sản."
+    },
+    {
+        question: "Câu 17: Quá trình nào có thể dẫn đến sự hình thành loài mới khi quần thể bị phân tách?",
+        answers: [
+            { text: "Sự phân tách địa lý và sự khác biệt trong điều kiện môi trường.", correct: true },
+            { text: "Sự giao phối giữa các loài khác nhau và sự thay đổi ngẫu nhiên trong di truyền.", correct: false },
+            { text: "Sự di cư của cá thể và sự chọn lọc tự nhiên.", correct: false },
+            { text: "Sự thay đổi trong các đặc điểm sinh học của cá thể.", correct: false }
+        ],
+        explanation: "Khi quần thể bị phân tách, sự phân tách địa lý và sự khác biệt trong điều kiện môi trường có thể dẫn đến sự hình thành loài mới."
+    },
+    {
+        question: "Câu 18: Vai trò của 'đột biến gen' trong tiến hóa lớn là gì?",
+        answers: [
+            { text: "Cung cấp nguyên liệu di truyền mới cho sự phát sinh và phát triển loài.", correct: true },
+            { text: "Gây ra sự thay đổi ngẫu nhiên trong môi trường sống.", correct: false },
+            { text: "Gây ra sự di cư của cá thể giữa các quần thể.", correct: false },
+            { text: "Gây ra sự thay đổi trong cấu trúc cơ thể của cá thể.", correct: false }
+        ],
+        explanation: "Đột biến gen cung cấp nguyên liệu di truyền mới cho sự phát sinh và phát triển loài."
+    },
+    {
+        question: "Câu 19: 'Tái tổ hợp di truyền' có ảnh hưởng như thế nào đến sự phát sinh loài?",
+        answers: [
+            { text: "Tái tổ hợp di truyền tạo ra sự đa dạng di truyền và có thể dẫn đến sự hình thành loài mới.", correct: true },
+            { text: "Tái tổ hợp di truyền làm giảm sự đa dạng di truyền trong quần thể.", correct: false },
+            { text: "Tái tổ hợp di truyền tạo ra sự giao phối giữa các loài khác nhau.", correct: false },
+            { text: "Tái tổ hợp di truyền gây ra sự thay đổi ngẫu nhiên trong cấu trúc cơ thể của cá thể.", correct: false }
+        ],
+        explanation: "Tái tổ hợp di truyền tạo ra sự đa dạng di truyền và có thể dẫn đến sự hình thành loài mới."
+    },
+    {
+        question: "Câu 20: 'Sự chọn lọc tự nhiên' và 'sự phân tách địa lý' có mối quan hệ như thế nào trong tiến hóa?",
+        answers: [
+            { text: "Sự chọn lọc tự nhiên và sự phân tách địa lý thường cùng xảy ra và góp phần vào sự hình thành loài mới.", correct: true },
+            { text: "Sự chọn lọc tự nhiên và sự phân tách địa lý không có mối liên hệ nào trong tiến hóa.", correct: false },
+            { text: "Sự chọn lọc tự nhiên là yếu tố chính trong sự phân tách địa lý của các quần thể.", correct: false },
+            { text: "Sự phân tách địa lý làm giảm sự hiệu quả của sự chọn lọc tự nhiên.", correct: false }
+        ],
+        explanation: "Sự chọn lọc tự nhiên và sự phân tách địa lý thường cùng xảy ra và góp phần vào sự hình thành loài mới."
+    }
+];
+
+
+
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

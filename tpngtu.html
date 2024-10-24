@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Nguyên tử gồm những thành phần cơ bản nào?",
+        answers: [
+            { text: "Proton, neutron và electron", correct: true },
+            { text: "Proton và electron", correct: false },
+            { text: "Neutron và electron", correct: false },
+            { text: "Chỉ proton", correct: false }
+        ],
+        explanation: "Nguyên tử gồm ba thành phần cơ bản là proton, neutron và electron."
+    },
+    {
+        question: "Câu 2: Proton có điện tích gì?",
+        answers: [
+            { text: "Dương", correct: true },
+            { text: "Âm", correct: false },
+            { text: "Trung hòa", correct: false },
+            { text: "Không xác định", correct: false }
+        ],
+        explanation: "Proton có điện tích dương."
+    },
+    {
+        question: "Câu 3: Neutron có điện tích gì?",
+        answers: [
+            { text: "Trung hòa", correct: true },
+            { text: "Dương", correct: false },
+            { text: "Âm", correct: false },
+            { text: "Không xác định", correct: false }
+        ],
+        explanation: "Neutron có điện tích trung hòa."
+    },
+    {
+        question: "Câu 4: Electron có điện tích gì?",
+        answers: [
+            { text: "Âm", correct: true },
+            { text: "Dương", correct: false },
+            { text: "Trung hòa", correct: false },
+            { text: "Không xác định", correct: false }
+        ],
+        explanation: "Electron có điện tích âm."
+    },
+    {
+        question: "Câu 5: Khối lượng của một proton xấp xỉ bằng bao nhiêu?",
+        answers: [
+            { text: "1 đơn vị khối lượng nguyên tử (amu)", correct: true },
+            { text: "0.5 amu", correct: false },
+            { text: "2 amu", correct: false },
+            { text: "0 amu", correct: false }
+        ],
+        explanation: "Khối lượng của một proton xấp xỉ bằng 1 đơn vị khối lượng nguyên tử (amu)."
+    },
+    {
+        question: "Câu 6: Khối lượng của một neutron so với proton như thế nào?",
+        answers: [
+            { text: "Xấp xỉ bằng", correct: true },
+            { text: "Lớn hơn nhiều", correct: false },
+            { text: "Nhỏ hơn nhiều", correct: false },
+            { text: "Không xác định", correct: false }
+        ],
+        explanation: "Khối lượng của một neutron xấp xỉ bằng khối lượng của một proton."
+    },
+    {
+        question: "Câu 7: Electron quay xung quanh gì?",
+        answers: [
+            { text: "Hạt nhân", correct: true },
+            { text: "Proton", correct: false },
+            { text: "Neutron", correct: false },
+            { text: "Hạt nhân của nguyên tử khác", correct: false }
+        ],
+        explanation: "Electron quay xung quanh hạt nhân."
+    },
+    {
+        question: "Câu 8: Số proton trong một nguyên tử xác định gì?",
+        answers: [
+            { text: "Số nguyên tử", correct: true },
+            { text: "Số electron", correct: false },
+            { text: "Số neutron", correct: false },
+            { text: "Khối lượng nguyên tử", correct: false }
+        ],
+        explanation: "Số proton trong một nguyên tử xác định số nguyên tử (số thứ tự của nguyên tố trong bảng tuần hoàn)."
+    },
+    {
+        question: "Câu 9: Hạt nhân của nguyên tử gồm những thành phần nào?",
+        answers: [
+            { text: "Proton và neutron", correct: true },
+            { text: "Proton và electron", correct: false },
+            { text: "Neutron và electron", correct: false },
+            { text: "Chỉ proton", correct: false }
+        ],
+        explanation: "Hạt nhân của nguyên tử gồm proton và neutron."
+    },
+    {
+        question: "Câu 10: Số khối của một nguyên tử được tính bằng tổng của?",
+        answers: [
+            { text: "Số proton và neutron", correct: true },
+            { text: "Số proton và electron", correct: false },
+            { text: "Số neutron và electron", correct: false },
+            { text: "Chỉ số proton", correct: false }
+        ],
+        explanation: "Số khối của một nguyên tử được tính bằng tổng của số proton và neutron."
+    },
+    {
+        question: "Câu 11: Khối lượng của một electron so với proton như thế nào?",
+        answers: [
+            { text: "Nhỏ hơn nhiều", correct: true },
+            { text: "Xấp xỉ bằng", correct: false },
+            { text: "Lớn hơn nhiều", correct: false },
+            { text: "Không xác định", correct: false }
+        ],
+        explanation: "Khối lượng của một electron nhỏ hơn khối lượng của một proton rất nhiều."
+    },
+    {
+        question: "Câu 12: Nguyên tử nào sau đây có số proton bằng số electron?",
+        answers: [
+            { text: "Nguyên tử trung hòa", correct: true },
+            { text: "Ion dương", correct: false },
+            { text: "Ion âm", correct: false },
+            { text: "Nguyên tử không ổn định", correct: false }
+        ],
+        explanation: "Trong một nguyên tử trung hòa, số proton bằng số electron."
+    },
+    {
+        question: "Câu 13: Hạt nào trong nguyên tử không có khối lượng đáng kể?",
+        answers: [
+            { text: "Electron", correct: true },
+            { text: "Proton", correct: false },
+            { text: "Neutron", correct: false },
+            { text: "Cả proton và neutron", correct: false }
+        ],
+        explanation: "Electron có khối lượng rất nhỏ và không có khối lượng đáng kể so với proton và neutron."
+    },
+    {
+        question: "Câu 14: Khái niệm nào sau đây mô tả vùng không gian quanh hạt nhân nơi có khả năng cao tìm thấy electron?",
+        answers: [
+            { text: "Orbital nguyên tử", correct: true },
+            { text: "Đám mây electron", correct: false },
+            { text: "Quỹ đạo electron", correct: false },
+            { text: "Lớp vỏ nguyên tử", correct: false }
+        ],
+        explanation: "Orbital nguyên tử là vùng không gian quanh hạt nhân nơi có khả năng cao tìm thấy electron."
+    },
+    {
+        question: "Câu 15: Số electron tối đa trong lớp vỏ K (lớp vỏ đầu tiên) là bao nhiêu?",
+        answers: [
+            { text: "2", correct: true },
+            { text: "8", correct: false },
+            { text: "18", correct: false },
+            { text: "32", correct: false }
+        ],
+        explanation: "Lớp vỏ K chỉ có thể chứa tối đa 2 electron."
+    },
+    {
+        question: "Câu 16: Trong mô hình nguyên tử Bohr, electron chuyển động như thế nào quanh hạt nhân?",
+        answers: [
+            { text: "Theo quỹ đạo tròn", correct: true },
+            { text: "Theo quỹ đạo elip", correct: false },
+            { text: "Theo quỹ đạo ngẫu nhiên", correct: false },
+            { text: "Không chuyển động", correct: false }
+        ],
+        explanation: "Trong mô hình nguyên tử Bohr, electron chuyển động theo quỹ đạo tròn quanh hạt nhân."
+    },
+    {
+        question: "Câu 17: Số lượng proton trong nguyên tử oxy là bao nhiêu?",
+        answers: [
+            { text: "8", correct: true },
+            { text: "6", correct: false },
+            { text: "10", correct: false },
+            { text: "12", correct: false }
+        ],
+        explanation: "Nguyên tử oxy có 8 proton."
+    },
+    {
+        question: "Câu 18: Nguyên tố nào sau đây có số proton nhiều nhất?",
+        answers: [
+            { text: "Uranium", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Carbon", correct: false },
+            { text: "Oxygen", correct: false }
+        ],
+        explanation: "Uranium là nguyên tố có số proton nhiều nhất trong số các nguyên tố trên."
+    },
+    {
+        question: "Câu 19: Tính chất nào sau đây không phải của neutron?",
+        answers: [
+            { text: "Có khối lượng tương đương proton", correct: false },
+            { text: "Có điện tích âm", correct: true },
+            { text: "Nằm trong hạt nhân", correct: false },
+            { text: "Trung hòa về điện", correct: false }
+        ],
+        explanation: "Neutron không có điện tích âm, nó trung hòa về điện."
+    },
+    {
+        question: "Câu 20: Nguyên tử nào sau đây có số electron nhiều nhất?",
+        answers: [
+            { text: "Platinum", correct: true },
+            { text: "Helium", correct: false },
+            { text: "Neon", correct: false },
+            { text: "Gold", correct: false }
+        ],
+        explanation: "Platinum có số electron nhiều hơn so với Helium, Neon và Gold."
+    }
+];
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
