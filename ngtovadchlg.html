@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Nguyên tố halogen nào trong dãy nguyên tố hóa học?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false },
+            { text: "Cả ba đều đúng", correct: true }
+        ],
+        explanation: "Nguyên tố halogen bao gồm Fluơrin (F), Clor (Cl), Brom (Br) và I-ốt (I)."
+    },
+    {
+        question: "Câu 2: Halogen nào là nguyên tố ở dạng khí trong điều kiện tiêu chuẩn?",
+        answers: [
+            { text: "I-ốt", correct: false },
+            { text: "Brom", correct: false },
+            { text: "Clor", correct: false },
+            { text: "Fluơrin", correct: true }
+        ],
+        explanation: "Fluơrin là nguyên tố halogen duy nhất ở dạng khí trong điều kiện tiêu chuẩn."
+    },
+    {
+        question: "Câu 3: Tính chất hóa học chung của nguyên tố halogen là gì?",
+        answers: [
+            { text: "Tính khử mạnh", correct: false },
+            { text: "Tính oxi hóa mạnh", correct: false },
+            { text: "Tính chất tăng dần từ Fluơrin đến I-ốt", correct: true },
+            { text: "Tính chất giảm dần từ Fluơrin đến I-ốt", correct: false }
+        ],
+        explanation: "Tính chất hóa học của nguyên tố halogen tăng dần từ Fluơrin đến I-ốt trong chuỗi."
+    },
+    {
+        question: "Câu 4: Nguyên tố halogen có màu vàng nhạt khi ở trạng thái nguyên chất là gì?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "I-ốt", correct: true },
+            { text: "Brom", correct: false },
+            { text: "Clor", correct: false }
+        ],
+        explanation: "I-ốt có màu tím đậm hoặc màu vàng nhạt khi ở trạng thái nguyên chất."
+    },
+    {
+        question: "Câu 5: Nguyên tố halogen có màu xanh lục khi ở trạng thái nguyên chất là gì?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false },
+            { text: "I-ốt", correct: true }
+        ],
+        explanation: "I-ốt có thể có màu xanh lục khi ở trạng thái nguyên chất."
+    },
+    {
+        question: "Câu 6: Halogen nào dễ nhất tạo hợp chất với kim loại?",
+        answers: [
+            { text: "Clor", correct: true },
+            { text: "Fluơrin", correct: false },
+            { text: "Brom", correct: false },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Clor là nguyên tố halogen dễ nhất tạo hợp chất với kim loại do tính oxi hóa mạnh của nó."
+    },
+    {
+        question: "Câu 7: Halogen nào có tính chất khử mạnh nhất?",
+        answers: [
+            { text: "I-ốt", correct: false },
+            { text: "Fluơrin", correct: true },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false }
+        ],
+        explanation: "Fluơrin có tính khử mạnh nhất trong số các nguyên tố halogen."
+    },
+    {
+        question: "Câu 8: Halogen nào có mức độ độc hại cao nhất khi hít phải ở dạng khí?",
+        answers: [
+            { text: "Clor", correct: false },
+            { text: "Fluơrin", correct: false },
+            { text: "Brom", correct: false },
+            { text: "I-ốt", correct: true }
+        ],
+        explanation: "I-ốt có mức độ độc hại cao nhất trong số các nguyên tố halogen khi hít phải ở dạng khí."
+    },
+    {
+        question: "Câu 9: Tên gọi khoa học của Fluơrin là gì?",
+        answers: [
+            { text: "Ferrum", correct: false },
+            { text: "Fluorine", correct: true },
+            { text: "Ferrus", correct: false },
+            { text: "Fluorium", correct: false }
+        ],
+        explanation: "Tên gọi khoa học của Fluơrin là Fluorine."
+    },
+    {
+        question: "Câu 10: Halogen nào có khả năng kết tinh ở dạng nguyên chất?",
+        answers: [
+            { text: "Fluơrin", correct: true },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Fluơrin là nguyên tố halogen có khả năng kết tinh ở dạng nguyên chất ở điều kiện tiêu chuẩn."
+    },
+    {
+        question: "Câu 11: Nguyên tố halogen nào có mùi khí clo nhẹ?",
+        answers: [
+            { text: "Clor", correct: false },
+            { text: "Fluơrin", correct: false },
+            { text: "Brom", correct: true },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Brom là nguyên tố halogen có mùi khí clo nhẹ khi ở dạng nguyên chất."
+    },
+    {
+        question: "Câu 12: Halogen nào làm mất màu dung dịch kali iodua khi phản ứng?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "I-ốt", correct: true },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false }
+        ],
+        explanation: "I-ốt làm mất màu dung dịch kali iodua khi phản ứng, hiện tượng được dùng để phát hiện I-ốt."
+    },
+    {
+        question: "Câu 13: Một trong những ứng dụng của nguyên tố halogen là gì?",
+        answers: [
+            { text: "Khử trùng nước", correct: true },
+            { text: "Tạo kim loại hợp kim", correct: false },
+            { text: "Làm màu thuốc nhuộm", correct: false },
+            { text: "Tạo ra chất nổ", correct: false }
+        ],
+        explanation: "Halogen được sử dụng rộng rãi trong việc khử trùng nước và các bề mặt khác do tính khử mạnh của chúng."
+    },
+    {
+        question: "Câu 14: Halogen nào dễ dàng tạo hợp chất với các kim loại?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "Brom", correct: true },
+            { text: "Clor", correct: false },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Brom là halogen dễ dàng tạo hợp chất với các kim loại, đặc biệt là kim loại kiềm và kim loại nhóm 12."
+    },
+    {
+        question: "Câu 15: Tác dụng của halogen với photpho là gì?",
+        answers: [
+            { text: "Phản ứng khử", correct: false },
+            { text: "Phản ứng oxi hóa", correct: true },
+            { text: "Phản ứng trao đổi", correct: false },
+            { text: "Không có phản ứng nào xảy ra", correct: false }
+        ],
+        explanation: "Halogen có khả năng oxi hóa photpho, thường tạo thành hợp chất photpho halogen."
+    },
+    {
+        question: "Câu 16: Halogen nào có thể tạo ra axit mạnh nhất?",
+        answers: [
+            { text: "Fluơrin", correct: true },
+            { text: "Brom", correct: false },
+            { text: "Clor", correct: false },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Fluơrin có thể tạo ra axit mạnh nhất trong số các nguyên tố halogen."
+    },
+    {
+        question: "Câu 17: Halogen nào làm mất màu giấy quỳ?",
+        answers: [
+            { text: "Clor", correct: false },
+            { text: "Fluơrin", correct: false },
+            { text: "Brom", correct: true },
+            { text: "I-ốt", correct: false }
+        ],
+        explanation: "Brom làm mất màu giấy quỳ, đây là một phản ứng xác định đặc trưng của halogen."
+    },
+    {
+        question: "Câu 18: Trong chuỗi nguyên tố halogen, tính chất hóa học của chúng thay đổi như thế nào?",
+        answers: [
+            { text: "Tăng dần từ Fluơrin đến I-ốt", correct: true },
+            { text: "Giảm dần từ Fluơrin đến I-ốt", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không có quy luật nào áp dụng", correct: false }
+        ],
+        explanation: "Tính chất hóa học của nguyên tố halogen tăng dần từ Fluơrin đến I-ốt trong chuỗi."
+    },
+    {
+        question: "Câu 19: Halogen nào được sử dụng để sản xuất thuốc kháng sinh?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "I-ốt", correct: true },
+            { text: "Clor", correct: false },
+            { text: "Brom", correct: false }
+        ],
+        explanation: "I-ốt được sử dụng trong sản xuất nhiều loại thuốc kháng sinh và y tế khác."
+    },
+    {
+        question: "Câu 20: Halogen nào làm mất màu dung dịch kali bromua khi phản ứng?",
+        answers: [
+            { text: "Fluơrin", correct: false },
+            { text: "Clor", correct: false },
+            { text: "I-ốt", correct: false },
+            { text: "Brom", correct: true }
+        ],
+        explanation: "Brom làm mất màu dung dịch kali bromua khi phản ứng, đây là một phản ứng xác định đặc trưng của halogen."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

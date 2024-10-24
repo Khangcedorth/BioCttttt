@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Phương thức vận chuyển chủ động qua màng tế bào là gì?",
+        answers: [
+            { text: "Sử dụng năng lượng ATP để vận chuyển các chất từ nơi có nồng độ thấp đến nơi có nồng độ cao", correct: true },
+            { text: "Không cần năng lượng để vận chuyển các chất", correct: false },
+            { text: "Sử dụng kênh protein để vận chuyển các chất", correct: false },
+            { text: "Sử dụng năng lượng từ ánh sáng để vận chuyển các chất", correct: false }
+        ],
+        explanation: "Vận chuyển chủ động qua màng tế bào sử dụng năng lượng ATP để di chuyển các chất từ nơi có nồng độ thấp đến nơi có nồng độ cao."
+    },
+    {
+        question: "Câu 2: Cấu trúc nào trong màng tế bào đóng vai trò quan trọng trong quá trình vận chuyển các chất?",
+        answers: [
+            { text: "Kênh protein và bơm protein", correct: true },
+            { text: "Lớp lipid kép", correct: false },
+            { text: "Carbohydrate trên bề mặt màng", correct: false },
+            { text: "Glycoprotein", correct: false }
+        ],
+        explanation: "Kênh protein và bơm protein trong màng tế bào giúp vận chuyển các chất qua màng tế bào."
+    },
+    {
+        question: "Câu 3: Khuếch tán đơn giản là quá trình vận chuyển chất như thế nào?",
+        answers: [
+            { text: "Chất di chuyển từ nơi có nồng độ cao đến nơi có nồng độ thấp mà không cần năng lượng", correct: true },
+            { text: "Chất di chuyển từ nơi có nồng độ thấp đến nơi có nồng độ cao", correct: false },
+            { text: "Chất di chuyển qua kênh protein", correct: false },
+            { text: "Chất di chuyển qua bơm protein", correct: false }
+        ],
+        explanation: "Khuếch tán đơn giản là quá trình vận chuyển các chất từ nơi có nồng độ cao đến nơi có nồng độ thấp mà không cần năng lượng."
+    },
+    {
+        question: "Câu 4: Điều kiện nào là cần thiết cho quá trình khuếch tán hỗ trợ?",
+        answers: [
+            { text: "Sự hiện diện của kênh protein hoặc carrier protein", correct: true },
+            { text: "Cần có năng lượng ATP", correct: false },
+            { text: "Chất cần vận chuyển phải là chất kỵ nước", correct: false },
+            { text: "Không cần điều kiện đặc biệt", correct: false }
+        ],
+        explanation: "Khuếch tán hỗ trợ cần có sự hiện diện của kênh protein hoặc carrier protein để vận chuyển các chất qua màng tế bào."
+    },
+    {
+        question: "Câu 5: Đặc điểm nào của màng tế bào giúp nó thực hiện chức năng trao đổi chất?",
+        answers: [
+            { text: "Tính thấm chọn lọc", correct: true },
+            { text: "Tính đàn hồi", correct: false },
+            { text: "Tính bền vững", correct: false },
+            { text: "Tính linh hoạt", correct: false }
+        ],
+        explanation: "Màng tế bào có tính thấm chọn lọc, cho phép một số chất đi qua màng trong khi ngăn cản các chất khác."
+    },
+    {
+        question: "Câu 6: Quá trình thẩm thấu là gì?",
+        answers: [
+            { text: "Sự di chuyển của nước từ nơi có nồng độ nước cao đến nơi có nồng độ nước thấp qua màng bán thấm", correct: true },
+            { text: "Sự di chuyển của các ion từ nơi có nồng độ ion cao đến nơi có nồng độ ion thấp", correct: false },
+            { text: "Sự di chuyển của các chất khí qua màng tế bào", correct: false },
+            { text: "Sự di chuyển của protein qua màng tế bào", correct: false }
+        ],
+        explanation: "Thẩm thấu là sự di chuyển của nước từ nơi có nồng độ nước cao đến nơi có nồng độ nước thấp qua màng bán thấm."
+    },
+    {
+        question: "Câu 7: Tại sao bơm Na+/K+ ATPase là cần thiết cho tế bào?",
+        answers: [
+            { text: "Giúp duy trì điện thế màng tế bào và cân bằng ion nội bào", correct: true },
+            { text: "Giúp tế bào nhận diện tín hiệu từ bên ngoài", correct: false },
+            { text: "Giúp tế bào sản xuất năng lượng ATP", correct: false },
+            { text: "Giúp tế bào tổng hợp protein", correct: false }
+        ],
+        explanation: "Bơm Na+/K+ ATPase giúp duy trì điện thế màng tế bào và cân bằng ion nội bào bằng cách vận chuyển ion Na+ ra khỏi tế bào và ion K+ vào trong tế bào."
+    },
+    {
+        question: "Câu 8: Phân biệt giữa vận chuyển chủ động và khuếch tán hỗ trợ?",
+        answers: [
+            { text: "Vận chuyển chủ động cần năng lượng ATP, trong khi khuếch tán hỗ trợ không cần năng lượng", correct: true },
+            { text: "Vận chuyển chủ động không cần kênh protein, trong khi khuếch tán hỗ trợ cần kênh protein", correct: false },
+            { text: "Vận chuyển chủ động chỉ xảy ra trong môi trường có nồng độ cao, trong khi khuếch tán hỗ trợ chỉ xảy ra trong môi trường có nồng độ thấp", correct: false },
+            { text: "Vận chuyển chủ động và khuếch tán hỗ trợ đều không cần năng lượng", correct: false }
+        ],
+        explanation: "Vận chuyển chủ động cần năng lượng ATP để di chuyển các chất, trong khi khuếch tán hỗ trợ không cần năng lượng và sử dụng kênh protein hoặc carrier protein."
+    },
+    {
+        question: "Câu 9: Quá trình endocytosis là gì?",
+        answers: [
+            { text: "Quá trình tế bào lấy vào các chất bằng cách bao bọc chúng trong một phần màng tế bào", correct: true },
+            { text: "Quá trình tế bào đẩy ra các chất thải", correct: false },
+            { text: "Quá trình trao đổi chất khí qua màng tế bào", correct: false },
+            { text: "Quá trình vận chuyển nước qua màng tế bào", correct: false }
+        ],
+        explanation: "Endocytosis là quá trình tế bào lấy vào các chất bằng cách bao bọc chúng trong một phần màng tế bào, tạo thành một túi nội bào."
+    },
+    {
+        question: "Câu 10: Exocytosis là quá trình như thế nào?",
+        answers: [
+            { text: "Quá trình tế bào đẩy các chất ra khỏi tế bào bằng cách sử dụng túi nội bào", correct: true },
+            { text: "Quá trình tế bào lấy vào các chất từ môi trường ngoài", correct: false },
+            { text: "Quá trình trao đổi ion qua màng tế bào", correct: false },
+            { text: "Quá trình vận chuyển nước qua màng tế bào", correct: false }
+        ],
+        explanation: "Exocytosis là quá trình tế bào đẩy các chất ra khỏi tế bào bằng cách sử dụng túi nội bào, túi này sẽ hòa màng với màng tế bào và giải phóng nội dung ra ngoài."
+    },
+    {
+        question: "Câu 11: Pinocytosis là gì?",
+        answers: [
+            { text: "Quá trình tế bào uống các giọt dịch lỏng nhỏ từ môi trường ngoài vào bên trong tế bào", correct: true },
+            { text: "Quá trình tế bào ăn các hạt lớn từ môi trường ngoài", correct: false },
+            { text: "Quá trình trao đổi khí qua màng tế bào", correct: false },
+            { text: "Quá trình trao đổi ion qua màng tế bào", correct: false }
+        ],
+        explanation: "Pinocytosis là quá trình tế bào uống các giọt dịch lỏng nhỏ từ môi trường ngoài vào bên trong tế bào bằng cách hình thành các túi nội bào."
+    },
+    {
+        question: "Câu 12: Sự khác biệt giữa phagocytosis và pinocytosis là gì?",
+        answers: [
+            { text: "Phagocytosis là quá trình tế bào ăn các hạt lớn, trong khi pinocytosis là quá trình tế bào uống các giọt dịch lỏng nhỏ", correct: true },
+            { text: "Phagocytosis không cần năng lượng, trong khi pinocytosis cần năng lượng ATP", correct: false },
+            { text: "Phagocytosis chỉ xảy ra ở tế bào động vật, trong khi pinocytosis chỉ xảy ra ở tế bào thực vật", correct: false },
+            { text: "Phagocytosis và pinocytosis đều là quá trình vận chuyển chủ động", correct: false }
+        ],
+        explanation: "Phagocytosis là quá trình tế bào ăn các hạt lớn, trong khi pinocytosis là quá trình tế bào uống các giọt dịch lỏng nhỏ từ môi trường ngoài."
+    },
+    {
+        question: "Câu 13: Các chất nào có thể đi qua màng tế bào bằng khuếch tán đơn giản?",
+        answers: [
+            { text: "O2 và CO2", correct: true },
+            { text: "Glucose và amino acid", correct: false },
+            { text: "Ion Na+ và K+", correct: false },
+            { text: "Protein và lipid", correct: false }
+        ],
+        explanation: "Các chất như O2 và CO2 có thể đi qua màng tế bào bằng khuếch tán đơn giản do chúng là những phân tử nhỏ và không phân cực."
+    },
+    {
+        question: "Câu 14: Quá trình nào sau đây không cần sử dụng năng lượng ATP?",
+        answers: [
+            { text: "Khuếch tán đơn giản", correct: true },
+            { text: "Vận chuyển chủ động", correct: false },
+            { text: "Endocytosis", correct: false },
+            { text: "Exocytosis", correct: false }
+        ],
+        explanation: "Khuếch tán đơn giản không cần sử dụng năng lượng ATP mà chỉ dựa vào gradient nồng độ."
+    },
+    {
+        question: "Câu 15: Quá trình vận chuyển chất qua màng tế bào bằng các bơm protein được gọi là gì?",
+        answers: [
+            { text: "Vận chuyển chủ động", correct: true },
+            { text: "Khuếch tán đơn giản", correct: false },
+            { text: "Khuếch tán hỗ trợ", correct: false },
+            { text: "Thẩm thấu", correct: false }
+        ],
+        explanation: "Quá trình vận chuyển chất qua màng tế bào bằng các bơm protein sử dụng năng lượng ATP được gọi là vận chuyển chủ động."
+    },
+    {
+        question: "Câu 16: Các ion như Na+ và K+ di chuyển qua màng tế bào bằng cách nào?",
+        answers: [
+            { text: "Bằng bơm protein sử dụng năng lượng ATP", correct: true },
+            { text: "Bằng khuếch tán đơn giản", correct: false },
+            { text: "Bằng khuếch tán hỗ trợ", correct: false },
+            { text: "Bằng thẩm thấu", correct: false }
+        ],
+        explanation: "Các ion như Na+ và K+ di chuyển qua màng tế bào bằng bơm protein sử dụng năng lượng ATP trong quá trình vận chuyển chủ động."
+    },
+    {
+        question: "Câu 17: Vai trò của màng tế bào trong việc duy trì cân bằng nội môi là gì?",
+        answers: [
+            { text: "Điều tiết sự ra vào của các chất, giúp duy trì môi trường ổn định bên trong tế bào", correct: true },
+            { text: "Tạo ra năng lượng cho tế bào", correct: false },
+            { text: "Tạo ra các protein cho tế bào", correct: false },
+            { text: "Giúp tế bào nhận diện các tín hiệu từ môi trường ngoài", correct: false }
+        ],
+        explanation: "Màng tế bào điều tiết sự ra vào của các chất, giúp duy trì môi trường ổn định bên trong tế bào, qua đó duy trì cân bằng nội môi."
+    },
+    {
+        question: "Câu 18: Sự khác biệt giữa vận chuyển chủ động và vận chuyển thụ động là gì?",
+        answers: [
+            { text: "Vận chuyển chủ động cần năng lượng ATP, trong khi vận chuyển thụ động không cần năng lượng", correct: true },
+            { text: "Vận chuyển chủ động không cần kênh protein, trong khi vận chuyển thụ động cần kênh protein", correct: false },
+            { text: "Vận chuyển chủ động chỉ xảy ra ở tế bào động vật, trong khi vận chuyển thụ động xảy ra ở mọi loại tế bào", correct: false },
+            { text: "Vận chuyển chủ động và vận chuyển thụ động đều cần năng lượng ATP", correct: false }
+        ],
+        explanation: "Vận chuyển chủ động cần năng lượng ATP để di chuyển các chất, trong khi vận chuyển thụ động không cần năng lượng và chỉ dựa vào gradient nồng độ."
+    },
+    {
+        question: "Câu 19: Điều gì xảy ra khi một tế bào động vật bị đặt trong dung dịch ưu trương?",
+        answers: [
+            { text: "Nước sẽ thoát ra khỏi tế bào, khiến tế bào co lại", correct: true },
+            { text: "Nước sẽ đi vào tế bào, khiến tế bào phồng lên", correct: false },
+            { text: "Tế bào sẽ không thay đổi về kích thước", correct: false },
+            { text: "Tế bào sẽ vỡ ra do áp lực nội bào tăng", correct: false }
+        ],
+        explanation: "Khi một tế bào động vật bị đặt trong dung dịch ưu trương, nước sẽ thoát ra khỏi tế bào do nồng độ chất tan bên ngoài cao hơn bên trong, khiến tế bào co lại."
+    },
+    {
+        question: "Câu 20: Tế bào thực vật phản ứng như thế nào khi bị đặt trong dung dịch nhược trương?",
+        answers: [
+            { text: "Tế bào sẽ hấp thụ nước và phồng lên, tạo áp lực turgor", correct: true },
+            { text: "Tế bào sẽ thoát nước và co lại", correct: false },
+            { text: "Tế bào sẽ không thay đổi về kích thước", correct: false },
+            { text: "Tế bào sẽ bị vỡ ra do hấp thụ quá nhiều nước", correct: false }
+        ],
+        explanation: "Khi tế bào thực vật bị đặt trong dung dịch nhược trương, nó sẽ hấp thụ nước và phồng lên, tạo ra áp lực turgor, giúp duy trì hình dạng và cấu trúc của tế bào."
+    }
+];
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Phát triển bền vững là gì?",
+        answers: [
+            { text: "Phát triển kinh tế mà không gây tổn hại đến môi trường và xã hội.", correct: true },
+            { text: "Phát triển công nghiệp mà không quan tâm đến tài nguyên thiên nhiên.", correct: false },
+            { text: "Chỉ tập trung vào tăng trưởng kinh tế mà không cần lo lắng về hậu quả môi trường.", correct: false },
+            { text: "Phát triển kinh tế bằng mọi giá.", correct: false }
+        ],
+        explanation: "Phát triển bền vững là phát triển kinh tế mà không gây tổn hại đến môi trường và xã hội."
+    },
+    {
+        question: "Câu 2: Ba trụ cột chính của phát triển bền vững là gì?",
+        answers: [
+            { text: "Kinh tế, xã hội, và môi trường.", correct: true },
+            { text: "Kinh tế, công nghiệp, và giáo dục.", correct: false },
+            { text: "Môi trường, chính trị, và văn hóa.", correct: false },
+            { text: "Công nghệ, kinh tế, và xã hội.", correct: false }
+        ],
+        explanation: "Ba trụ cột chính của phát triển bền vững là kinh tế, xã hội, và môi trường."
+    },
+    {
+        question: "Câu 3: Tại sao phát triển bền vững là quan trọng?",
+        answers: [
+            { text: "Để đảm bảo rằng tài nguyên thiên nhiên được bảo tồn cho các thế hệ tương lai.", correct: true },
+            { text: "Để tăng cường phát triển công nghiệp và kinh tế nhanh chóng.", correct: false },
+            { text: "Để phát triển kinh tế mà không cần quan tâm đến các vấn đề xã hội.", correct: false },
+            { text: "Để tối đa hóa việc khai thác tài nguyên thiên nhiên.", correct: false }
+        ],
+        explanation: "Phát triển bền vững là quan trọng để đảm bảo rằng tài nguyên thiên nhiên được bảo tồn cho các thế hệ tương lai."
+    },
+    {
+        question: "Câu 4: Mục tiêu chính của phát triển bền vững là gì?",
+        answers: [
+            { text: "Đáp ứng nhu cầu của hiện tại mà không làm tổn hại đến khả năng đáp ứng nhu cầu của thế hệ tương lai.", correct: true },
+            { text: "Tăng cường sản xuất và tiêu dùng tối đa tài nguyên.", correct: false },
+            { text: "Giảm thiểu chi phí sản xuất bất kể hậu quả.", correct: false },
+            { text: "Tập trung vào phát triển đô thị và công nghiệp.", correct: false }
+        ],
+        explanation: "Mục tiêu chính của phát triển bền vững là đáp ứng nhu cầu của hiện tại mà không làm tổn hại đến khả năng đáp ứng nhu cầu của thế hệ tương lai."
+    },
+    {
+        question: "Câu 5: Khái niệm 'dấu chân sinh thái' có nghĩa là gì?",
+        answers: [
+            { text: "Lượng tài nguyên thiên nhiên mà một cá nhân hoặc cộng đồng sử dụng để duy trì cuộc sống.", correct: true },
+            { text: "Dấu vết của các loài động vật trong rừng.", correct: false },
+            { text: "Dấu vết của khí thải nhà kính trong bầu khí quyển.", correct: false },
+            { text: "Lượng năng lượng tiêu thụ trong các hoạt động sản xuất.", correct: false }
+        ],
+        explanation: "Dấu chân sinh thái là lượng tài nguyên thiên nhiên mà một cá nhân hoặc cộng đồng sử dụng để duy trì cuộc sống."
+    },
+    {
+        question: "Câu 6: 'Năng lượng tái tạo' là gì?",
+        answers: [
+            { text: "Năng lượng được tạo ra từ các nguồn tài nguyên có khả năng tái tạo như gió, mặt trời, và nước.", correct: true },
+            { text: "Năng lượng từ việc đốt cháy than đá và dầu mỏ.", correct: false },
+            { text: "Năng lượng từ việc khai thác tài nguyên thiên nhiên không thể tái tạo.", correct: false },
+            { text: "Năng lượng từ phản ứng hạt nhân.", correct: false }
+        ],
+        explanation: "Năng lượng tái tạo là năng lượng được tạo ra từ các nguồn tài nguyên có khả năng tái tạo như gió, mặt trời, và nước."
+    },
+    {
+        question: "Câu 7: Tại sao việc sử dụng năng lượng tái tạo là quan trọng cho phát triển bền vững?",
+        answers: [
+            { text: "Năng lượng tái tạo giúp giảm thiểu ô nhiễm và bảo vệ môi trường.", correct: true },
+            { text: "Năng lượng tái tạo làm tăng lượng khí thải carbon dioxide.", correct: false },
+            { text: "Năng lượng tái tạo có chi phí sản xuất thấp hơn so với các nguồn năng lượng khác.", correct: false },
+            { text: "Năng lượng tái tạo chỉ được sử dụng trong các khu vực nông thôn.", correct: false }
+        ],
+        explanation: "Sử dụng năng lượng tái tạo là quan trọng vì nó giúp giảm thiểu ô nhiễm và bảo vệ môi trường."
+    },
+    {
+        question: "Câu 8: Tại sao 'giảm thiểu rác thải' là một phần quan trọng của phát triển bền vững?",
+        answers: [
+            { text: "Giảm thiểu rác thải giúp bảo vệ môi trường và giảm gánh nặng cho các bãi chôn lấp.", correct: true },
+            { text: "Giảm thiểu rác thải chỉ làm giảm chi phí sản xuất.", correct: false },
+            { text: "Giảm thiểu rác thải chỉ quan trọng ở các quốc gia phát triển.", correct: false },
+            { text: "Giảm thiểu rác thải không liên quan đến phát triển bền vững.", correct: false }
+        ],
+        explanation: "Giảm thiểu rác thải là một phần quan trọng của phát triển bền vững vì nó giúp bảo vệ môi trường và giảm gánh nặng cho các bãi chôn lấp."
+    },
+    {
+        question: "Câu 9: 'Kinh tế tuần hoàn' là gì?",
+        answers: [
+            { text: "Mô hình kinh tế trong đó tài nguyên được sử dụng lại và tái chế thay vì bị lãng phí.", correct: true },
+            { text: "Mô hình kinh tế chỉ tập trung vào tăng trưởng nhanh chóng.", correct: false },
+            { text: "Mô hình kinh tế dựa trên việc khai thác tài nguyên thiên nhiên tối đa.", correct: false },
+            { text: "Mô hình kinh tế tập trung vào việc giảm thiểu chi phí sản xuất.", correct: false }
+        ],
+        explanation: "Kinh tế tuần hoàn là mô hình kinh tế trong đó tài nguyên được sử dụng lại và tái chế thay vì bị lãng phí."
+    },
+    {
+        question: "Câu 10: Tại sao giáo dục về phát triển bền vững là cần thiết?",
+        answers: [
+            { text: "Giáo dục giúp nâng cao nhận thức và khuyến khích hành động để bảo vệ môi trường và xã hội.", correct: true },
+            { text: "Giáo dục chỉ dành cho các chuyên gia về môi trường.", correct: false },
+            { text: "Giáo dục không liên quan đến phát triển bền vững.", correct: false },
+            { text: "Giáo dục chỉ tập trung vào kỹ thuật sản xuất.", correct: false }
+        ],
+        explanation: "Giáo dục về phát triển bền vững là cần thiết vì nó giúp nâng cao nhận thức và khuyến khích hành động để bảo vệ môi trường và xã hội."
+    },
+    {
+        question: "Câu 11: Tại sao bảo tồn nước là một phần quan trọng của phát triển bền vững?",
+        answers: [
+            { text: "Bảo tồn nước giúp duy trì nguồn nước sạch và ngăn chặn tình trạng khan hiếm nước.", correct: true },
+            { text: "Bảo tồn nước giúp tăng cường sản xuất nông nghiệp.", correct: false },
+            { text: "Bảo tồn nước chỉ quan trọng ở các khu vực đô thị.", correct: false },
+            { text: "Bảo tồn nước chỉ liên quan đến việc xây dựng các đập lớn.", correct: false }
+        ],
+        explanation: "Bảo tồn nước là quan trọng trong phát triển bền vững vì nó giúp duy trì nguồn nước sạch và ngăn chặn tình trạng khan hiếm nước."
+    },
+    {
+        question: "Câu 12: 'Biến đổi khí hậu' có ảnh hưởng gì đến phát triển bền vững?",
+        answers: [
+            { text: "Biến đổi khí hậu có thể làm suy giảm nguồn tài nguyên thiên nhiên và gây khó khăn cho sự phát triển kinh tế xã hội.", correct: true },
+            { text: "Biến đổi khí hậu chỉ ảnh hưởng đến một số khu vực nhất định.", correct: false },
+            { text: "Biến đổi khí hậu không ảnh hưởng đến phát triển bền vững.", correct: false },
+            { text: "Biến đổi khí hậu chỉ ảnh hưởng đến các loài động vật.", correct: false }
+        ],
+        explanation: "Biến đổi khí hậu có ảnh hưởng lớn đến phát triển bền vững vì nó làm suy giảm nguồn tài nguyên thiên nhiên và gây khó khăn cho sự phát triển kinh tế xã hội."
+    },
+    {
+        question: "Câu 13: Tại sao việc giảm thiểu lượng khí thải carbon dioxide (CO2) là quan trọng?",
+        answers: [
+            { text: "Giảm thiểu lượng khí thải CO2 giúp ngăn chặn hiện tượng nóng lên toàn cầu và biến đổi khí hậu.", correct: true },
+            { text: "Giảm thiểu lượng khí thải CO2 giúp tăng cường sự phát triển của rừng.", correct: false },
+            { text: "Giảm thiểu lượng khí thải CO2 không liên quan đến phát triển bền vững.", correct: false },
+            { text: "Giảm thiểu lượng khí thải CO2 chỉ quan trọng trong công nghiệp.", correct: false }
+        ],
+        explanation: "Giảm thiểu lượng khí thải CO2 là quan trọng vì nó giúp ngăn chặn hiện tượng nóng lên toàn cầu và biến đổi khí hậu."
+    },
+    {
+        question: "Câu 14: 'Tiêu dùng bền vững' có nghĩa là gì?",
+        answers: [
+            { text: "Tiêu dùng bền vững là việc sử dụng sản phẩm và dịch vụ một cách có ý thức để giảm tác động tiêu cực đến môi trường.", correct: true },
+            { text: "Tiêu dùng bền vững là việc tiêu dùng tối đa để thúc đẩy kinh tế.", correct: false },
+            { text: "Tiêu dùng bền vững là việc mua sắm hàng hóa không cần thiết.", correct: false },
+            { text: "Tiêu dùng bền vững chỉ tập trung vào việc giảm chi phí.", correct: false }
+        ],
+        explanation: "Tiêu dùng bền vững có nghĩa là sử dụng sản phẩm và dịch vụ một cách có ý thức để giảm tác động tiêu cực đến môi trường."
+    },
+    {
+        question: "Câu 15: Những hành động nào giúp thúc đẩy sự phát triển bền vững?",
+        answers: [
+            { text: "Tiết kiệm năng lượng, tái chế, và bảo vệ tài nguyên thiên nhiên.", correct: true },
+            { text: "Khai thác tài nguyên tối đa và tăng cường tiêu dùng.", correct: false },
+            { text: "Không tham gia vào các hoạt động bảo vệ môi trường.", correct: false },
+            { text: "Tăng cường phát triển công nghiệp bất kể hậu quả môi trường.", correct: false }
+        ],
+        explanation: "Những hành động giúp thúc đẩy phát triển bền vững bao gồm tiết kiệm năng lượng, tái chế, và bảo vệ tài nguyên thiên nhiên."
+    },
+    {
+        question: "Câu 16: Tại sao việc bảo vệ rừng là quan trọng cho phát triển bền vững?",
+        answers: [
+            { text: "Rừng giúp duy trì sự cân bằng sinh thái và cung cấp nguồn tài nguyên bền vững.", correct: true },
+            { text: "Rừng chỉ quan trọng trong việc cung cấp gỗ và lâm sản.", correct: false },
+            { text: "Bảo vệ rừng không liên quan đến phát triển bền vững.", correct: false },
+            { text: "Bảo vệ rừng chỉ quan trọng ở các khu vực nông thôn.", correct: false }
+        ],
+        explanation: "Bảo vệ rừng là quan trọng vì rừng giúp duy trì sự cân bằng sinh thái và cung cấp nguồn tài nguyên bền vững."
+    },
+    {
+        question: "Câu 17: 'Quản lý tài nguyên bền vững' có nghĩa là gì?",
+        answers: [
+            { text: "Sử dụng tài nguyên thiên nhiên một cách hợp lý để không làm suy giảm nguồn tài nguyên cho các thế hệ tương lai.", correct: true },
+            { text: "Khai thác tài nguyên thiên nhiên tối đa để phát triển kinh tế.", correct: false },
+            { text: "Chỉ sử dụng tài nguyên thiên nhiên cho các mục đích công nghiệp.", correct: false },
+            { text: "Không sử dụng tài nguyên thiên nhiên để bảo tồn chúng.", correct: false }
+        ],
+        explanation: "Quản lý tài nguyên bền vững có nghĩa là sử dụng tài nguyên thiên nhiên một cách hợp lý để không làm suy giảm nguồn tài nguyên cho các thế hệ tương lai."
+    },
+    {
+        question: "Câu 18: Tại sao các quốc gia cần hợp tác quốc tế trong việc phát triển bền vững?",
+        answers: [
+            { text: "Hợp tác quốc tế giúp chia sẻ kinh nghiệm, công nghệ và tài nguyên để giải quyết các thách thức toàn cầu.", correct: true },
+            { text: "Hợp tác quốc tế chỉ giúp tăng cường giao thương.", correct: false },
+            { text: "Hợp tác quốc tế không quan trọng trong phát triển bền vững.", correct: false },
+            { text: "Hợp tác quốc tế chỉ liên quan đến việc bảo vệ biên giới.", correct: false }
+        ],
+        explanation: "Hợp tác quốc tế là cần thiết vì nó giúp chia sẻ kinh nghiệm, công nghệ và tài nguyên để giải quyết các thách thức toàn cầu."
+    },
+    {
+        question: "Câu 19: 'Khả năng tự phục hồi của hệ sinh thái' có ý nghĩa gì trong phát triển bền vững?",
+        answers: [
+            { text: "Khả năng tự phục hồi của hệ sinh thái giúp duy trì sự cân bằng môi trường sau các tác động tiêu cực.", correct: true },
+            { text: "Khả năng tự phục hồi chỉ quan trọng đối với các loài động vật.", correct: false },
+            { text: "Khả năng tự phục hồi không quan trọng trong phát triển bền vững.", correct: false },
+            { text: "Khả năng tự phục hồi của hệ sinh thái không liên quan đến các hoạt động của con người.", correct: false }
+        ],
+        explanation: "Khả năng tự phục hồi của hệ sinh thái có ý nghĩa quan trọng trong phát triển bền vững vì nó giúp duy trì sự cân bằng môi trường sau các tác động tiêu cực."
+    },
+    {
+        question: "Câu 20: Tại sao việc thúc đẩy công nghệ xanh là cần thiết trong phát triển bền vững?",
+        answers: [
+            { text: "Công nghệ xanh giúp giảm thiểu tác động tiêu cực đến môi trường và tài nguyên.", correct: true },
+            { text: "Công nghệ xanh chỉ giúp tăng cường năng suất công nghiệp.", correct: false },
+            { text: "Công nghệ xanh không liên quan đến phát triển bền vững.", correct: false },
+            { text: "Công nghệ xanh chỉ áp dụng ở các quốc gia phát triển.", correct: false }
+        ],
+        explanation: "Công nghệ xanh là cần thiết trong phát triển bền vững vì nó giúp giảm thiểu tác động tiêu cực đến môi trường và tài nguyên."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

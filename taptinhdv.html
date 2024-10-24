@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Hình thức học tập nào ở động vật thể hiện qua việc chó biết tha dép cho chủ?",
+        answers: [
+            { text: "Điều kiện hóa hoạt động", correct: true },
+            { text: "Điều kiện hóa cổ điển", correct: false },
+            { text: "In vết", correct: false },
+            { text: "Quen nhờn", correct: false }
+        ],
+        explanation: "Giải thích: Chó biết tha dép cho chủ là do được con người rèn luyện, hình thành phản xạ có điều kiện. Đây là biểu hiện của học tập kiểu điều kiện hóa hoạt động."
+    },
+    {
+        question: "Câu 2: Loại hình tập tính nào thể hiện khi một con mèo nhảy lên bàn khi nghe tiếng mở lon thức ăn?",
+        answers: [
+            { text: "Điều kiện hóa cổ điển", correct: true },
+            { text: "Điều kiện hóa hoạt động", correct: false },
+            { text: "Quen nhờn", correct: false },
+            { text: "In vết", correct: false }
+        ],
+        explanation: "Giải thích: Mèo nhảy lên bàn khi nghe tiếng mở lon thức ăn là do điều kiện hóa cổ điển, kết hợp tiếng mở lon với việc nhận thức ăn."
+    },
+    {
+        question: "Câu 3: Hiện tượng nào là ví dụ của in vết?",
+        answers: [
+            { text: "Chim non theo sau đối tượng đầu tiên chúng nhìn thấy sau khi nở", correct: true },
+            { text: "Chó sủa khi thấy người lạ", correct: false },
+            { text: "Cá chép tránh những nơi có âm thanh mạnh", correct: false },
+            { text: "Mèo vờn lông thú bông", correct: false }
+        ],
+        explanation: "Giải thích: In vết là quá trình học tập nhanh chóng trong giai đoạn đầu đời của động vật, như chim non theo sau đối tượng đầu tiên chúng nhìn thấy sau khi nở."
+    },
+    {
+        question: "Câu 4: Quen nhờn là gì?",
+        answers: [
+            { text: "Sự giảm dần phản ứng của động vật đối với kích thích lặp đi lặp lại không có hậu quả", correct: true },
+            { text: "Học tập thông qua quan sát và bắt chước", correct: false },
+            { text: "Phản ứng có điều kiện hình thành do rèn luyện", correct: false },
+            { text: "Sự tiếp xúc với kích thích mới", correct: false }
+        ],
+        explanation: "Giải thích: Quen nhờn là sự giảm dần phản ứng của động vật đối với kích thích lặp đi lặp lại không có hậu quả, giúp tiết kiệm năng lượng."
+    },
+    {
+        question: "Câu 5: Tập tính học được thông qua quá trình điều kiện hóa hoạt động là gì?",
+        answers: [
+            { text: "Học tập từ hậu quả của hành động", correct: true },
+            { text: "Học tập từ kích thích và phản ứng liên kết", correct: false },
+            { text: "Học tập từ sự quan sát", correct: false },
+            { text: "Học tập từ sự di truyền", correct: false }
+        ],
+        explanation: "Giải thích: Điều kiện hóa hoạt động là học tập từ hậu quả của hành động, như chó học được tha dép cho chủ khi nhận được khen thưởng."
+    },
+    {
+        question: "Câu 6: Ví dụ nào sau đây thể hiện tập tính học được ở động vật?",
+        answers: [
+            { text: "Khỉ sử dụng công cụ để lấy thức ăn", correct: true },
+            { text: "Chim di cư hàng năm", correct: false },
+            { text: "Cá bơi theo dòng nước", correct: false },
+            { text: "Chó con bú sữa mẹ", correct: false }
+        ],
+        explanation: "Giải thích: Khỉ sử dụng công cụ để lấy thức ăn là ví dụ của tập tính học được thông qua quan sát và bắt chước."
+    },
+    {
+        question: "Câu 7: Tập tính di cư của chim là gì?",
+        answers: [
+            { text: "Tập tính bẩm sinh", correct: true },
+            { text: "Tập tính học được", correct: false },
+            { text: "Điều kiện hóa cổ điển", correct: false },
+            { text: "Điều kiện hóa hoạt động", correct: false }
+        ],
+        explanation: "Giải thích: Tập tính di cư của chim là tập tính bẩm sinh, không cần học tập mà được lập trình sẵn trong di truyền."
+    },
+    {
+        question: "Câu 8: Tập tính nào thể hiện khi một con chuột tránh ăn một loại thức ăn đã gây đau bụng cho nó trước đó?",
+        answers: [
+            { text: "Điều kiện hóa hoạt động", correct: true },
+            { text: "Điều kiện hóa cổ điển", correct: false },
+            { text: "Quen nhờn", correct: false },
+            { text: "In vết", correct: false }
+        ],
+        explanation: "Giải thích: Chuột tránh ăn một loại thức ăn đã gây đau bụng trước đó là kết quả của điều kiện hóa hoạt động, học tập từ hậu quả tiêu cực của hành động."
+    },
+    {
+        question: "Câu 9: Tập tính nào giúp cá hồi tìm đường về nơi sinh ra để đẻ trứng?",
+        answers: [
+            { text: "Tập tính bẩm sinh", correct: true },
+            { text: "Tập tính học được", correct: false },
+            { text: "Điều kiện hóa hoạt động", correct: false },
+            { text: "Điều kiện hóa cổ điển", correct: false }
+        ],
+        explanation: "Giải thích: Cá hồi tìm đường về nơi sinh ra để đẻ trứng là tập tính bẩm sinh, được di truyền qua các thế hệ."
+    },
+    {
+        question: "Câu 10: Phản ứng của mèo khi nghe tiếng mở lon thức ăn là ví dụ của loại tập tính nào?",
+        answers: [
+            { text: "Điều kiện hóa cổ điển", correct: true },
+            { text: "Điều kiện hóa hoạt động", correct: false },
+            { text: "Quen nhờn", correct: false },
+            { text: "In vết", correct: false }
+        ],
+        explanation: "Giải thích: Mèo phản ứng khi nghe tiếng mở lon thức ăn là ví dụ của điều kiện hóa cổ điển, kết hợp âm thanh với việc được ăn."
+    },
+    {
+        question: "Câu 11: Khi chó con học cách săn mồi bằng cách quan sát mẹ, đó là loại tập tính nào?",
+        answers: [
+            { text: "Học tập thông qua quan sát", correct: true },
+            { text: "Điều kiện hóa cổ điển", correct: false },
+            { text: "Quen nhờn", correct: false },
+            { text: "Tập tính bẩm sinh", correct: false }
+        ],
+        explanation: "Giải thích: Chó con học cách săn mồi bằng cách quan sát mẹ là ví dụ của học tập thông qua quan sát."
+    },
+    {
+        question: "Câu 12: Tập tính xã hội ở động vật là gì?",
+        answers: [
+            { text: "Sự tương tác và tổ chức trong quần thể", correct: true },
+            { text: "Hành vi đơn lẻ của cá thể", correct: false },
+            { text: "Điều kiện hóa cổ điển", correct: false },
+            { text: "Quen nhờn", correct: false }
+        ],
+        explanation: "Giải thích: Tập tính xã hội là sự tương tác và tổ chức trong quần thể, như sự hợp tác và phân công công việc trong bầy kiến."
+    },
+    {
+        question: "Câu 13: Điều kiện hóa cổ điển là gì?",
+        answers: [
+            { text: "Học tập thông qua liên kết giữa kích thích và phản ứng", correct: true },
+            { text: "Học tập từ hậu quả của hành động", correct: false },
+            { text: "Học tập từ sự quan sát", correct: false },
+            { text: "Sự giảm dần phản ứng đối với kích thích lặp đi lặp lại", correct: false }
+        ],
+        explanation: "Giải thích: Điều kiện hóa cổ điển là học tập thông qua liên kết giữa kích thích và phản ứng, như chó tiết nước bọt khi nghe chuông vì đã được liên kết với việc ăn."
+    },
+    {
+        question: "Câu 14: Ví dụ nào sau đây thể hiện tập tính bẩm sinh?",
+        answers: [
+            { text: "Chó học cách ngồi khi được thưởng", correct: false },
+            { text: "Mèo nhảy lên bàn khi nghe tiếng mở lon thức ăn", correct: false },
+            { text: "Khỉ sử dụng công cụ để lấy thức ăn", correct: false },
+            { text: "Gà con mổ thức ăn ngay sau khi nở", correct: true },
+        ],
+        explanation: "Giải thích: Gà con mổ thức ăn ngay sau khi nở là ví dụ của tập tính bẩm sinh, không cần phải học tập."
+    },
+    {
+        question: "Câu 15: Hiện tượng nào sau đây là ví dụ của quen nhờn?",
+        answers: [
+            { text: "Chó sủa khi thấy người lạ", correct: false },
+            { text: "Mèo chạy khi nghe tiếng chân người", correct: false },
+            { text: "Cá không còn phản ứng với tiếng gõ của người nuôi", correct: true },
+            { text: "Chim học cách hát từ đồng loại", correct: false },
+        ],
+        explanation: "Giải thích: Cá không còn phản ứng với tiếng gõ của người nuôi là ví dụ của quen nhờn, khi động vật giảm dần phản ứng với kích thích lặp đi lặp lại không có hậu quả."
+    },
+    {
+        question: "Câu 16: Tập tính nào là kết quả của quá trình điều kiện hóa hoạt động?",
+        answers: [
+            { text: "Cá bơi theo dòng nước", correct: false },
+            { text: "Chuột học cách tránh thức ăn gây đau bụng", correct: true },
+            { text: "Chim non theo sau đối tượng đầu tiên nhìn thấy", correct: false },
+            { text: "Mèo nhảy lên bàn khi nghe tiếng mở lon thức ăn", correct: false }
+        ],
+        explanation: "Giải thích: Chuột học cách tránh thức ăn gây đau bụng là kết quả của điều kiện hóa hoạt động, học tập từ hậu quả tiêu cực của hành động."
+    },
+    {
+        question: "Câu 17: Hiện tượng nào thể hiện tập tính xã hội?",
+        answers: [
+            { text: "Cá bơi thành đàn", correct: false },
+            { text: "Chim di cư hàng năm", correct: false },
+            { text: "Kiến hợp tác xây tổ", correct: true },
+            { text: "Chó sủa khi thấy người lạ", correct: false },
+        ],
+        explanation: "Giải thích: Kiến hợp tác xây tổ là ví dụ của tập tính xã hội, thể hiện sự tương tác và tổ chức trong quần thể."
+    },
+    {
+        question: "Câu 18: Tập tính bẩm sinh là gì?",
+        answers: [
+            { text: "Hành vi học được qua kinh nghiệm", correct: false },
+            { text: "Hành vi học được từ quan sát", correct: false },
+            { text: "Hành vi có sẵn trong di truyền, không cần học tập", correct: true },
+            { text: "Hành vi thay đổi theo môi trường", correct: false }
+        ],
+        explanation: "Giải thích: Tập tính bẩm sinh là hành vi có sẵn trong di truyền, không cần học tập, như việc gà con mổ thức ăn ngay sau khi nở."
+    },
+    {
+        question: "Câu 19: Điều kiện hóa hoạt động giúp động vật học tập như thế nào?",
+        answers: [
+            { text: "Học từ kích thích và phản ứng liên kết", correct: false },
+            { text: "Học từ sự quan sát", correct: false },
+            { text: "Học từ di truyền", correct: false },
+            { text: "Học từ hậu quả của hành động", correct: true },
+        ],
+        explanation: "Giải thích: Điều kiện hóa hoạt động giúp động vật học tập từ hậu quả của hành động, như chó học được tha dép cho chủ khi nhận được khen thưởng."
+    },
+    {
+        question: "Câu 20: Học tập thông qua quan sát là gì?",
+        answers: [
+            { text: "Học từ hậu quả của hành động", correct: false },
+            { text: "Học từ sự giảm dần phản ứng đối với kích thích", correct: false },
+            { text: "Học từ việc nhìn và bắt chước hành vi của người khác", correct: true },
+            { text: "Học từ di truyền", correct: false }
+        ],
+        explanation: "Giải thích: Học tập thông qua quan sát là học từ việc nhìn và bắt chước hành vi của người khác, như khỉ học cách sử dụng công cụ từ đồng loại."
+    }
+];
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

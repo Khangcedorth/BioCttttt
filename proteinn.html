@@ -1,0 +1,500 @@
+= vbnm,./`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+   <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+               question: "Câu 1: Các đơn vị nào sau đây liên kết qua liên kết peptide (-CO-NH-) để tạo thành peptide hoặc protein?",
+                answers: [
+                    { text: "α-amino acid.", correct: true },
+                    { text: "glucose.", correct: false },
+                    { text: "β-amino acid.", correct: false},
+                    { text: "amino acid.", correct: false }
+                ],
+                explanation: "Các đơn vị α-amino acid sau đây liên kết qua liên kết peptide (-CO-NH-) để tạo thành peptide hoặc protein."
+            },
+            {
+question: "Câu 2: Protein là hợp chất cao phân tử được hình từ một hay nhiều chuỗi nào sau đây?",
+                answers: [
+                    { text: "polyester.", correct: false },
+                    { text: "polyamide.", correct: false },
+                    { text: "polypeptide.", correct:true},
+                    { text: "polyalcohol.", correct: false }
+                ],
+                explanation: "Protein là hợp chất cao phân tử được hình từ một hay nhiều chuỗi polypeptide."
+            },
+            {
+question: "Câu 3: Sự kết hợp của 2, 3, 4,…, nhiều đơn vị  α-amino acid với nhau tương ứng tạo thành",
+                answers: [
+                    { text: "tripeptide, dipeptide, tetrapeptide,…, polypeptide.", correct: false },
+                    { text: "dipeptide, tetrapeptide, tripeptide,…, polypeptide.", correct: false },
+                    { text: "dipeptide, tripeptide, tetrapeptide,…, polypeptide.", correct: false},
+                    { text: "dipeptide, tripeptide, tetrapeptide,…, polypeptide.", correct: true }
+                ],
+                explanation: "Sự kết hợp của 2, 3, 4,…, nhiều đơn vị  α-amino acid với nhau tương ứng tạo thành dipeptide, tripeptide, tetrapeptide,…, polypeptide. "
+            },
+            {
+question: "Câu 4: Hợp chất nào sau đây thuộc loại protein?",
+                answers: [
+                    { text: "Saccharose.", correct: false },
+                    { text: "Triglyceride.", correct: false},
+                    { text: "Cellulose.", correct: false},
+                    { text: "Albumin.", correct: true }
+                ],
+                explanation: "Hợp chất albumin thuộc loại protein."
+            },
+            {
+question: "Câu 5: Tripeptide là hợp chất",
+                answers: [
+                    { text: "mà mỗi phân tử có 3 liên kết peptide.", correct: false },
+                    { text: "có 2 liên kết peptide mà phân tử có 3 gốc α-amino acid.", correct: true },
+                    { text: "có liên kết  peptide mà phân tử có 3 gốc amino acid giống nhau.", correct: false},
+                    { text: "có liên kết  peptide mà phân tử có 3 gốc amino acid khác nhau.", correct: false}
+                ],
+                explanation: "Tripeptide là hợp chất có 2 liên kết peptide mà phân tử có 3 gốc α-amino acid. "
+            },
+            {
+question: "Câu 6:Trong phân tử hợp chất hữu cơ nào sau đây có liên kết peptide?",
+                answers: [
+                    { text: "Lipid.", correct: false},
+                    { text: "Protein. ", correct: true},
+                    { text: "Glucose.", correct: false } 
+                    { text: "Cellulose.", correct: false },  
+                ],
+                explanation: "Trong phân tử hợp chất protein có liên kết peptide."
+            },
+ question: "Câu 6:Dipeptide X có công thức : H2NCH2CO-NHCH(CH3)COOH. Tên gọi của X là
+                    { text: "Gly-Val.", correct: false},
+                    { text: "Gly-Ala", correct: true  },
+                    { text: "Ala-Gly", correct: false } 
+                    { text: "Ala-Val.", correct: false},            
+                ],
+                explanation: "Dipeptide X có công thức : H2NCH2CO-NHCH(CH3)COOH. Tên gọi của X là Gly-Ala"
+            },
+ question: "Câu 7: Hợp chất nào sau đây thuộc loại dipeptide?",
+                answers: [
+                    { text: "H2NCH2CH2CONHCH2COOH.", correct: false},
+                    { text: "H2NCH2CONHCH2CONHCH2COOH.", correct: false },
+                    { text: "H[HNCH2CH2CO]2OH.", correct: false } 
+                    { text: "H2NCH(CH3)CONHCH2COOH.", correct: true },
+                ],
+                explanation: "Hợp chất H2NCH(CH3)CONHCH2COOH thuộc loại dipeptide."
+            },
+ 
+ question: "Câu 8: Protein nào có thể tan trong nước tạo thành dung dịch keo?",
+                answers: [
+                    { text: "Collgen.", correct: false},
+                    { text: "Keratin.", correct: false},
+                    { text: "Albumin.", correct: true  } 
+                    { text: "Fibroin", correct: false },  
+                ],
+              explanation: "Protein dạng cầu (ví dụ albumin) có thể tan trong nước tạo thành dung dịch keo "            },
+  question: "Câu 9: Phát biểu nào sau đây không đúng?",
+                answers: [
+                    { text: "Protein đơn giản chỉ cấu tạo từ các gốc α-amino acid.", correct: false },
+                    { text: "Gly-Ala và Ala-Gly là công thức của cùng một dipeptide.", correct: true },
+                    { text: "Protein phức tạp được cấu tạo từ protein đơn giản và “phi protein” (lipid, nucleic acid, carbohydrate,…).", correct: false},
+                    { text: "Liên kết peptide là liên kết -CO-NH- giữa hai đơn vị α-amino acid.", correct: false }
+                ],
+                explanation: "Gly-Ala và Ala-Gly là công thức của 2 dipeptide khác nhau vì có đầu N và đầu C khác nhau."
+            },
+
+		                question: "Câu 10: Số dipeptide tối đa có thể tạo ra từ một hỗn hợp gồm alanine và valine là",
+                answers: [
+                    { text: "3.", correct: false },
+                    { text: "4.", correct: true },
+                    { text: "3.", correct: false},
+                    { text: "2.", correct: false }
+                ],
+                explanation: "Số dipeptide tối đa có thể tạo ra từ một hỗn hợp gồm alanine và valine là 4: Ala-Val, Val-Ala, Ala-Ala, Val-Val."
+            },
+		    question: "Câu 11:Số đồng phân tripeptide có chứa gốc của cả glycine và alanine là",
+                   answers: [
+                    { text: "3.", correct: false},
+                    { text: "6.", correct: true },
+                    { text: "5.", correct: false} 
+                    { text: "4.", correct: false },  
+                ],
+                explanation: "Số đồng phân tripeptide có chứa gốc của cả glycine và alanine là 6: Gly-Gly-Ala, Gly-Ala-Gly, Ala-Gly-Gly, Ala-Ala-Gly, Ala-Gly-Ala, Gly-Ala-Ala."
+            },            
+        ];
+question: "Câu 12: Thủy phân hoàn toàn dipeptide X có công thức là Gly-Ala trong dung dịch HCl, sau phản ứng thu được",
+                answers: [
+                   { text: "ClH3N-CH2-COOH và H2N-CH(CH3)-COOH.", correct: false},
+                    { text: "+H3N-CH2-COO- và +H3N-CH(CH3)-COO- .", correct: false },
+                    { text: "ClH3N-CH2-COOH và ClH3N-CH(CH3)-COOH.", correct: true} 
+                    { text: "H2N-CH2-COOH và  H2N-CH(CH3)-COOH .", correct: false }, 
+                ],
+                explanation: "Thủy phân hoàn toàn dipeptide X có công thức là Gly-Ala trong dung dịch HCl, sau phản ứng thu được ClH3N-CH2-COOH và ClH3N-CH(CH3)-COOH."
+            },            
+        ];
+question: "Câu 13:  Phát biểu nào sau đây không đúng?",
+                answers: [
+                    { text: "Thuỷ phân hoàn toàn polypeptide thu được các phân tử α-amino acid.", correct: false},
+                    { text: "Protein tác dụng với Cu(OH)2 trong môi trường kiềm tạo dung dịch màu xanh lam.", correct: true },
+                    { text: "Protein có thể bị đông tụ dưới tác dụng của nhiệt, acid hoặc base..", correct: false} 
+                    { text: "Protein tác dụng với dung dịch nitric acid đặc tạo thành sản phẩm rắn có màu vàng..", correct: false }, 
+               ],
+                explanation: "Protein tác dụng với Cu(OH)2 trong môi trường kiềm tạo dung dịch màu tím."            },
+            {
+question: "Câu 14: Thuốc thử dùng để phân biệt Gly-Ala-Gly và Gly-Ala là",
+                answers: [
+                    { text: "dung dịch NaCl.", correct: false },
+                    { text: "dung dịch NaOH.", correct: false },
+                    { text: "dung dịch HCl.", correct: false},
+                    { text: "Cu(OH)2 trong môi trường kiềm.", correct: true }
+                ],
+                explanation: "Thuốc thử dùng để phân biệt Gly-Ala-Gly và Gly-Ala là Cu(OH)2 trong môi trường kiềm (phản ứng màu biuret)."
+            },
+            {
+              question: "Câu 15: Thủy phân không hoàn toàn pentapeptit Gly-Ala-Val-Ala-Gly, thu được tối đa bao nhiêu dipeptit mạch hở chứa Gly?",
+                answers: [
+                    { text: "1.", correct: false },
+                    { text: "2.", correct: true },
+                    { text: "3.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: "Thủy phân không hoàn toàn pentapeptit Gly-Ala-Val-Ala-Gly, thu được tối đa 2 dipeptit mạch hở chứa Gly: Gly-Ala, Ala-Gly ."
+            },
+            {
+A. question: "Câu 16: Khi nấu canh cua thì thấy các mảng “riêu cua” nổi lên là do?",
+                answers: [
+                    { text: "phản ứng màu của protein.", correct: false },
+                    { text: "sự đông tụ của protein do nhiệt độ.", correct: true },
+                    { text: "sự đông tụ của lipid.", correct: false},
+                    { text: "phản ứng thuỷ phân của protein.", correct: false }
+                ],
+                explanation: "Khi nấu canh cua thì thấy các mảng “riêu cua” nổi lên là do sự đông tụ của protein do nhiệt độ."
+            },
+            {
+question: "Câu 17: Thuỷ phân không hoàn toàn peptide có công thức hoá học: H2N – CH(CH3) – CONH – CH2 – CONH – CH2 – CONH – CH2 – CONH – CH(CH3) – COOH. Sản phẩm thu được có tối đa bao nhiêu peptide có phản ứng màu biuret? ",
+                answers: [
+                    { text: "2.", correct: false },
+                    { text: "3.", correct: false },
+                    { text: "4.", correct: false },
+                    { text: "5.", correct: true}
+                ],
+                explanation: "Thuỷ phân không hoàn toàn peptide có công thức hoá học: H2N – CH(CH3) – CONH – CH2 – CONH – CH2 – CONH – CH2 – CONH – CH(CH3) – COOH. Sản phẩm thu được có tối đa 5 peptide có phản ứng màu biuret: H2N – CH(CH3) – CONH – CH2 – CONH – CH2 – CONH – CH2 – CONH – CH(CH3) – COOH; H2N – CH(CH3) – CONH – CH2 – CONH – CH2 – CONH – CH2 – COOH; H2N – CH(CH3) – CONH – CH2 – CONH – CH2 – COOH, NH2 – CH2 – CONH – CH2 – CONH – CH2 – CONH – CH(CH3) – COOH; NH2 – CH2 – CONH – CH2 – CONH – CH(CH3) – COOH."
+            },
+            {
+question: "Câu 18: Cho 4 ống nghiệm, mỗi ống nghiệm đựng khoảng 2-3 mL dung dịch loãng của lòng trắng trứng. Nhỏ vào ống nghiệm (1) vài giọt dung dịch HNO3; cho vào ống (2) lượng Cu(OH)2 bằng hạt đậu xanh; vào ống (3) vài giọt dung dịch NaOH dư, đun nóng; lắc đều các chất có trong 3 ống nghiệm. Đun sôi nhẹ chất lỏng trong ống nghiệm (4). Kết luận nào sau đây không đúng? ",
+                answers: [
+                    { text: "Trong ống nghiệm (1) xuất hiện màu vàng..", correct: false },
+                    { text: "Trong ống nghiệm (2) xuất hiện màu tím..", correct: false },
+                    { text: "Trong ống nghiệm (4) thu được dung dịch trong suốt.", correct: true },
+                    { text: "Trong ống nghiệm (3) xuất hiện sự đông tụ.", correct: false}
+                ],
+                explanation: "Trong ống nghiệm (4) xuất hiện sự đông tụ protein bởi nhiệt độ."
+            },
+            {
+ question: "Câu 19: Khi khuấy lòng trắng trứng vào nước, thu được",
+                answers: [
+                   { text: "dung dịch trong suốt.", correct: false},
+                    { text: "huyền phù.", correct: false },
+                    { text: "nhũ tương.", correct: true} 
+                    { text: "kết tủa.", correct: false }, 
+                ],
+                explanation: "Khi khuấy lòng trắng trứng vào nước, thu được huyền phù "
+  },
+            {
+question: "Câu 20: Khi tiến hành thí nghiệm với nitric acid đặc, nếu không cẩn thận có thể bị dính nitric acid vào tay. Khi đó, tại chỗ bị dính nitric acid, da tay bị chuyển thành",
+                answers: [
+                    { text: "màu đen.", correct: false},
+                    { text: "màu tím.", correct: false },
+                    { text: "màu hồng.", correct: false } 
+                    { text: "màu vàng.", correct: true },  
+                ],
+                explanation: "Khi tiến hành thí nghiệm với nitric acid đặc, nếu không cẩn thận có thể bị dính nitric acid vào tay. Khi đó, tại chỗ bị dính nitric acid, da tay bị chuyển thành  màu vàng."
+            },
+ question: "Câu 22:Khi thủy phân hoàn toàn protein trong môi trường acid HCl thu được sản phẩm có dạng nào sau đây?",
+                answers: [
+                    { text: "ClH3N-CH(CH3)-COOH..", correct: false},
+                    { text: "H2N-CH(R)-COOH. ", correct: false},
+                    { text: "H3N-CH(CH3)-COOH..", correct: false } 
+                    { text: "ClH3N-CH(R)-COOH.", correct: true},  
+                ],
+                explanation: "Khi thủy phân hoàn toàn protein trong môi trường acid HCl thu được sản phẩm có dạng ClH3N-CH(R)-COOH."
+            },
+ question: "Câu 23:Khi thủy phân hoàn toàn protein trong dung dịch NaOH, thu được hỗn hợp các chất dưới dạng nào sau đây?",
+
+                    { text: "H3N-CH(CH3)-COONa..", correct: false},
+                    { text: "H2N-CH(R)-COONa.", correct: true  },
+                    { text: "H2N-CH(R)-COOH.", correct: false } 
+                    { text: "ClH3N-CH(R)-COOH.", correct: false},            
+                ],
+                explanation: "Khi thủy phân hoàn toàn protein trong dung dịch NaOH, thu được hỗn hợp các chất dưới dạng H2N-CH(R)-COONa."
+            },
+ question: "Câu 24: Cho các phát biểu sau:
+<br>(a) Trong một phân tử tetrapeptide mạch hở có 4 liên kết peptide. 
+<br>(b) Dung dịch lysine làm xanh quỳ tím.
+<br>(c) Aniline tác dụng với nước bromime tạo thành kết tủa trắng.
+<br>(d) Peptide Gly-Ala có phản ứng màu biuret với Cu(OH)2.
+<br>(e) Thuỷ phân hoàn toàn protein đơn giản thu được các α-amino acid.
+<br>(f) Các hợp chất peptide kém bền trong môi trường base nhưng bền trong môi trường acid.
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "2.", correct: false},
+                    { text: "5.", correct: false },
+                    { text: "4.", correct: false } 
+                    { text: "3.", correct: true },
+                ],
+                explanation: "Phát biểu đúng là: (b), (c), (e). Phát biểu (a) sai vì trong một phân tử tetrapeptide mạch hở có 3 liên kết peptide. Phát biểu d sai vì dipeptide không có pahnr ứng màu biuret. Phát biểu (f) sai vì các hợp chất peptide kém bền trong môi trường base và trong môi trường acid vì bị thủy phân."
+            },
+ 
+ question: "Câu 25: Protein là những đại phân tử, cấu tạo từ một hoặc nhiều mạch acid amin liên kết với nhau bằng liên kết peptid. Trình tự các chuỗi acid amin khác nhau sẽ tạo ra các loại protein khác nhau.
+<br>Cho các phát biểu sau:
+<br>(a) Tất cả các protein đều tan trong nước tạo thành dung dịch keo.
+<br>(b) Protein có phản ứng màu biuret.
+<br>(c) Protein là những polypeptide cao phân tử có phân tử khối từ vài chục nghìn đến vài triệu.
+<br>(d) Thành phần phân tử của protein luôn có nguyên tố nitrogen..
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false},
+                    { text: "2.", correct: false},
+                    { text: "3.", correct: true  } 
+                    { text: "4.", correct: false },  
+                ],
+              explanation: "Phát biểu đúng là: (b), (c), (d). Phát biểu (a) sai vì chỉ có protein dạng cầu mới tan trong nước tạo thành dung dịch keo."
+            },
+  question: "Câu 26: Cho các phát biểu sau:
+<br>(a) Trong peptide mạch hở amino acid đầu N có nhóm NH2.
+<br>(b) 1 mol Val-Val-Lys tác dụng tối đa với dung dịch chứa 3 mol HCl.
+<br>(c) 1 mol Val-Glu tác dụng tối đa với dung dịch chứa 3 mol KOH.
+<br>(d) Thủy phân hoàn toàn protein thu được các amino acid.
+<br>(e) Protein có phản ứng màu biuret tạo sản phẩm có màu tím đặc trưng.
+<br>Số phát biểu đúng là",
+
+                answers: [
+                    { text: "2.", correct: false },
+                    { text: "3.", correct: true },
+                    { text: "4.", correct: false},
+                    { text: "5.", correct: false }
+                ],
+                explanation: "Phát biểu đúng là: (a), (c), (e). Phát biểu (a) sai vì trong một phân tử tetrapeptide mạch hở có 3 liên kết peptide. Phát biểu b sai 1 mol Val-Val-Lys tác dụng tối đa với dung dịch chứa 4 mol HCl. Phát biểu (d) sai vì  thủy phân hoàn toàn protein thu được các α-amino acid."
+            },
+
+		                question: "Câu 27: Sẽ thu được bao nhiêu loại α-amino acid khi thủy phân chất sau: H2N-CH2CO-NH-CH(CH3)-CO-NH-CH2-CH2-CO-NH-CH2-CO-NH-CH(CH3)-CO-NH-CH2COOH?",
+                answers: [
+                    { text: "3.", correct: false },
+                    { text: "2.", correct: true },
+                    { text: "3.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: "Sẽ thu được 2 loại α-amino acid khi thủy phân (H+) chất sau: H2N-CH2CO-NH-CH(CH3)-CO-NH-CH2-CH2-CO-NH-CH2-CO-NH-CH(CH3)-CO-NH-CH2COOH là H2N-CH2COOH và NH2-CH(CH3)-COOH."
+            },
+		    question: "Câu 28:Insulin là homon có tác dụng điều tiết lượng đường trong máu. Thủy phân một phần insulin thu được heptapeptide X mạch hở. Khi thủy phân không hoàn toàn X, thu được hỗn hợp có chứa các peptide: Glu-Gln-Cys. Gly-Ile-Val, Gln-Cys-Cys, Val-Glu-Gln. Nếu đánh số thứ tự amino acid đầu N là số 1 thì amino acid ở vị trí số 3 trong X là",
+                   answers: [
+                    { text: "Gln.", correct: false},
+                    { text: "Val.", correct: true },
+                    { text: "Cys.", correct: false} 
+                    { text: "Glu.", correct: false },  
+                ],
+                explanation: "X có 7 mắt xích trong đó có các đoạn: Glu-Gln-Cys (1), Gly-Ile-Val (2), Gln-Cys-Cys (3),Val-Glu-Gln (4). Ghép (1) và (3) ⟶ Glu-Gln-Cys-Cys (5). Ghép (4) và (5) ⟶ Val-Glu-Gln-Cys-Cys (6). Ghép (2) và (6) ⟶  Gly-Ile-Val-Glu-Gln-Cys-Cys (X) ⟶ Amino acid ở vị trí số 4  trong X là Glu."
+            },            
+        ];
+question: "Câu 29: Cho các phát biểu sau:
+<br>(1) Thịt được ướp với nước ép dứa hoặc đu đủ thì khi nấu sẽ mềm chậm hơn.
+<br>(2) Khi làm nước mắm từ cá, các enzyme và vi sinh vật phân giải protein trong cá thành các amino acid.
+<br>(3) Độ đạm của nước tương, nước mắm tương ứng với tổng lượng oxygen có trong nước tương, nước mắm.
+<br>(4) Khi ăn các loại thực phẩm như thịt, cá, trứng,... hệ tiêu hoá giúp thủy phân protein thành amino acid.
+<br>(5) Trong chế độ ăn uống của chúng ta cần thiết phải cung cấp chất đạm (protein) đầy đủ.
+<br>(6) Protein là cơ sở tạo nên sự sống, duy trì, phát triển và bảo vệ cơ thể
+<br>(7) Người ta có thể thêm gia vị chua như giấm ăn, chanh vào chế biến thịt, cá nhanh mềm hơn.
+<br>Số phát biểu đúng là",
+                answers: [
+                   { text: "2.", correct: false},
+                    { text: "3.", correct: false },
+                    { text: "5.", correct: true} 
+                    { text: "4.", correct: false }, 
+                ],
+                explanation: "Phát biểu đúng là: (2), (4), (5), (6), (7). Phát biểu (1) sai vì thịt được ướp với nước ép dứa hoặc đu đủ thì khi nấu sẽ mềm nhanh hơn. Phát biểu (d) sai vì  độ đạm của nước tương, nước mắm tương ứng với tổng lượng nitrogen có trong nước tương, nước mắm."
+            },            
+        ];
+question: "Câu 30:  Dãy nào dưới đây gồm các chất có khả năng hòa tan Cu(OH)2 tạo hợp chất màu tan trong trong nước?",
+                answers: [
+                    { text: "Glycerol, glucose, và Gly-Ala.", correct: false},
+                    { text: "Ethylene glycol, acetic acid, và Gly-Ala-Gly.", correct: true },
+                    { text: "Ethyl alcohol, fructose, và Gly-Ala-Lys-Val.", correct: false} 
+                    { text: "Ethyl alcohol, formic acid, và Lys-Val.", correct: false }, 
+               ],
+                explanation: "Gly-Ala và Lys-Val là dipeptide nên không có phản ứng màu biuret. Ethyl alcohol là alcohol đơn chức nên không có phản ứng tạo phức tan màu xanh lam với  Cu(OH)2."
+            },            
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        // Hàm để bắt đầu trò chơi
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        // Hàm để hiển thị câu hỏi hiện tại
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        // Hàm để kiểm tra câu trả lời và chuyển sang câu hỏi tiếp theo
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+            if (selectedAnswer) {
+                const currentQuestion = questions[currentQuestionIndex];
+                userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+                if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+                    score++;
+                }
+
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            } else {
+                alert('Vui lòng chọn một đáp án.');
+            }
+        }
+
+        // Hàm để hiển thị kết quả
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        // Hàm để tạo danh sách câu hỏi
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        // Hàm để cập nhật danh sách câu hỏi
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        // Hàm để chuyển đến câu hỏi cụ thể
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        // Hàm để làm lại bài kiểm tra
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            quizForm.style.display = 'block';
+            resultsSection.style.display = 'none';
+            startQuiz();
+        }
+
+        // Bắt đầu trò chơi
+        startQuiz();
+    </script>
+</body>
+</html>
+

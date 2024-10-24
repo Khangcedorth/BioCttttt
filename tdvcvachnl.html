@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quá trình nào sau đây là quá trình chuyển hóa năng lượng trong hệ sinh thái?",
+        answers: [
+            { text: "Quang hợp.", correct: true },
+            { text: "Phân hủy.", correct: false },
+            { text: "Hô hấp.", correct: false },
+            { text: "Tạo ra phân tử hữu cơ từ các chất vô cơ.", correct: false }
+        ],
+        explanation: "Quang hợp là quá trình chuyển hóa năng lượng ánh sáng thành năng lượng hóa học trong thực vật."
+    },
+    {
+        question: "Câu 2: Sinh vật nào là nguồn cung cấp năng lượng chính cho hệ sinh thái?",
+        answers: [
+            { text: "Sinh vật sản xuất.", correct: true },
+            { text: "Sinh vật tiêu thụ.", correct: false },
+            { text: "Sinh vật phân hủy.", correct: false },
+            { text: "Sinh vật ký sinh.", correct: false }
+        ],
+        explanation: "Sinh vật sản xuất, như thực vật, là nguồn cung cấp năng lượng chính cho hệ sinh thái thông qua quá trình quang hợp."
+    },
+    {
+        question: "Câu 3: Quá trình nào giúp tái chế các chất dinh dưỡng trong hệ sinh thái?",
+        answers: [
+            { text: "Phân hủy.", correct: true },
+            { text: "Quang hợp.", correct: false },
+            { text: "Hô hấp.", correct: false },
+            { text: "Xâm nhập.", correct: false }
+        ],
+        explanation: "Quá trình phân hủy giúp tái chế các chất dinh dưỡng từ chất hữu cơ thành các chất vô cơ có thể được sử dụng lại bởi các sinh vật sản xuất."
+    },
+    {
+        question: "Câu 4: Phản ứng hóa học nào xảy ra trong quá trình quang hợp?",
+        answers: [
+            { text: "CO2 + H2O + năng lượng ánh sáng → C6H12O6 + O2.", correct: true },
+            { text: "C6H12O6 + O2 → CO2 + H2O + năng lượng.", correct: false },
+            { text: "N2 + H2 → NH3.", correct: false },
+            { text: "H2O + CO2 → H2CO3.", correct: false }
+        ],
+        explanation: "Quá trình quang hợp diễn ra với phản ứng CO2 và H2O, sử dụng năng lượng ánh sáng để tạo ra glucose và oxy."
+    },
+    {
+        question: "Câu 5: Tầng năng lượng nào trong hệ sinh thái có lượng năng lượng thấp nhất?",
+        answers: [
+            { text: "Tầng tiêu thụ cấp 3.", correct: true },
+            { text: "Tầng tiêu thụ cấp 1.", correct: false },
+            { text: "Tầng sản xuất.", correct: false },
+            { text: "Tầng phân hủy.", correct: false }
+        ],
+        explanation: "Tầng tiêu thụ cấp 3 thường có lượng năng lượng thấp nhất do mất mát năng lượng qua mỗi cấp trong chuỗi thức ăn."
+    },
+    {
+        question: "Câu 6: Mối quan hệ nào trong hệ sinh thái giúp duy trì chu trình vật chất?",
+        answers: [
+            { text: "Mối quan hệ giữa sinh vật phân hủy và sinh vật sản xuất.", correct: true },
+            { text: "Mối quan hệ giữa sinh vật tiêu thụ cấp 1 và sinh vật tiêu thụ cấp 2.", correct: false },
+            { text: "Mối quan hệ giữa kẻ săn mồi và con mồi.", correct: false },
+            { text: "Mối quan hệ cộng sinh giữa các loài động vật.", correct: false }
+        ],
+        explanation: "Mối quan hệ giữa sinh vật phân hủy và sinh vật sản xuất giúp duy trì chu trình vật chất trong hệ sinh thái."
+    },
+    {
+        question: "Câu 7: Quá trình nào sau đây không thuộc chu trình nước trong hệ sinh thái?",
+        answers: [
+            { text: "Bốc hơi và ngưng tụ.", correct: false },
+            { text: "Xâm nhập và thoát hơi nước.", correct: false },
+            { text: "Nitrat hóa và amoni hóa.", correct: true },
+            { text: "Lượng mưa và lắng đọng.", correct: false }
+        ],
+        explanation: "Nitrat hóa và amoni hóa thuộc chu trình nitơ, không phải chu trình nước."
+    },
+    {
+        question: "Câu 8: Sinh vật nào là thành phần quan trọng trong chu trình cacbon?",
+        answers: [
+            { text: "Cây xanh và vi khuẩn phân hủy.", correct: true },
+            { text: "Động vật ăn thịt.", correct: false },
+            { text: "Vi sinh vật trong đất.", correct: false },
+            { text: "Động vật ăn thực vật.", correct: false }
+        ],
+        explanation: "Cây xanh và vi khuẩn phân hủy là những thành phần quan trọng trong chu trình cacbon, giúp chuyển đổi cacbon trong môi trường."
+    },
+    {
+        question: "Câu 9: Chu trình nào sau đây liên quan đến việc chuyển hóa nito trong hệ sinh thái?",
+        answers: [
+            { text: "Chu trình nitơ.", correct: true },
+            { text: "Chu trình cacbon.", correct: false },
+            { text: "Chu trình nước.", correct: false },
+            { text: "Chu trình phốt pho.", correct: false }
+        ],
+        explanation: "Chu trình nitơ liên quan đến việc chuyển hóa nito qua các dạng khác nhau trong hệ sinh thái."
+    },
+    {
+        question: "Câu 10: Quá trình nào sau đây giúp tăng cường sự trao đổi chất trong hệ sinh thái?",
+        answers: [
+            { text: "Tăng cường quang hợp và hô hấp.", correct: true },
+            { text: "Giảm phân hủy chất hữu cơ.", correct: false },
+            { text: "Tăng cường sản xuất thực phẩm.", correct: false },
+            { text: "Giảm lượng nước trong môi trường.", correct: false }
+        ],
+        explanation: "Tăng cường quang hợp và hô hấp giúp cải thiện sự trao đổi chất trong hệ sinh thái bằng cách tối ưu hóa việc sử dụng năng lượng và chất dinh dưỡng."
+    },
+    {
+        question: "Câu 11: Quá trình nào giúp giữ nước trong hệ sinh thái?",
+        answers: [
+            { text: "Lượng mưa và bốc hơi.", correct: true },
+            { text: "Xâm nhập và thoát hơi nước.", correct: false },
+            { text: "Quang hợp và hô hấp.", correct: false },
+            { text: "Phân hủy và tổng hợp chất hữu cơ.", correct: false }
+        ],
+        explanation: "Lượng mưa và bốc hơi là hai quá trình chính giúp duy trì và giữ nước trong hệ sinh thái."
+    },
+    {
+        question: "Câu 12: Tầng năng lượng nào trong hệ sinh thái có khả năng hấp thụ năng lượng ánh sáng cao nhất?",
+        answers: [
+            { text: "Tầng sản xuất.", correct: true },
+            { text: "Tầng tiêu thụ cấp 1.", correct: false },
+            { text: "Tầng tiêu thụ cấp 2.", correct: false },
+            { text: "Tầng phân hủy.", correct: false }
+        ],
+        explanation: "Tầng sản xuất, như cây xanh, có khả năng hấp thụ năng lượng ánh sáng cao nhất qua quá trình quang hợp."
+    },
+    {
+        question: "Câu 13: Năng lượng mất đi từ hệ sinh thái chủ yếu dưới dạng nào?",
+        answers: [
+            { text: "Dưới dạng nhiệt.", correct: true },
+            { text: "Dưới dạng ánh sáng.", correct: false },
+            { text: "Dưới dạng nước.", correct: false },
+            { text: "Dưới dạng chất dinh dưỡng.", correct: false }
+        ],
+        explanation: "Năng lượng mất đi từ hệ sinh thái chủ yếu dưới dạng nhiệt, theo quy luật năng lượng của chuỗi thức ăn."
+    },
+    {
+        question: "Câu 14: Trong chu trình phốt pho, phốt pho được giải phóng từ đâu vào môi trường?",
+        answers: [
+            { text: "Từ các loại đá và khoáng chất.", correct: true },
+            { text: "Từ các sinh vật phân hủy.", correct: false },
+            { text: "Từ thực vật qua quá trình quang hợp.", correct: false },
+            { text: "Từ các loài động vật ăn thực vật.", correct: false }
+        ],
+        explanation: "Trong chu trình phốt pho, phốt pho được giải phóng từ các loại đá và khoáng chất vào môi trường, sau đó được hấp thụ bởi thực vật."
+    },
+    {
+        question: "Câu 15: Tại sao quang hợp là một phần quan trọng trong chu trình năng lượng của hệ sinh thái?",
+        answers: [
+            { text: "Vì nó chuyển đổi năng lượng ánh sáng thành năng lượng hóa học.", correct: true },
+            { text: "Vì nó giải phóng oxy vào khí quyển.", correct: false },
+            { text: "Vì nó phân hủy chất hữu cơ thành chất dinh dưỡng.", correct: false },
+            { text: "Vì nó cung cấp năng lượng cho sinh vật tiêu thụ cấp 3.", correct: false }
+        ],
+        explanation: "Quang hợp chuyển đổi năng lượng ánh sáng thành năng lượng hóa học, cung cấp năng lượng cho các sinh vật trong hệ sinh thái."
+    },
+    {
+        question: "Câu 16: Quá trình nào xảy ra khi thực vật sử dụng năng lượng ánh sáng để tổng hợp chất hữu cơ?",
+        answers: [
+            { text: "Quang hợp.", correct: true },
+            { text: "Hô hấp.", correct: false },
+            { text: "Phân hủy.", correct: false },
+            { text: "Nitrat hóa.", correct: false }
+        ],
+        explanation: "Quang hợp là quá trình mà thực vật sử dụng năng lượng ánh sáng để tổng hợp chất hữu cơ từ CO2 và H2O."
+    },
+    {
+        question: "Câu 17: Chu trình nào liên quan đến việc chuyển hóa các hợp chất hữu cơ trong hệ sinh thái?",
+        answers: [
+            { text: "Chu trình cacbon.", correct: true },
+            { text: "Chu trình nước.", correct: false },
+            { text: "Chu trình nitơ.", correct: false },
+            { text: "Chu trình phốt pho.", correct: false }
+        ],
+        explanation: "Chu trình cacbon liên quan đến việc chuyển hóa các hợp chất hữu cơ, bao gồm quá trình quang hợp và hô hấp."
+    },
+    {
+        question: "Câu 18: Tại sao phân hủy là một phần quan trọng của hệ sinh thái?",
+        answers: [
+            { text: "Vì nó giúp giải phóng các chất dinh dưỡng và trả lại cho đất.", correct: true },
+            { text: "Vì nó tạo ra năng lượng cho sinh vật tiêu thụ.", correct: false },
+            { text: "Vì nó giảm thiểu sự cạnh tranh giữa các loài.", correct: false },
+            { text: "Vì nó làm giảm lượng khí CO2 trong khí quyển.", correct: false }
+        ],
+        explanation: "Phân hủy giải phóng các chất dinh dưỡng từ chất hữu cơ, giúp duy trì độ màu mỡ của đất và hỗ trợ sự sống của các sinh vật sản xuất."
+    },
+    {
+        question: "Câu 19: Quá trình nào giúp chuyển đổi nitơ thành dạng có thể sử dụng được cho thực vật?",
+        answers: [
+            { text: "Nitrat hóa.", correct: true },
+            { text: "Amoni hóa.", correct: false },
+            { text: "Xác định.", correct: false },
+            { text: "Ký sinh.", correct: false }
+        ],
+        explanation: "Nitrat hóa là quá trình chuyển đổi nitơ thành dạng nitrat có thể được sử dụng bởi thực vật."
+    },
+    {
+        question: "Câu 20: Quá trình nào là nguồn chính tạo ra năng lượng hóa học cho các sinh vật trong hệ sinh thái?",
+        answers: [
+            { text: "Quang hợp.", correct: true },
+            { text: "Hô hấp.", correct: false },
+            { text: "Phân hủy.", correct: false },
+            { text: "Tạo ra chất dinh dưỡng từ đất.", correct: false }
+        ],
+        explanation: "Quang hợp là quá trình tạo ra năng lượng hóa học từ ánh sáng mặt trời, cung cấp nguồn năng lượng chính cho các sinh vật trong hệ sinh thái."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

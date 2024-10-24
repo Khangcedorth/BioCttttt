@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const plantQuestions = [
+    {
+        question: "Câu 1: Quá trình sinh sản vô tính ở thực vật bao gồm những phương pháp nào sau đây?",
+        answers: [
+            { text: "Tạo ra nhánh mới", correct: false },
+            { text: "Tách ra các bao tử", correct: false },
+            { text: "Tạo ra cây con mới", correct: true },
+            { text: "Hình thành hoa để thu hút côn trùng", correct: false }
+        ],
+        explanation: "Giải thích: Quá trình sinh sản vô tính ở thực vật bao gồm tạo ra cây con mới từ một cây mẹ."
+    },
+    {
+        question: "Câu 2: Sinh sản hữu tính ở thực vật thường bao gồm quá trình nào?",
+        answers: [
+            { text: "Tách các bào tử để tạo ra hạt giống", correct: false },
+            { text: "Phối hợp của tế bào sinh dục từ hai cây cá thể khác giới", correct: true },
+            { text: "Sinh ra cây con mới từ một cây mẹ", correct: false },
+            { text: "Phát triển rễ để hấp thụ nước và khoáng chất", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản hữu tính ở thực vật thường bao gồm phối hợp của tế bào sinh dục từ hai cây cá thể khác giới."
+    },
+    {
+        question: "Câu 3: Quá trình phôi hợp trong sinh sản hữu tính ở thực vật liên quan đến việc gì?",
+        answers: [
+            { text: "Sự hình thành hoa và trái", correct: false },
+            { text: "Đề kháng của cây với môi trường", correct: false },
+            { text: "Sự phát triển của lá và rễ", correct: false },
+            { text: "Kết hợp các tế bào sinh dục từ hai cây khác giới", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình phôi hợp trong sinh sản hữu tính ở thực vật liên quan đến việc kết hợp các tế bào sinh dục từ hai cây khác giới."
+    },
+    {
+        question: "Câu 4: Để hoàn thành quá trình phôi hợp ở thực vật, yếu tố nào cần thiết?",
+        answers: [
+            { text: "Ánh sáng mặt trời", correct: false },
+            { text: "Môi trường đất phù hợp", correct: false },
+            { text: "Sự hỗ trợ của vi khuẩn đất", correct: false },
+            { text: "Sự tiếp xúc giữa mô generative của hoa", correct: true }
+        ],
+        explanation: "Giải thích: Để hoàn thành quá trình phôi hợp ở thực vật, yếu tố cần thiết là sự tiếp xúc giữa mô generative của hoa."
+    },
+    {
+        question: "Câu 5: Quá trình nào dưới đây không phải là phần của sinh sản vô tính ở thực vật?",
+        answers: [
+            { text: "Tách cây con mới từ cây mẹ", correct: true },
+            { text: "Tách ra nhánh mới để sinh sôi", correct: false },
+            { text: "Tạo ra các bao tử", correct: false },
+            { text: "Kết hợp tế bào sinh dục từ hai cây khác giới", correct: false }
+        ],
+        explanation: "Giải thích: Tách cây con mới từ cây mẹ không phải là phần của sinh sản vô tính ở thực vật."
+    },
+    {
+        question: "Câu 6: Cơ chế nào sau đây không phải là cơ chế sinh sản vô tính ở thực vật?",
+        answers: [
+            { text: "Phân tách các tế bào sinh dục từ một cây cá thể", correct: true },
+            { text: "Tạo ra cây con mới từ một cây mẹ", correct: false },
+            { text: "Sự tách ra của các bao tử từ một cây", correct: false },
+            { text: "Hình thành hoa để thu hút côn trùng", correct: false }
+        ],
+        explanation: "Giải thích: Phân tách các tế bào sinh dục từ một cây cá thể không phải là cơ chế sinh sản vô tính ở thực vật."
+    },
+    {
+        question: "Câu 7: Trong quá trình sinh sản vô tính ở thực vật, quá trình nào giúp trong việc lan truyền các đặc tính di truyền?",
+        answers: [
+            { text: "Tách ra các tế bào sinh dục từ một cây cá thể", correct: false },
+            { text: "Sự tách ra của các bao tử từ một cây", correct: false },
+            { text: "Tạo ra cây con mới từ một cây mẹ", correct: false },
+            { text: "Sự tạo ra nhánh mới từ cây mẹ", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình sinh sản vô tính ở thực vật giúp trong việc lan truyền các đặc tính di truyền bằng cách tạo ra nhánh mới từ cây mẹ."
+    },
+    {
+        question: "Câu 8: Hormone nào quan trọng trong quá trình phát triển hoa và quả ở thực vật?",
+        answers: [
+            { text: "Auxin", correct: false },
+            { text: "Gibberellin", correct: false },
+            { text: "Cytokinin", correct: false },
+            { text: "Ethylene", correct: false }
+        ],
+        explanation: "Giải thích: Đây là câu hỏi về kiến thức về hormone, không có đáp án đúng."
+    },
+    {
+        question: "Câu 9: Quá trình sinh sản hữu tính ở thực vật thường liên quan đến việc gì?",
+        answers: [
+            { text: "Sự phát triển của lá và rễ", correct: false },
+            { text: "Sự phát triển của mầm", correct: false },
+            { text: "Sự phân bào của tế bào gốc", correct: false },
+            { text: "Kết hợp tế bào sinh dục từ hai cây khác giới", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình sinh sản hữu tính ở thực vật thường liên quan đến việc kết hợp tế bào sinh dục từ hai cây khác giới."
+    },
+    {
+        question: "Câu 10: Trong quá trình sinh sản hữu tính ở thực vật, điều gì là quan trọng để hình thành hạt giống?",
+        answers: [
+            { text: "Sự phát triển của lá và rễ", correct: false },
+            { text: "Sự phát triển của mầm", correct: false },
+            { text: "Sự phân bào của tế bào gốc", correct: false },
+            { text: "Kết hợp tế bào sinh dục từ hai cây khác giới", correct: true }
+        ],
+        explanation: "Giải thích: Trong quá trình sinh sản hữu tính ở thực vật, việc kết hợp tế bào sinh dục từ hai cây khác giới là quan trọng để hình thành hạt giống."
+    },
+    {
+        question: "Câu 11: Quá trình nào sau đây là quan trọng trong việc tạo ra các mầm của thực vật?",
+        answers: [
+            { text: "Sự hình thành hoa và trái", correct: false },
+            { text: "Đề kháng của cây với môi trường", correct: false },
+            { text: "Sự phát triển của lá và rễ", correct: false },
+            { text: "Sự phân bào của tế bào gốc", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình sinh sản hữu tính ở thực vật thường liên quan đến sự phân bào của tế bào gốc để tạo ra các mầm."
+    },
+    {
+        question: "Câu 12: Tại sao phân hóa là một phần quan trọng của quá trình sinh sản hữu tính ở thực vật?",
+        answers: [
+            { text: "Nó là quá trình sinh trưởng cây mạnh mẽ", correct: false },
+            { text: "Nó giúp các tế bào trở nên đặc biệt hóa để thực hiện các chức năng cụ thể", correct: true },
+            { text: "Nó là quá trình hấp thụ nước và khoáng chất từ đất", correct: false },
+            { text: "Nó liên quan đến quá trình tiêu hóa thức ăn", correct: false }
+        ],
+        explanation: "Giải thích: Phân hóa trong quá trình sinh sản hữu tính ở thực vật là quá trình các tế bào trở nên đặc biệt hóa để thực hiện các chức năng cụ thể."
+    },
+    {
+        question: "Câu 13: Các loài thực vật thường sử dụng phương pháp sinh sản nào để thích ứng với môi trường thay đổi?",
+        answers: [
+            { text: "Sinh sản vô tính", correct: true },
+            { text: "Sinh sản hữu tính", correct: false },
+            { text: "Sinh sản xâm lấn", correct: false },
+            { text: "Sinh sản kết hợp", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản vô tính thường được sử dụng để thực hiện các thay đổi nhanh chóng và thích ứng với môi trường."
+    },
+    {
+        question: "Câu 14: Lợi ích chính của sinh sản hữu tính ở thực vật là gì?",
+        answers: [
+            { text: "Sự nhanh chóng và hiệu quả", correct: false },
+            { text: "Tạo ra sự đa dạng di truyền", correct: true },
+            { text: "Đảm bảo sự tồn tại của loài", correct: false },
+            { text: "Giảm sự cạnh tranh trong môi trường sống", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản hữu tính ở thực vật tạo ra sự đa dạng di truyền, giúp loài thực vật thích ứng và tồn tại trong môi trường."
+    },
+    {
+        question: "Câu 15: Tại sao quá trình phôi hợp trong sinh sản hữu tính ở thực vật thường liên quan đến hoa và phấn hoa?",
+        answers: [
+            { text: "Hoa là nơi chứa tế bào sinh dục của cây thực vật", correct: true },
+            { text: "Hoa giúp cây hấp thụ nước và khoáng chất từ đất", correct: false },
+            { text: "Hoa giúp cây sản xuất năng lượng từ ánh sáng mặt trời", correct: false },
+            { text: "Hoa là nơi cây sản xuất các hoocmon quan trọng", correct: false }
+        ],
+        explanation: "Giải thích: Hoa là nơi chứa tế bào sinh dục của cây thực vật, và phấn hoa giúp trong việc phôi hợp giữa các tế bào sinh dục từ hai cây khác giới."
+    },
+    {
+        question: "Câu 16: Sự khác biệt chính giữa sinh sản vô tính và hữu tính ở thực vật là gì?",
+        answers: [
+            { text: "Sinh sản vô tính liên quan đến phôi hợp tế bào sinh dục từ hai cây khác giới", correct: false },
+            { text: "Sinh sản hữu tính thường tạo ra cây con giống hệt cha mẹ", correct: false },
+            { text: "Sinh sản vô tính không liên quan đến tế bào sinh dục", correct: true },
+            { text: "Sinh sản hữu tính thường xảy ra với sự giúp đỡ của vi khuẩn", correct: false }
+        ],
+        explanation: "Giải thích: Sự khác biệt chính giữa sinh sản vô tính và hữu tính ở thực vật là sinh sản vô tính không liên quan đến tế bào sinh dục, trong khi sinh sản hữu tính liên quan đến phối hợp của tế bào sinh dục từ hai cây khác giới."
+    },
+    {
+        question: "Câu 17: Quá trình nào dưới đây không phải là một phần của quá trình phôi hợp ở thực vật?",
+        answers: [
+            { text: "Phấn hoa", correct: false },
+            { text: "Nụ hoa mọc", correct: false },
+            { text: "Tế bào sinh dục từ hai cây cá thể khác giới kết hợp", correct: false },
+            { text: "Sự tiếp xúc giữa tế bào sinh dục từ cùng một cây", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình phôi hợp ở thực vật liên quan đến việc kết hợp các tế bào sinh dục từ hai cây cá thể khác giới, không phải từ cùng một cây."
+    },
+    {
+        question: "Câu 18: Sự chuyển đổi từ hoa thành trái cây trong sinh sản hữu tính ở thực vật được gọi là gì?",
+        answers: [
+            { text: "Phát triển sinh sản", correct: false },
+            { text: "Quá trình phấn hoa", correct: false },
+            { text: "Quá trình quả", correct: false },
+            { text: "Quá trình phát triển trái", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình chuyển đổi từ hoa thành trái cây trong sinh sản hữu tính ở thực vật được gọi là quá trình phát triển trái."
+    },
+    {
+        question: "Câu 19: Điều gì quyết định đến sự thành công của quá trình phôi hợp ở thực vật?",
+        answers: [
+            { text: "Ánh sáng mặt trời", correct: false },
+            { text: "Sự tiếp xúc giữa tế bào sinh dục từ hai cây khác giới", correct: true },
+            { text: "Nhiệt độ của môi trường", correct: false },
+            { text: "Độ ẩm của đất", correct: false }
+        ],
+        explanation: "Giải thích: Sự thành công của quá trình phôi hợp ở thực vật phụ thuộc vào sự tiếp xúc giữa tế bào sinh dục từ hai cây khác giới."
+    },
+    {
+        question: "Câu 20: Sự giống nhau giữa sinh sản vô tính và hữu tính ở thực vật là gì?",
+        answers: [
+            { text: "Cả hai đều liên quan đến tế bào sinh dục", correct: false },
+            { text: "Cả hai đều dẫn đến sự phát triển của cây con mới", correct: false },
+            { text: "Cả hai đều cần sự giúp đỡ của vi khuẩn", correct: false },
+            { text: "Cả hai đều là phương thức sinh sản của thực vật", correct: true }
+        ],
+        explanation: "Giải thích: Giống nhau giữa sinh sản vô tính và hữu tính ở thực vật là cả hai đều là phương thức sinh sản của thực vật, mặc dù cơ chế và quy trình khác nhau."
+    }
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Phản ứng oxi hóa - khử là gì?",
+        answers: [
+            { text: "Phản ứng liên quan đến việc chuyển giao electron từ một chất sang chất khác", correct: true },
+            { text: "Phản ứng xảy ra giữa các ion", correct: false },
+            { text: "Phản ứng không liên quan đến việc chuyển giao electron", correct: false },
+            { text: "Phản ứng chỉ xảy ra trong dung dịch axit", correct: false }
+        ],
+        explanation: "Phản ứng oxi hóa - khử là quá trình trong đó các chất chuyển giao electron cho nhau."
+    },
+    {
+        question: "Câu 2: Chất nào là chất bị oxi hóa trong phản ứng Fe + CuSO4 → FeSO4 + Cu?",
+        answers: [
+            { text: "Fe", correct: true },
+            { text: "CuSO4", correct: false },
+            { text: "FeSO4", correct: false },
+            { text: "Cu", correct: false }
+        ],
+        explanation: "Trong phản ứng Fe + CuSO4 → FeSO4 + Cu, Fe là chất bị oxi hóa vì nó mất electron."
+    },
+    {
+        question: "Câu 3: Chất nào là chất bị khử trong phản ứng 2H2O2 → 2H2O + O2?",
+        answers: [
+            { text: "H2O2", correct: true },
+            { text: "H2O", correct: false },
+            { text: "O2", correct: false },
+            { text: "Không có chất nào bị khử", correct: false }
+        ],
+        explanation: "Trong phản ứng 2H2O2 → 2H2O + O2, H2O2 là chất bị khử vì nó mất electron để tạo thành H2O và O2."
+    },
+    {
+        question: "Câu 4: Điều gì xảy ra với số oxy hóa của một chất trong phản ứng oxi hóa?",
+        answers: [
+            { text: "Tăng lên", correct: true },
+            { text: "Giảm xuống", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Trở thành số khử", correct: false }
+        ],
+        explanation: "Số oxy hóa của một chất trong phản ứng oxi hóa thường tăng lên do nó mất electron."
+    },
+    {
+        question: "Câu 5: Chất nào là chất khử trong phản ứng 2AgNO3 + Cu → Cu(NO3)2 + 2Ag?",
+        answers: [
+            { text: "Cu", correct: true },
+            { text: "AgNO3", correct: false },
+            { text: "Cu(NO3)2", correct: false },
+            { text: "Ag", correct: false }
+        ],
+        explanation: "Trong phản ứng 2AgNO3 + Cu → Cu(NO3)2 + 2Ag, Cu là chất khử vì nó nhận electron để tạo thành Cu(NO3)2 và Ag."
+    },
+    {
+        question: "Câu 6: Trong phản ứng oxi hóa, nguyên tử hay ion nào mất electron?",
+        answers: [
+            { text: "Chất bị oxi hóa", correct: true },
+            { text: "Chất khử", correct: false },
+            { text: "Cả hai chất", correct: false },
+            { text: "Không ai", correct: false }
+        ],
+        explanation: "Trong phản ứng oxi hóa, chất bị oxi hóa là chất mất electron và chất khử là chất nhận electron."
+    },
+    {
+        question: "Câu 7: Trong phản ứng oxi hóa, điều gì xảy ra với số khử của một chất?",
+        answers: [
+            { text: "Giảm xuống", correct: true },
+            { text: "Tăng lên", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Trở thành số oxy hóa", correct: false }
+        ],
+        explanation: "Số khử của một chất trong phản ứng oxi hóa thường giảm xuống do nó nhận electron."
+    },
+    {
+        question: "Câu 8: Trong phản ứng 2K + Cl2 → 2KCl, điều gì xảy ra với potassium (K)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: true },
+            { text: "Bị khử", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2K + Cl2 → 2KCl, potassium (K) bị oxi hóa vì nó mất electron để tạo K+ trong KCl."
+    },
+    {
+        question: "Câu 9: Trong phản ứng oxi hóa - khử, electron di chuyển từ đâu đến đâu?",
+        answers: [
+            { text: "Từ chất bị oxi hóa đến chất khử", correct: true },
+            { text: "Từ chất khử đến chất bị oxi hóa", correct: false },
+            { text: "Cả hai chất", correct: false },
+            { text: "Không ai", correct: false }
+        ],
+        explanation: "Electron di chuyển từ chất bị oxi hóa (chất mất electron) đến chất khử (chất nhận electron) trong phản ứng oxi hóa - khử."
+    },
+    {
+        question: "Câu 10: Trong phản ứng 2Mg + O2 → 2MgO, điều gì xảy ra với magnesium (Mg)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: true },
+            { text: "Bị khử", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2Mg + O2 → 2MgO, magnesium (Mg) bị oxi hóa vì nó mất electron để tạo thành MgO."
+    },
+    {
+        question: "Câu 11: Trong phản ứng oxi hóa - khử, điều gì xảy ra với số oxy hóa và số khử?",
+        answers: [
+            { text: "Số oxy hóa tăng, số khử giảm", correct: true },
+            { text: "Số oxy hóa giảm, số khử tăng", correct: false },
+            { text: "Cả hai số không thay đổi", correct: false },
+            { text: "Số khử trở thành số oxy hóa", correct: false }
+        ],
+        explanation: "Trong phản ứng oxi hóa - khử, thường thì số oxy hóa tăng (vì chất mất electron) và số khử giảm (vì chất nhận electron)."
+    },
+    {
+        question: "Câu 12: Trong phản ứng 2Na + Cl2 → 2NaCl, điều gì xảy ra với sodium (Na)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: true },
+            { text: "Bị khử", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2Na + Cl2 → 2NaCl, sodium (Na) bị oxi hóa vì nó mất electron để tạo Na+ trong NaCl."
+    },
+    {
+        question: "Câu 13: Trong phản ứng 2H2 + O2 → 2H2O, điều gì xảy ra với hydrogen (H2)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: false },
+            { text: "Bị khử", correct: true },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2H2 + O2 → 2H2O, hydrogen (H2) bị khử vì nó nhận electron để tạo thành H2O."
+    },
+    {
+        question: "Câu 14: Trong phản ứng 2Fe + 3Cl2 → 2FeCl3, điều gì xảy ra với iron (Fe)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: false },
+            { text: "Bị khử", correct: true },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2Fe + 3Cl2 → 2FeCl3, iron (Fe) bị khử vì nó nhận electron để tạo FeCl3."
+    },
+    {
+        question: "Câu 15: Trong phản ứng oxi hóa - khử, điều gì xảy ra với nồng độ các ion trong dung dịch?",
+        answers: [
+            { text: "Thay đổi", correct: true },
+            { text: "Không thay đổi", correct: false },
+            { text: "Chỉ có chất bị oxi hóa thay đổi", correct: false },
+            { text: "Chỉ có chất khử thay đổi", correct: false }
+        ],
+        explanation: "Trong phản ứng oxi hóa - khử, nồng độ các ion trong dung dịch thường thay đổi do sự chuyển giao electron."
+    },
+    {
+        question: "Câu 16: Trong phản ứng 2HgO → 2Hg + O2, điều gì xảy ra với mercury oxide (HgO)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: false },
+            { text: "Bị khử", correct: true },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2HgO → 2Hg + O2, mercury oxide (HgO) bị khử vì nó mất electron để tạo thành Hg và O2."
+    },
+    {
+        question: "Câu 17: Phản ứng nào sau đây là một phản ứng oxi hóa?",
+        answers: [
+            { text: "2Na + Cl2 → 2NaCl", correct: false },
+            { text: "2Mg + O2 → 2MgO", correct: true },
+            { text: "2H2O2 → 2H2O + O2", correct: false },
+            { text: "2AgNO3 + Cu → Cu(NO3)2 + 2Ag", correct: false }
+        ],
+        explanation: "Phản ứng 2Mg + O2 → 2MgO là một phản ứng oxi hóa vì magnesium (Mg) bị oxi hóa."
+    },
+    {
+        question: "Câu 18: Phản ứng nào sau đây là một phản ứng khử?",
+        answers: [
+            { text: "2Na + Cl2 → 2NaCl", correct: true },
+            { text: "2Mg + O2 → 2MgO", correct: false },
+            { text: "2H2O2 → 2H2O + O2", correct: false },
+            { text: "2AgNO3 + Cu → Cu(NO3)2 + 2Ag", correct: false }
+        ],
+        explanation: "Phản ứng 2Na + Cl2 → 2NaCl là một phản ứng khử vì sodium (Na) nhận electron từ chlorine (Cl2)."
+    },
+    {
+        question: "Câu 19: Trong phản ứng 2CuO + C → 2Cu + CO2, điều gì xảy ra với copper oxide (CuO)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: false },
+            { text: "Bị khử", correct: true },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2CuO + C → 2Cu + CO2, copper oxide (CuO) bị khử vì nó nhận electron để tạo thành Cu và CO2."
+    },
+    {
+        question: "Câu 20: Trong phản ứng 2FeS2 + 7O2 → 2Fe2O3 + 4SO2, điều gì xảy ra với iron sulfide (FeS2)?",
+        answers: [
+            { text: "Bị oxi hóa", correct: true },
+            { text: "Bị khử", correct: false },
+            { text: "Không thay đổi", correct: false },
+            { text: "Không xảy ra phản ứng", correct: false }
+        ],
+        explanation: "Trong phản ứng 2FeS2 + 7O2 → 2Fe2O3 + 4SO2, iron sulfide (FeS2) bị oxi hóa vì nó mất electron để tạo thành Fe2O3 và SO2."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quần xã sinh vật là gì?",
+        answers: [
+            { text: "Là tập hợp các loài sinh vật sống trong cùng một khu vực và có mối quan hệ tương tác với nhau.", correct: true },
+            { text: "Là tập hợp các cá thể cùng loài sống trong một khu vực nhất định.", correct: false },
+            { text: "Là tập hợp các yếu tố vô sinh trong môi trường.", correct: false },
+            { text: "Là tập hợp các loài không có mối quan hệ tương tác với nhau.", correct: false }
+        ],
+        explanation: "Quần xã sinh vật là tập hợp các loài sinh vật sống trong cùng một khu vực và có mối quan hệ tương tác với nhau."
+    },
+    {
+        question: "Câu 2: Mối quan hệ cạnh tranh giữa các loài trong quần xã sinh vật có thể dẫn đến điều gì?",
+        answers: [
+            { text: "Một loài sẽ bị loại trừ hoặc bị giảm số lượng.", correct: true },
+            { text: "Các loài sẽ phát triển mạnh mẽ hơn.", correct: false },
+            { text: "Không có loài nào bị ảnh hưởng.", correct: false },
+            { text: "Sự hợp tác giữa các loài tăng lên.", correct: false }
+        ],
+        explanation: "Mối quan hệ cạnh tranh giữa các loài trong quần xã sinh vật có thể dẫn đến một loài sẽ bị loại trừ hoặc bị giảm số lượng."
+    },
+    {
+        question: "Câu 3: Quần xã sinh vật có đặc điểm nào sau đây?",
+        answers: [
+            { text: "Đa dạng sinh học cao.", correct: true },
+            { text: "Chỉ có một loài chiếm ưu thế.", correct: false },
+            { text: "Không có mối quan hệ tương tác giữa các loài.", correct: false },
+            { text: "Không thay đổi theo thời gian.", correct: false }
+        ],
+        explanation: "Quần xã sinh vật có đặc điểm là đa dạng sinh học cao."
+    },
+    {
+        question: "Câu 4: Mối quan hệ hợp tác giữa các loài trong quần xã sinh vật là gì?",
+        answers: [
+            { text: "Là mối quan hệ trong đó các loài cùng có lợi từ sự hợp tác này.", correct: true },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ trong đó cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ hợp tác giữa các loài trong quần xã sinh vật là mối quan hệ trong đó các loài cùng có lợi từ sự hợp tác này."
+    },
+    {
+        question: "Câu 5: Mối quan hệ ký sinh là gì?",
+        answers: [
+            { text: "Là mối quan hệ trong đó một loài sống nhờ vào loài khác và gây hại cho loài đó.", correct: true },
+            { text: "Là mối quan hệ trong đó các loài cùng có lợi.", correct: false },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ trong đó cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ ký sinh là mối quan hệ trong đó một loài sống nhờ vào loài khác và gây hại cho loài đó."
+    },
+    {
+        question: "Câu 6: Mối quan hệ đối kháng giữa các loài trong quần xã sinh vật là gì?",
+        answers: [
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia bị hại.", correct: true },
+            { text: "Là mối quan hệ trong đó các loài cùng có lợi.", correct: false },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ trong đó cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ đối kháng giữa các loài trong quần xã sinh vật là mối quan hệ trong đó một loài có lợi và loài kia bị hại."
+    },
+    {
+        question: "Câu 7: Sự kế tiếp sinh thái là gì?",
+        answers: [
+            { text: "Là quá trình biến đổi tuần tự của quần xã sinh vật từ một trạng thái đơn giản đến phức tạp.", correct: true },
+            { text: "Là quá trình biến đổi ngẫu nhiên của quần xã sinh vật.", correct: false },
+            { text: "Là quá trình các loài cạnh tranh với nhau để sinh tồn.", correct: false },
+            { text: "Là quá trình giảm số lượng các loài trong quần xã.", correct: false }
+        ],
+        explanation: "Sự kế tiếp sinh thái là quá trình biến đổi tuần tự của quần xã sinh vật từ một trạng thái đơn giản đến phức tạp."
+    },
+    {
+        question: "Câu 8: Quần xã đỉnh cực là gì?",
+        answers: [
+            { text: "Là giai đoạn cuối cùng của sự kế tiếp sinh thái, đạt đến sự ổn định và cân bằng.", correct: true },
+            { text: "Là giai đoạn đầu tiên của sự kế tiếp sinh thái.", correct: false },
+            { text: "Là quần xã có số lượng loài ít nhất.", correct: false },
+            { text: "Là quần xã không có sự tương tác giữa các loài.", correct: false }
+        ],
+        explanation: "Quần xã đỉnh cực là giai đoạn cuối cùng của sự kế tiếp sinh thái, đạt đến sự ổn định và cân bằng."
+    },
+    {
+        question: "Câu 9: Yếu tố nào không phải là yếu tố vô sinh trong quần xã sinh vật?",
+        answers: [
+            { text: "Ánh sáng.", correct: false },
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Độ ẩm.", correct: false },
+            { text: "Vi khuẩn.", correct: true }
+        ],
+        explanation: "Vi khuẩn không phải là yếu tố vô sinh trong quần xã sinh vật."
+    },
+    {
+        question: "Câu 10: Sự đa dạng sinh học trong quần xã sinh vật phụ thuộc vào yếu tố nào?",
+        answers: [
+            { text: "Sự phong phú về số lượng loài và sự đa dạng về chức năng sinh thái của các loài.", correct: true },
+            { text: "Sự cạnh tranh giữa các loài.", correct: false },
+            { text: "Sự thay đổi khí hậu.", correct: false },
+            { text: "Sự di cư của các loài.", correct: false }
+        ],
+        explanation: "Sự đa dạng sinh học trong quần xã sinh vật phụ thuộc vào sự phong phú về số lượng loài và sự đa dạng về chức năng sinh thái của các loài."
+    },
+    {
+        question: "Câu 11: Mối quan hệ nào sau đây là mối quan hệ hỗ sinh?",
+        answers: [
+            { text: "Một loài có lợi và loài kia không bị ảnh hưởng.", correct: true },
+            { text: "Hai loài cùng có lợi.", correct: false },
+            { text: "Một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ hỗ sinh là mối quan hệ trong đó một loài có lợi và loài kia không bị ảnh hưởng."
+    },
+    {
+        question: "Câu 12: Mối quan hệ cộng sinh giữa các loài trong quần xã sinh vật là gì?",
+        answers: [
+            { text: "Là mối quan hệ trong đó hai loài cùng có lợi từ sự hợp tác này.", correct: true },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Là mối quan hệ trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ trong đó cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ cộng sinh giữa các loài trong quần xã sinh vật là mối quan hệ trong đó hai loài cùng có lợi từ sự hợp tác này."
+    },
+    {
+        question: "Câu 13: Yếu tố nào sau đây là yếu tố sinh thái quan trọng trong quần xã sinh vật?",
+        answers: [
+            { text: "Mối quan hệ giữa các loài.", correct: true },
+            { text: "Sự thay đổi khí hậu.", correct: false },
+            { text: "Sự phân bố đều của các cá thể.", correct: false },
+            { text: "Độ sâu của môi trường sống.", correct: false }
+        ],
+        explanation: "Mối quan hệ giữa các loài là yếu tố sinh thái quan trọng trong quần xã sinh vật."
+    },
+    {
+        question: "Câu 14: Mối quan hệ giữa các loài trong quần xã sinh vật được thể hiện qua điều gì?",
+        answers: [
+            { text: "Các loài có sự phụ thuộc lẫn nhau về thức ăn, nơi ở và các điều kiện sống khác.", correct: true },
+            { text: "Các loài không ảnh hưởng lẫn nhau.", correct: false },
+            { text: "Các loài cạnh tranh gay gắt để sinh tồn.", correct: false },
+            { text: "Các loài cùng có lợi từ sự hợp tác này.", correct: false }
+        ],
+        explanation: "Mối quan hệ giữa các loài trong quần xã sinh vật được thể hiện qua sự phụ thuộc lẫn nhau về thức ăn, nơi ở và các điều kiện sống khác."
+    },
+    {
+        question: "Câu 15: Quần xã sinh vật có thể thay đổi như thế nào?",
+        answers: [
+            { text: "Thông qua quá trình kế tiếp sinh thái và sự thay đổi môi trường.", correct: true },
+            { text: "Không thay đổi theo thời gian.", correct: false },
+            { text: "Chỉ thay đổi khi có sự can thiệp của con người.", correct: false },
+            { text: "Chỉ thay đổi do sự di cư của các loài.", correct: false }
+        ],
+        explanation: "Quần xã sinh vật có thể thay đổi thông qua quá trình kế tiếp sinh thái và sự thay đổi môi trường."
+    },
+    {
+        question: "Câu 16: Mối quan hệ đối kháng giữa các loài trong quần xã sinh vật có thể dẫn đến điều gì?",
+        answers: [
+            { text: "Một loài bị loại trừ hoặc giảm số lượng, trong khi loài kia phát triển mạnh mẽ.", correct: true },
+            { text: "Các loài phát triển đồng đều.", correct: false },
+            { text: "Không có loài nào bị ảnh hưởng.", correct: false },
+            { text: "Sự hợp tác giữa các loài tăng lên.", correct: false }
+        ],
+        explanation: "Mối quan hệ đối kháng giữa các loài trong quần xã sinh vật có thể dẫn đến một loài bị loại trừ hoặc giảm số lượng, trong khi loài kia phát triển mạnh mẽ."
+    },
+    {
+        question: "Câu 17: Sự biến đổi môi trường có thể ảnh hưởng đến quần xã sinh vật như thế nào?",
+        answers: [
+            { text: "Có thể làm thay đổi thành phần loài và cấu trúc của quần xã.", correct: true },
+            { text: "Không ảnh hưởng đến quần xã.", correct: false },
+            { text: "Chỉ ảnh hưởng đến một số loài nhất định.", correct: false },
+            { text: "Làm tăng số lượng loài trong quần xã.", correct: false }
+        ],
+        explanation: "Sự biến đổi môi trường có thể làm thay đổi thành phần loài và cấu trúc của quần xã sinh vật."
+    },
+    {
+        question: "Câu 18: Quần xã sinh vật có vai trò gì trong hệ sinh thái?",
+        answers: [
+            { text: "Duy trì sự cân bằng sinh thái và bảo vệ môi trường sống.", correct: true },
+            { text: "Không có vai trò quan trọng.", correct: false },
+            { text: "Chỉ cung cấp thức ăn cho các loài.", correct: false },
+            { text: "Chỉ tạo ra môi trường sống cho các loài.", correct: false }
+        ],
+        explanation: "Quần xã sinh vật có vai trò duy trì sự cân bằng sinh thái và bảo vệ môi trường sống."
+    },
+    {
+        question: "Câu 19: Mối quan hệ nào sau đây là mối quan hệ cộng sinh?",
+        answers: [
+            { text: "Hai loài cùng có lợi từ sự hợp tác này.", correct: true },
+            { text: "Một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Cả hai loài đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ cộng sinh là mối quan hệ trong đó hai loài cùng có lợi từ sự hợp tác này."
+    },
+    {
+        question: "Câu 20: Sự di cư của các loài có thể ảnh hưởng đến quần xã sinh vật như thế nào?",
+        answers: [
+            { text: "Có thể làm thay đổi thành phần loài và cấu trúc của quần xã.", correct: true },
+            { text: "Không ảnh hưởng đến quần xã.", correct: false },
+            { text: "Chỉ ảnh hưởng đến một số loài nhất định.", correct: false },
+            { text: "Làm tăng số lượng loài trong quần xã.", correct: false }
+        ],
+        explanation: "Sự di cư của các loài có thể làm thay đổi thành phần loài và cấu trúc của quần xã sinh vật."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

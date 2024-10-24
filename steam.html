@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="stem.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <audio id="introAudio">
+        <source src="Hdsteam.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+    <section class="image-grid">
+        <div class="image-tile">
+            <a href="locnuoc.html">
+                <img src="https://scontent-hkg4-1.xx.fbcdn.net/v/t39.30808-6/461225445_1212276296652721_5145813526560306218_n.jpg?stp=cp6_dst-jpg&_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=NbI9EtPIzP4Q7kNvgHhF_Zd&_nc_ht=scontent-hkg4-1.xx&oh=00_AYBoGudkBdruTylQyP4MiYNYLoP3InnMksDByfKZO6BXPg&oe=66F89404" alt="Mô tả hình ảnh 1">
+                <div class="text-overlay">Lọc Nước</div>
+            </a>
+        </div>
+        <div class="image-tile">
+            <a href="xetaiche.html">
+                <img src="https://dep.com.vn/Uploaded/khangdtm/2016_03_13/nhung-thu-vi-ve-xa-phong(8).jpg" alt="Mô tả hình ảnh 1">
+                <div class="text-overlay">Làm xà Phòng từ NaOH</div>
+            </a>
+        </div>
+        <div class="image-tile">
+            <a href="trichoderma.html">
+                <img src="https://khuyennong.quangtri.gov.vn/uploads/news/2022_06/trichoderma-cnx-u-phan.jpg" alt="Mô tả hình ảnh 3">
+                <div class="text-overlay">Ủ phân bón bằng Trichoderma</div>
+            </a>
+        </div>
+    </section>
+    <script>
+       const introAudio = document.getElementById('introAudio');
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'vi-VN'; // Đặt ngôn ngữ tiếng Việt
+
+let clickTimeout = null;
+
+// Sự kiện cho click 1 cái (thay cho Ctrl)
+document.addEventListener('click', function() {
+    if (clickTimeout === null) {
+        // Thiết lập timeout cho lần click đầu tiên
+        clickTimeout = setTimeout(function() {
+            // Thực hiện hành động click 1 cái
+            if (introAudio.paused) {
+                introAudio.play(); // Phát âm thanh nếu đang dừng
+            } else {
+                introAudio.pause(); // Tạm dừng nếu đang phát
+                introAudio.currentTime = 0; // Đặt lại thời gian phát
+            }
+
+            clickTimeout = null; // Reset lại timeout
+        }, 300);
+    } else {
+        // Nếu có lần click thứ hai trong khoảng thời gian 300ms, coi như double click
+        clearTimeout(clickTimeout); // Hủy bỏ timeout của lần click đơn
+        clickTimeout = null; // Reset lại timeout
+
+        // Double click: thực hiện bắt đầu thu âm (thay cho Space)
+        recognition.start(); // Bắt đầu thu âm khi double click
+    }
+});
+
+
+    
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript.toLowerCase(); // Chuyển giọng nói thành văn bản và viết thường
+            console.log(transcript); // Xem kết quả thu âm
+    
+            // Điều hướng tới các video YouTube dựa trên từ khóa
+            if (transcript.includes('lọc nước')) {
+                window.location.href = 'https://www.youtube.com/watch?v=M_vUcoo4gLA'; // Đường dẫn video liên quan đến pH trong đất
+            }
+            if (transcript.includes('xà phòng')) {
+                window.location.href = 'https://www.youtube.com/watch?v=dxY1AT8BEKk'; // Đường dẫn video liên quan đến chuẩn độ
+            }
+            if (transcript.includes('phân')) {
+                window.location.href = 'https://www.youtube.com/watch?v=PMhWz6qb9z8'; // Đường dẫn video liên quan đến sinh thiết
+            }
+        };
+    
+        recognition.onerror = function(event) {
+            console.error('Lỗi nhận diện giọng nói: ', event.error);
+        };
+    </script>
+    
+</body>
+</html>
+

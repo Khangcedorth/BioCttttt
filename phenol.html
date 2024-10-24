@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Phenol có công thức hóa học là gì?",
+        answers: [
+            { text: "C6H5OH", correct: true },
+            { text: "C6H6OH", correct: false },
+            { text: "C6H7OH", correct: false },
+            { text: "C6H4OH", correct: false }
+        ],
+        explanation: "Phenol có công thức hóa học là C6H5OH."
+    },
+    {
+        question: "Câu 2: Loại liên kết hóa học chính trong phân tử phenol là gì?",
+        answers: [
+            { text: "Liên kết ion", correct: false },
+            { text: "Liên kết cộng hóa trị", correct: true },
+            { text: "Liên kết kim loại", correct: false },
+            { text: "Liên kết hydro", correct: false }
+        ],
+        explanation: "Trong phân tử phenol, các nguyên tử được liên kết với nhau bằng liên kết cộng hóa trị."
+    },
+    {
+        question: "Câu 3: Phenol có thể tác dụng với chất nào sau đây để tạo ra phenoxide?",
+        answers: [
+            { text: "NaOH", correct: true },
+            { text: "H2SO4", correct: false },
+            { text: "CH3COOH", correct: false },
+            { text: "Cl2", correct: false }
+        ],
+        explanation: "Phenol phản ứng với NaOH tạo thành phenoxide (C6H5ONa)."
+    },
+    {
+        question: "Câu 4: Phenol có tính chất hóa học nào sau đây?",
+        answers: [
+            { text: "Tính acid yếu", correct: true },
+            { text: "Tính base mạnh", correct: false },
+            { text: "Tính khử mạnh", correct: false },
+            { text: "Tính oxi hóa mạnh", correct: false }
+        ],
+        explanation: "Phenol có tính acid yếu do nhóm hydroxyl (-OH) liên kết với vòng benzen."
+    },
+    {
+        question: "Câu 5: Phenol có thể tham gia phản ứng nào sau đây?",
+        answers: [
+            { text: "Phản ứng thế brom", correct: true },
+            { text: "Phản ứng thế iod", correct: false },
+            { text: "Phản ứng cộng hydro", correct: false },
+            { text: "Phản ứng khử hydro", correct: false }
+        ],
+        explanation: "Phenol có thể tham gia phản ứng thế brom để tạo ra 2,4,6-tribromophenol."
+    },
+    {
+        question: "Câu 6: Tên gọi khác của phenol là gì?",
+        answers: [
+            { text: "Carbolic acid", correct: true },
+            { text: "Benzyl alcohol", correct: false },
+            { text: "Cyclohexanol", correct: false },
+            { text: "Aniline", correct: false }
+        ],
+        explanation: "Phenol còn được gọi là carbolic acid."
+    },
+    {
+        question: "Câu 7: Phản ứng của phenol với nước brom tạo ra sản phẩm gì?",
+        answers: [
+            { text: "2,4,6-tribromophenol", correct: true },
+            { text: "Bromobenzene", correct: false },
+            { text: "Benzene", correct: false },
+            { text: "Benzaldehyde", correct: false }
+        ],
+        explanation: "Phản ứng của phenol với nước brom tạo ra 2,4,6-tribromophenol."
+    },
+    {
+        question: "Câu 8: Để nhận biết phenol, ta có thể dùng thuốc thử nào?",
+        answers: [
+            { text: "Dung dịch FeCl3", correct: true },
+            { text: "Dung dịch AgNO3", correct: false },
+            { text: "Dung dịch HCl", correct: false },
+            { text: "Dung dịch NaOH", correct: false }
+        ],
+        explanation: "Dung dịch FeCl3 phản ứng với phenol tạo ra phức màu tím."
+    },
+    {
+        question: "Câu 9: Phản ứng chính để sản xuất phenol từ cumene là gì?",
+        answers: [
+            { text: "Oxi hóa cumene", correct: true },
+            { text: "Hydro hóa cumene", correct: false },
+            { text: "Phân hủy cumene", correct: false },
+            { text: "Cộng hợp cumene", correct: false }
+        ],
+        explanation: "Phenol được sản xuất từ cumene thông qua quá trình oxi hóa cumene."
+    },
+    {
+        question: "Câu 10: Nhóm chức của phenol là nhóm nào sau đây?",
+        answers: [
+            { text: "Nhóm -OH", correct: true },
+            { text: "Nhóm -NH2", correct: false },
+            { text: "Nhóm -COOH", correct: false },
+            { text: "Nhóm -CHO", correct: false }
+        ],
+        explanation: "Nhóm chức của phenol là nhóm hydroxyl (-OH) liên kết với vòng benzen."
+    },
+    {
+        question: "Câu 11: Sự khác biệt chính giữa phenol và benzyl alcohol là gì?",
+        answers: [
+            { text: "Vị trí của nhóm -OH", correct: true },
+            { text: "Số nguyên tử carbon", correct: false },
+            { text: "Số nguyên tử hydro", correct: false },
+            { text: "Số liên kết cộng hóa trị", correct: false }
+        ],
+        explanation: "Sự khác biệt chính giữa phenol và benzyl alcohol là vị trí của nhóm -OH. Trong phenol, nhóm -OH gắn trực tiếp vào vòng benzen, trong khi ở benzyl alcohol, nhóm -OH gắn vào carbon của nhóm methylene (-CH2-) liên kết với vòng benzen."
+    },
+    {
+        question: "Câu 12: Phenol thường được sử dụng trong lĩnh vực nào?",
+        answers: [
+            { text: "Sản xuất nhựa phenolic", correct: true },
+            { text: "Làm chất khử trùng", correct: false },
+            { text: "Sản xuất thuốc nhuộm", correct: false },
+            { text: "Làm dung môi", correct: false }
+        ],
+        explanation: "Phenol thường được sử dụng trong sản xuất nhựa phenolic."
+    },
+    {
+        question: "Câu 13: Để tách biệt phenol từ hỗn hợp với nước, phương pháp nào thường được sử dụng?",
+        answers: [
+            { text: "Chiết xuất", correct: true },
+            { text: "Lọc", correct: false },
+            { text: "Lắng đọng", correct: false },
+            { text: "Kết tinh", correct: false }
+        ],
+        explanation: "Chiết xuất là phương pháp thường được sử dụng để tách biệt phenol từ hỗn hợp với nước."
+    },
+    {
+        question: "Câu 14: Phenol có thể phản ứng với nhóm chất nào sau đây?",
+        answers: [
+            { text: "Acid và base", correct: true },
+            { text: "Chỉ acid", correct: false },
+            { text: "Chỉ base", correct: false },
+            { text: "Chất oxi hóa", correct: false }
+        ],
+        explanation: "Phenol có thể phản ứng với cả acid và base."
+    },
+    {
+        question: "Câu 15: Công thức phân tử của 2-nitrophenol là gì?",
+        answers: [
+            { text: "C6H4(NO2)OH", correct: true },
+            { text: "C6H3(NO2)2OH", correct: false },
+            { text: "C6H5NO2", correct: false },
+            { text: "C6H4NO2", correct: false }
+        ],
+        explanation: "2-nitrophenol có công thức phân tử là C6H4(NO2)OH."
+    },
+    {
+        question: "Câu 16: Loại phenol nào sau đây thường được dùng làm chất khử trùng trong y tế?",
+        answers: [
+            { text: "Cresol", correct: true },
+            { text: "Hydroquinone", correct: false },
+            { text: "Pyrogallol", correct: false },
+            { text: "Resorcinol", correct: false }
+        ],
+        explanation: "Cresol thường được sử dụng làm chất khử trùng trong y tế."
+    },
+    {
+        question: "Câu 17: Sản phẩm nào sau đây không thể tạo ra từ phản ứng của phenol với NaOH?",
+        answers: [
+            { text: "C6H5ONa", correct: false },
+            { text: "H2O", correct: false },
+            { text: "NaCl", correct: true },
+            { text: "C6H5OH", correct: false }
+        ],
+        explanation: "Phản ứng của phenol với NaOH không tạo ra NaCl."
+    },
+    {
+        question: "Câu 18: Phản ứng chính để tổng hợp phenol từ benzene là gì?",
+answers: [
+{ text: "Phản ứng Friedel-Crafts acylation", correct: false },
+{ text: "Phản ứng Friedel-Crafts alkylation", correct: false },
+{ text: "Phản ứng hydro hóa", correct: false },
+{ text: "Phản ứng hydroxyl hóa", correct: true }
+],
+explanation: "Phản ứng chính để tổng hợp phenol từ benzene là phản ứng hydroxyl hóa."
+},
+{
+question: "Câu 19: Công dụng chính của phenol trong công nghiệp là gì?",
+answers: [
+{ text: "Dung môi", correct: false },
+{ text: "Chất khử", correct: false },
+{ text: "Nguyên liệu sản xuất nhựa phenolic", correct: true },
+{ text: "Thuốc nhuộm", correct: false }
+],
+explanation: "Phenol chủ yếu được sử dụng làm nguyên liệu sản xuất nhựa phenolic trong công nghiệp."
+},
+{
+question: "Câu 20: Phenol có tính chất nào dưới đây không chính xác?",
+answers: [
+{ text: "Độc", correct: false },
+{ text: "Cháy nổ", correct: false },
+{ text: "Tính axit mạnh", correct: true },
+{ text: "Tính chất ăn mòn", correct: false }
+],
+explanation: "Phenol không có tính axit mạnh, mặc dù nó có tính acid nhưng không phải là acid mạnh."
+}
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="moitruongpH.css">
+</head>
+<body>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+    <section>
+        <img id="chemistry-icon" src="BioCheX.png" alt="Icon Hoá Học">
+        <img id="righticon" src="iconindex.PNG" alt="Icon Hoá Học">
+        <div class="center-text">
+            <h1 id="first">BioCheX - Hoá Sinh trong đời sống</h1>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">BIOCHEX - HOÁ SINH TRONG ĐỜI SỐNG</marquee>
+            </marquee>
+            <a href="index.html">Trang chủ</a>
+        </div>
+        <label for="inputValue">Nhập giá trị độ pH trong đất mà bạn vừa thu được:</label>
+        <input type="number" id="inputValue">
+        <button onclick="processInput()">Kiểm tra</button>
+        <button onclick="startDictation()">Dùng giọng nói</button>
+        <audio id="introAudio">
+            <source src="intropH.mp3" type="audio/mpeg">
+            Trình duyệt của bạn không hỗ trợ thẻ âm thanh.
+        </audio>
+        
+        <p id="result">Kết quả: </p>
+        <p id="k">Tính chất đất hiện tại</p>
+        <p id="bp">Biện pháp xử lý tình trạng hiện tại</p>
+        <p id="neutralize">Loại phân để tác dụng trung hòa: </p>
+        <img id="image" src="https://tanixa.com/wp-content/uploads/2022/04/thang-do-pH-dat-02-optimized.jpg" alt="Hình ảnh">
+    </section>
+    
+    <!-- Bảng lịch sử kiểm tra pH -->
+    <section>
+        <h2>Lịch sử kiểm tra độ pH</h2>
+        <table id="pHHistory">
+            <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Giá trị pH</th>
+                    <th>Kết quả</th>
+                    <th>Tính chất đất</th>
+                    <th>Biện pháp xử lý</th>
+                    <th>Loại phân trung hòa</th>
+                </tr>
+            </thead>
+            <tbody id="pHHistoryBody">
+                <!-- Các dòng sẽ được thêm bằng JavaScript -->
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>&copy; BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+    </footer>
+    
+    <script>
+        
+        function processInput() {
+            var n = parseFloat(document.getElementById("inputValue").value);
+            var resultElement = document.getElementById("result");
+            var kElement = document.getElementById("k");
+            var bpElement = document.getElementById("bp");
+            var neutralizeElement = document.getElementById("neutralize");
+            var imageElement = document.getElementById("image");
+            function playSound(audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play();}
+            if (isNaN(n) || n <= 0 || n > 14) {
+                alert("Vui lòng nhập một số từ 0 đến 14 để đo đạc độ pH đất.");
+                return;
+            }
+
+            var resultText, kText, bpText, neutralizeText, imageUrl;
+
+            if (n > 8.5) {
+                resultText = "Kết quả độ pH: base";
+                kText = "Môi trường đất: Kiềm mạnh";
+                bpText = "Biện pháp xử lý: Độ pH của đất kiềm mạnh có thể được giảm bằng cách thêm các tác nhân axit hóa hoặc vật liệu hữu cơ có tính axit.";
+                neutralizeText = "Loại phân để tác dụng trung hòa: Có thể sử dụng phân bón axit hóa như ammonium sulfate, ammonium nitrate và urê. (Nghiên cứu của tiến sĩ Curtis F. Marbut)";
+                imageUrl = "https://image.chukouplus.com/themes/simplebootx/Upload/W_715/upload/5f9bcaa0090f2.jpg";
+                playSound('base.mp3');
+            } else if (n >=  7.5 && n <= 8.5) {
+                resultText = "Kết quả độ pH: base";
+                kText = "Môi trường đất: Kiềm nhẹ";
+                bpText = "Biện pháp xử lý: Độ pH của đất kiềm nhẹ có thể được giảm bằng cách thêm các tác nhân axit hóa hoặc vật liệu hữu cơ có tính axit.";
+                neutralizeText = "Loại phân để tác dụng trung hòa: Có thể sử dụng phân bón axit hóa như ammonium sulfate, ammonium nitrate và urê. (Nghiên cứu của tiến sĩ Curtis F. Marbut)";
+                imageUrl = "https://image.chukouplus.com/themes/simplebootx/Upload/W_715/upload/5f9bcaa0090f2.jpg";
+                playSound('base.mp3');
+            }
+            else if (n >= 6.5 &&  n < 7.5) {
+                resultText = "Kết quả độ pH: Trung tính";
+                kText = "Môi trường đất: Trung tính, canh tác tốt";
+                bpText = "";
+                neutralizeText = "Loại phân tác dụng: Bón super lân vào các loại đất này để duy trì độ pH ổn định. (Nghiên cứu của tiến sĩ Herman Nilson)";
+                imageUrl = "https://img.ws.mms.shopee.vn/afad32478eabcc02f85ee57b4589c422";
+                playSound('trung tinh.mp3');
+            }
+            else {
+                resultText = "Kết quả độ pH: acid";
+                kText = "Môi trường đất: Đất chua";
+                bpText = "Biện pháp xử lý: Rửa chua cho đất, cày sâu, phơi ải, và bón vôi để nâng pH đất.";
+                if (n < 3) {
+                    neutralizeText = "Loại phân để tác dụng trung hòa: Đất phèn nặng cần bón lượng lớn phân bón P2O5. (Nghiên cứu của tiến sĩ P.V. Tác giả 'Soil Science')";
+                    imageUrl = "https://binhdienmekong.vn/wp-content/uploads/20-20-15_CT.png";
+                    playSound('acid1.mp3');
+                } else {
+                    neutralizeText = "Loại phân để tác dụng trung hòa: Đất phèn trung bình cần bón lượng vừa phân bón P2O5. (Nghiên cứu của tiến sĩ P.V. Tác giả 'Soil Science')";
+                    imageUrl = "https://phanbonquocgia.gov.vn/wp-content/uploads/2021/03/e.jpg";
+                    playSound('acid1.mp3');
+                }
+            }
+
+            resultElement.textContent = resultText;
+            kElement.textContent = kText;
+            bpElement.textContent = bpText;
+            neutralizeElement.textContent = neutralizeText;
+            imageElement.src = imageUrl;
+
+            saveToLocalStorage(n, resultText, kText, bpText, neutralizeText);
+            displayHistory();
+        }
+
+        function saveToLocalStorage(pH, result, soilType, treatment, fertilizer) {
+            var history = JSON.parse(localStorage.getItem('history')) || [];
+            var entry = {
+                timestamp: new Date().toLocaleString(),
+                pH: pH,
+                result: result,
+                soilType: soilType,
+                treatment: treatment,
+                fertilizer: fertilizer
+            };
+            history.push(entry);
+            localStorage.setItem('history', JSON.stringify(history));
+        }
+
+        function displayHistory() {
+            var history = JSON.parse(localStorage.getItem('history')) || [];
+            var historyBody = document.getElementById('pHHistoryBody');
+            historyBody.innerHTML = '';
+            history.forEach(function(entry) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.timestamp}</td>
+                    <td>${entry.pH}</td>
+                    <td>${entry.result}</td>
+                    <td>${entry.soilType}</td>
+                    <td>${entry.treatment}</td>
+                    <td>${entry.fertilizer}</td>
+                `;
+                historyBody.appendChild(row);
+            });
+        }
+
+        function startDictation() {
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = "vi-VN";
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            document.getElementById('inputValue').value = event.results[0][0].transcript;
+            recognition.stop();
+            processInput();
+        };
+
+        recognition.onerror = function(event) {
+            console.error("Lỗi nhận dạng giọng nói:", event.error);
+            recognition.stop();
+            alert("Lỗi nhận dạng giọng nói: " + event.error);
+        };
+    } else {
+        alert("Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.");
+    }
+}
+
+
+        // Khởi tạo sự kiện cho nhấp chuột 1 và 2 lần
+let clickCount = 0;
+let clickTimeout;
+
+// Hàm phát/tạm dừng âm thanh
+function toggleAudio() {
+    if (introAudio.paused) {
+        introAudio.play(); // Phát âm thanh nếu đang dừng
+    } else {
+        introAudio.pause(); // Tạm dừng nếu đang phát
+        introAudio.currentTime = 0; // Đặt lại thời gian phát
+    }
+}
+
+// Hàm bắt đầu nhận diện giọng nói
+function startDictation() {
+    recognition.start(); // Bắt đầu thu âm
+}
+
+// Sự kiện nhấp chuột
+document.addEventListener("click", function () {
+    clickCount++;
+
+    if (clickTimeout) {
+        clearTimeout(clickTimeout);
+    }
+
+    clickTimeout = setTimeout(() => {
+        if (clickCount === 1) {
+            toggleAudio(); // Nhấp 1 lần để phát hoặc dừng âm thanh
+        } else if (clickCount === 2) {
+            startDictation(); // Nhấp 2 lần để bắt đầu thu âm
+        }
+        
+        clickCount = 0; // Đặt lại đếm số lần nhấp chuột
+    }, 300); // Thời gian chờ giữa các lần nhấp, bạn có thể điều chỉnh nếu cần
+});
+        function toggleAudio() {
+            var audio = document.getElementById("introAudio");
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+    </script>
+</body>
+</html>

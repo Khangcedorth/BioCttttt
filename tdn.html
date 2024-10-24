@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE BIOLOGY - SINH HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Vai trò của nước đối với thực vật là gì?",
+                answers: [
+                    { text: "Là môi trường và nguyên liệu cho các quá trình sinh lý", correct: true },
+                    { text: "Là môi trường cho quá trình quang hợp", correct: false },
+                    { text: "Là nguồn cung cấp khoáng cho cây", correct: false},
+                    { text: "Là môi trường cho các loài thủy sinh", correct: false }
+                ],
+                explanation: "Nước là môi trường và nguyên liệu quan trọng cho các quá trình sinh lý của thực vật như quang hợp, hô hấp và vận chuyển chất dinh dưỡng."
+            },
+            {
+                question: "Câu 2: Quá trình thoát hơi nước ở thực vật chủ yếu diễn ra ở đâu?",
+                answers: [
+                    { text: "Lá", correct: true },
+                    { text: "Rễ", correct: false },
+                    { text: "Thân", correct: false},
+                    { text: "Hoa", correct: false }
+                ],
+                explanation: "Quá trình thoát hơi nước ở thực vật chủ yếu diễn ra qua khí khổng ở lá."
+            },
+            {
+                question: "Câu 3: Nước được vận chuyển từ rễ lên thân và lá theo con đường nào?",
+                answers: [
+                    { text: "Mạch gỗ", correct: true },
+                    { text: "Mạch rây", correct: false },
+                    { text: "Không bào", correct: false},
+                    { text: "Màng sinh chất", correct: false }
+                ],
+                explanation: "Nước được vận chuyển từ rễ lên thân và lá thông qua mạch gỗ (xylem)."
+            },
+            {
+                question: "Câu 4: Sự hút nước của rễ cây diễn ra theo cơ chế nào?",
+                answers: [
+                    { text: "Thẩm thấu", correct: true },
+                    { text: "Khuếch tán", correct: false },
+                    { text: "Hấp thu chủ động", correct: false},
+                    { text: "Vận chuyển thụ động", correct: false }
+                ],
+                explanation: "Sự hút nước của rễ cây chủ yếu diễn ra theo cơ chế thẩm thấu, dựa trên sự chênh lệch áp suất thẩm thấu giữa dung dịch đất và dịch tế bào rễ."
+            },
+            {
+                question: "Câu 5: Vai trò của khoáng chất đối với thực vật là gì?",
+                answers: [
+                    { text: "Cấu tạo nên các hợp chất hữu cơ", correct: true },
+                    { text: "Tham gia vào quá trình quang hợp", correct: false },
+                    { text: "Tham gia vào quá trình hô hấp", correct: false},
+                    { text: "Tất cả các ý trên", correct: false }
+                ],
+                explanation: "Khoáng chất có vai trò quan trọng trong cấu tạo các hợp chất hữu cơ, tham gia vào các quá trình sinh lý như quang hợp và hô hấp của thực vật."
+            },
+            {
+                question: "Câu 6: Nguyên tố khoáng nào sau đây là vi lượng đối với thực vật?",
+                answers: [
+                    { text: "Sắt (Fe)", correct: true },
+                    { text: "Nitơ (N)", correct: false },
+                    { text: "Phốt pho (P)", correct: false},
+                    { text: "Canxi (Ca)", correct: false }
+                ],
+                explanation: "Sắt (Fe) là nguyên tố vi lượng cần thiết cho thực vật, tham gia vào quá trình tổng hợp chlorophyll và hoạt động của nhiều enzyme."
+            },
+            {
+                question: "Câu 7: Thiếu hụt kali (K) ở thực vật gây ra hiện tượng gì?",
+                answers: [
+                    { text: "Lá vàng và xuất hiện các đốm hoại tử", correct: true },
+                    { text: "Cây còi cọc và chậm phát triển", correct: false },
+                    { text: "Rễ phát triển kém", correct: false},
+                    { text: "Thân cây bị yếu và dễ gãy", correct: false }
+                ],
+                explanation: "Thiếu hụt kali (K) gây ra hiện tượng lá vàng và xuất hiện các đốm hoại tử do kali có vai trò quan trọng trong điều hòa áp suất thẩm thấu và hoạt động enzyme."
+            },
+            {
+                question: "Câu 8: Vai trò của canxi (Ca) trong cây là gì?",
+                answers: [
+                    { text: "Tham gia vào cấu trúc thành tế bào", correct: true },
+                    { text: "Tham gia vào quá trình quang hợp", correct: false },
+                    { text: "Tham gia vào quá trình hô hấp", correct: false},
+                    { text: "Điều hòa áp suất thẩm thấu", correct: false }
+                ],
+                explanation: "Canxi (Ca) tham gia vào cấu trúc thành tế bào, giúp tăng cường độ cứng cáp và ổn định của cây."
+            },
+            {
+                question: "Câu 9: Quá trình hấp thụ khoáng chất ở rễ cây chủ yếu diễn ra qua con đường nào?",
+                answers: [
+                    { text: "Vận chuyển chủ động", correct: true },
+                    { text: "Thẩm thấu", correct: false },
+                    { text: "Khuếch tán", correct: false},
+                    { text: "Vận chuyển thụ động", correct: false }
+                ],
+                explanation: "Quá trình hấp thụ khoáng chất ở rễ cây chủ yếu diễn ra qua con đường vận chuyển chủ động, sử dụng năng lượng ATP để vận chuyển ion khoáng vào tế bào rễ."
+            },
+            {
+                question: "Câu 10: Hiện tượng nào xảy ra khi cây bị thiếu nước?",
+                answers: [
+                    { text: "Lá héo, giảm tốc độ quang hợp", correct: true },
+                    { text: "Rễ cây phát triển mạnh", correct: false },
+                    { text: "Thân cây dày lên", correct: false},
+                    { text: "Cây sinh trưởng nhanh", correct: false }
+                ],
+                explanation: "Khi cây bị thiếu nước, lá sẽ héo và tốc độ quang hợp giảm do nước là yếu tố cần thiết cho quá trình quang hợp và duy trì độ tươi tắn của lá."
+            },
+            {
+                question: "Câu 11: Vai trò của nguyên tố nitơ (N) đối với thực vật?",
+                answers: [
+                    { text: "Tham gia cấu tạo protein và axit nucleic", correct: true },
+                    { text: "Tham gia cấu tạo lipid", correct: false },
+                    { text: "Tham gia cấu tạo carbohydrate", correct: false},
+                    { text: "Tham gia cấu tạo vitamin", correct: false }
+                ],
+                explanation: "Nguyên tố nitơ (N) rất quan trọng đối với thực vật vì nó tham gia vào cấu tạo protein và axit nucleic, những thành phần quan trọng trong tế bào."
+            },
+            {
+                question: "Câu 12: Nguyên tố nào là thành phần chính của diệp lục (chlorophyll)?",
+                answers: [
+                    { text: "Magie (Mg)", correct: true },
+                    { text: "Canxi (Ca)", correct: false },
+                    { text: "Kali (K)", correct: false},
+                    { text: "Photpho (P)", correct: false }
+                ],
+                explanation: "Magie (Mg) là thành phần chính của diệp lục (chlorophyll), là trung tâm của phân tử diệp lục và cần thiết cho quá trình quang hợp."
+            },
+            {
+                question: "Câu 13: Quá trình thoát hơi nước ở thực vật giúp thực hiện chức năng gì?",
+                answers: [
+                    { text: "Điều hòa nhiệt độ của cây", correct: true },
+                    { text: "Cung cấp năng lượng cho cây", correct: false },
+                    { text: "Tổng hợp chất hữu cơ", correct: false},
+                    { text: "Bảo vệ cây khỏi sâu bệnh", correct: false }
+                ],
+                explanation: "Quá trình thoát hơi nước ở thực vật giúp điều hòa nhiệt độ của cây và duy trì sự cân bằng nước nội bào."
+            },
+            {
+                question: "Câu 14: Hệ thống rễ cây hấp thụ nước và khoáng chất từ đâu?",
+                answers: [
+                    { text: "Đất", correct: true },
+                    { text: "Không khí", correct: false },
+                    { text: "Nước mưa", correct: false},
+                    { text: "Ánh sáng mặt trời", correct: false }
+                ],
+                explanation: "Hệ thống rễ cây hấp thụ nước và khoáng chất từ đất thông qua các lông hút trên rễ."
+            },
+            {
+                question: "Câu 15: Vai trò của kali (K) đối với thực vật là gì?",
+                answers: [
+                    { text: "Điều chỉnh áp suất thẩm thấu và hoạt động enzyme", correct: true },
+                    { text: "Cấu tạo nên thành tế bào", correct: false },
+                    { text: "Tham gia vào quá trình quang hợp", correct: false},
+                    { text: "Cấu tạo nên protein và axit nucleic", correct: false }
+                ],
+                explanation: "Kali (K) giúp điều chỉnh áp suất thẩm thấu và hoạt động của nhiều enzyme, đặc biệt là enzyme liên quan đến quá trình quang hợp và hô hấp."
+            },
+            {
+                question: "Câu 16: Thiếu hụt nguyên tố nào gây ra hiện tượng lá cây bị vàng?",
+                answers: [
+                    { text: "Nitơ (N)", correct: true },
+                    { text: "Photpho (P)", correct: false },
+                    { text: "Kali (K)", correct: false},
+                    { text: "Canxi (Ca)", correct: false }
+                ],
+                explanation: "Thiếu hụt nitơ (N) gây ra hiện tượng lá cây bị vàng do nitơ là thành phần quan trọng của diệp lục và protein."
+            },
+            {
+                question: "Câu 17: Hiện tượng nào xảy ra khi cây bị thiếu photpho (P)?",
+                answers: [
+                    { text: "Rễ phát triển kém, lá nhỏ", correct: true },
+                    { text: "Lá cây bị vàng", correct: false },
+                    { text: "Thân cây yếu và dễ gãy", correct: false},
+                    { text: "Xuất hiện các đốm hoại tử trên lá", correct: false }
+                ],
+                explanation: "Thiếu photpho (P) làm cho rễ phát triển kém và lá nhỏ vì photpho cần thiết cho quá trình phân chia tế bào và phát triển của cây."
+            },
+            {
+                question: "Câu 18: Quá trình vận chuyển khoáng chất từ rễ lên lá được gọi là gì?",
+                answers: [
+                    { text: "Dòng mạch gỗ", correct: true },
+                    { text: "Dòng mạch rây", correct: false },
+                    { text: "Dòng vận chuyển thụ động", correct: false},
+                    { text: "Dòng vận chuyển chủ động", correct: false }
+                ],
+                explanation: "Quá trình vận chuyển khoáng chất từ rễ lên lá được gọi là dòng mạch gỗ (xylem)."
+            },
+            {
+                question: "Câu 19: Vai trò của nguyên tố photpho (P) đối với thực vật?",
+                answers: [
+                    { text: "Tham gia vào cấu tạo ATP và axit nucleic", correct: true },
+                    { text: "Tham gia vào cấu tạo protein", correct: false },
+                    { text: "Tham gia vào quá trình quang hợp", correct: false},
+                    { text: "Tham gia vào cấu tạo lipid", correct: false }
+                ],
+                explanation: "Nguyên tố photpho (P) rất quan trọng đối với thực vật vì nó tham gia vào cấu tạo ATP và axit nucleic, cần thiết cho quá trình năng lượng và di truyền."
+            },
+            {
+                question: "Câu 20: Nguyên tố nào là thành phần chính của protein và axit nucleic?",
+                answers: [
+                    { text: "Nitơ (N)", correct: true },
+                    { text: "Photpho (P)", correct: false },
+                    { text: "Kali (K)", correct: false},
+                    { text: "Magie (Mg)", correct: false }
+                ],
+                explanation: "Nitơ (N) là thành phần chính của protein và axit nucleic, rất quan trọng cho sự phát triển và chức năng của thực vật."
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

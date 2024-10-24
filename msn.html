@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const careerQuestions = [
+    {
+        question: "Câu 1: Nghề nghiệp nào nghiên cứu về cấu trúc và chức năng của các tế bào và mô trong cơ thể con người?",
+        answers: [
+            { text: "Sinh viên y khoa", correct: false },
+            { text: "Nhà sinh học tế bào", correct: true },
+            { text: "Dược sĩ", correct: false },
+            { text: "Chuyên gia tâm lý", correct: false }
+        ],
+        explanation: "Giải thích: Nhà sinh học tế bào nghiên cứu về cấu trúc và chức năng của các tế bào và mô trong cơ thể con người."
+    },
+    {
+        question: "Câu 2: Nghề nghiệp nào nghiên cứu về di truyền học và làm việc với DNA để giải mã các bí mật của sự sống?",
+        answers: [
+            { text: "Kỹ sư môi trường", correct: false },
+            { text: "Giáo viên tiểu học", correct: false },
+            { text: "Sinh học phân tử", correct: true },
+            { text: "Bác sĩ", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học phân tử là nghề nghiệp nghiên cứu về di truyền học và làm việc với DNA."
+    },
+    {
+        question: "Câu 3: Nghề nghiệp nào nghiên cứu về sự phát triển của sinh vật và cách chúng tương tác với môi trường xung quanh?",
+        answers: [
+            { text: "Sinh học học thực vật", correct: false },
+            { text: "Sinh học quyền hành", correct: false },
+            { text: "Sinh học hành vi", correct: true },
+            { text: "Nhà sinh học chuyên nghiệp", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học hành vi nghiên cứu về sự phát triển của sinh vật và cách chúng tương tác với môi trường xung quanh."
+    },
+    {
+        question: "Câu 4: Nghề nghiệp nào nghiên cứu về cấu trúc và chức năng của các cơ quan trong cơ thể",
+        answers: [
+            { text: "Bác sĩ thú y", correct: false },
+            { text: "Sinh học học thực vật", correct: false },
+            { text: "Sinh học phân tử", correct: false },
+            { text: "Sinh học động vật", correct: true }
+        ],
+        explanation: "Giải thích: Sinh học động vật nghiên cứu về cấu trúc và chức năng của các cơ quan trong cơ thể động vật."
+    },
+    {
+        question: "Câu 5: Nghề nghiệp nào nghiên cứu về sự tương tác giữa vi khuẩn và môi trường sống của chúng?",
+        answers: [
+            { text: "Nhà sinh học chuyên nghiệp", correct: false },
+            { text: "Kỹ sư sinh học", correct: true },
+            { text: "Sinh học học thực vật", correct: false },
+            { text: "Giáo viên mầm non", correct: false }
+        ],
+        explanation: "Giải thích: Kỹ sư sinh học nghiên cứu về sự tương tác giữa vi khuẩn và môi trường sống của chúng."
+    },
+    {
+        question: "Câu 6: Nghề nghiệp nào liên quan đến nghiên cứu và ứng dụng công nghệ sinh học trong sản xuất và chẩn đoán y tế?",
+        answers: [
+            { text: "Chuyên gia tâm lý", correct: false },
+            { text: "Dược sĩ", correct: false },
+            { text: "Nhà sinh học tế bào", correct: false },
+            { text: "Bác sĩ dược", correct: true }
+        ],
+        explanation: "Giải thích: Bác sĩ dược nghiên cứu và ứng dụng công nghệ sinh học trong sản xuất và chẩn đoán y tế."
+    },
+    {
+        question: "Câu 7: Nghề nghiệp nào nghiên cứu về hệ thống bộ não và các rối loạn liên quan đến não bộ?",
+        answers: [
+            { text: "Sinh viên y khoa", correct: false },
+            { text: "Chuyên gia tâm lý", correct: true },
+            { text: "Bác sĩ ngoại khoa", correct: false },
+            { text: "Kỹ sư môi trường", correct: false }
+        ],
+        explanation: "Giải thích: Chuyên gia tâm lý nghiên cứu về hệ thống bộ não và các rối loạn liên quan đến não bộ."
+    },
+    {
+        question: "Câu 8: Nghề nghiệp nào nghiên cứu về mối liên hệ giữa dinh dưỡng và sức khỏe con người?",
+        answers: [
+            { text: "Dược sĩ", correct: false },
+            { text: "Sinh học dinh dưỡng", correct: true },
+            { text: "Giáo viên mầm non", correct: false },
+            { text: "Kỹ sư sinh học", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học dinh dưỡng nghiên cứu về mối liên hệ giữa dinh dưỡng và sức khỏe con người."
+    },
+    {
+        question: "Câu 9: Nghề nghiệp nào nghiên cứu về biến đổi gen và ứng dụng của chúng trong nông nghiệp và y tế?",
+        answers: [
+            { text: "Kỹ sư môi trường", correct: false },
+            { text: "Nhà sinh học tế bào", correct: false },
+            { text: "Sinh học phân tử", correct: false },
+            { text: "Nhà khoa học sinh học", correct: true }
+        ],
+        explanation: "Giải thích: Nhà khoa học sinh học nghiên cứu về biến đổi gen và ứng dụng của chúng trong nông nghiệp và y tế."
+    },
+    {
+        question: "Câu 10: Nghề nghiệp nào nghiên cứu về sinh thái học và tác động của các hoạt động con người đến môi trường?",
+        answers: [
+            { text: "Sinh viên y khoa", correct: false },
+            { text: "Sinh học học thực vật", correct: false },
+            { text: "Nhà sinh học môi trường", correct: true },
+            { text: "Bác sĩ", correct: false }
+        ],
+        explanation: "Giải thích: Nhà sinh học môi trường nghiên cứu về sinh thái học và tác động của các hoạt động con người đến môi trường."
+    },
+    {
+        question: "Câu 11: Nghề nghiệp nào nghiên cứu về sự phát triển và bảo vệ của các loài động vật quý hiếm?",
+        answers: [
+            { text: "Sinh học động vật", correct: true },
+            { text: "Sinh học hành vi", correct: false },
+            { text: "Sinh học quyền hành", correct: false },
+            { text: "Nhà sinh học chuyên nghiệp", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học động vật nghiên cứu về sự phát triển và bảo vệ của các loài động vật quý hiếm."
+    },
+    {
+        question: "Câu 12: Nghề nghiệp nào nghiên cứu về các cơ chế miễn dịch của cơ thể và cách phòng ngừa bệnh?",
+        answers: [
+            { text: "Bác sĩ ngoại khoa", correct: false },
+            { text: "Sinh viên y khoa", correct: false },
+            { text: "Sinh học miễn dịch", correct: true },
+            { text: "Chuyên gia tâm lý", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học miễn dịch nghiên cứu về các cơ chế miễn dịch của cơ thể và cách phòng ngừa bệnh."
+    },
+    {
+        question: "Câu 13: Nghề nghiệp nào nghiên cứu về sự phát triển của cây trồng và nâng cao năng suất nông nghiệp?",
+        answers: [
+            { text: "Sinh học dinh dưỡng", correct: false },
+            { text: "Sinh học thực vật", correct: true },
+            { text: "Kỹ sư sinh học", correct: false },
+            { text: "Giáo viên mầm non", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học thực vật nghiên cứu về sự phát triển của cây trồng và nâng cao năng suất nông nghiệp."
+    },
+    {
+        question: "Câu 14: Nghề nghiệp nào nghiên cứu về chẩn đoán và điều trị các bệnh liên quan đến máu và hệ tuần hoàn?",
+        answers: [
+            { text: "Bác sĩ dược", correct: false },
+            { text: "Bác sĩ ngoại khoa", correct: true },
+            { text: "Nhà sinh học tế bào", correct: false },
+            { text: "Sinh viên y khoa", correct: false }
+        ],
+        explanation: "Giải thích: Bác sĩ ngoại khoa nghiên cứu về chẩn đoán và điều trị các bệnh liên quan đến máu và hệ tuần hoàn."
+    },
+    {
+        question: "Câu 15: Nghề nghiệp nào nghiên cứu về sự tương tác giữa các loài trong hệ sinh thái và vai trò của chúng trong duy trì cân bằng sinh thái?",
+        answers: [
+            { text: "Nhà sinh học môi trường", correct: false },
+            { text: "Sinh học học thực vật", correct: false },
+            { text: "Sinh học sinh thái", correct: true },
+            { text: "Kỹ sư môi trường", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học sinh thái nghiên cứu về sự tương tác giữa các loài trong hệ sinh thái và vai trò của chúng trong duy trì cân bằng sinh thái."
+    },
+    {
+        question: "Câu 16: Nghề nghiệp nào nghiên cứu về sự tương tác giữa con người và động vật hoang dã?",
+        answers: [
+            { text: "Sinh học hành vi", correct: true },
+            { text: "Sinh học quyền hành", correct: false },
+            { text: "Nhà sinh học chuyên nghiệp", correct: false },
+            { text: "Sinh học động vật", correct: false }
+        ],
+        explanation: "Giải thích: Sinh học hành vi nghiên cứu về sự tương tác giữa con người và động vật hoang dã."
+    },
+    {
+        question: "Câu 17: Nghề nghiệp nào nghiên cứu về các loài vi khuẩn và virus gây bệnh cho con người?",
+        answers: [
+            { text: "Kỹ sư sinh học", correct: false },
+            { text: "Sinh học miễn dịch", correct: false },
+            { text: "Bác sĩ ngoại khoa", correct: true },
+            { text: "Sinh viên y khoa", correct: false }
+        ],
+        explanation: "Giải thích: Bác sĩ ngoại khoa nghiên cứu về các loài vi khuẩn và virus gây bệnh cho con người."
+    },
+    {
+        question: "Câu 18: Nghề nghiệp nào nghiên cứu về sự phát triển và chế tạo thuốc chữa bệnh từ các nguồn tự nhiên?",
+        answers: [
+            { text: "Dược sĩ", correct: true },
+            { text: "Nhà khoa học sinh học", correct: false },
+            { text: "Sinh học phân tử", correct: false },
+            { text: "Sinh viên y khoa", correct: false }
+        ],
+        explanation: "Giải thích: Dược sĩ nghiên cứu về sự phát triển và chế tạo thuốc chữa bệnh từ các nguồn tự nhiên."
+    },
+    {
+        question: "Câu 19: Nghề nghiệp nào nghiên cứu về tác dụng của hóa chất và độc tố lên cơ thể con người?",
+        answers: [
+            { text: "Nhà sinh học môi trường", correct: false },
+            { text: "Kỹ sư môi trường", correct: false },
+            { text: "Sinh học động vật", correct: false },
+            { text: "Sinh học độc lập", correct: true }
+        ],
+        explanation: "Giải thích: Sinh học độc lập nghiên cứu về tác dụng của hóa chất và độc tố lên cơ thể con người."
+    },
+    {
+        question: "Câu 20: Nghề nghiệp nào nghiên cứu về sự phát triển của bào tử và ứng dụng trong điều trị y tế?",
+        answers: [
+            { text: "Sinh học phân tử", correct: false },
+            { text: "Nhà sinh học tế bào", correct: true },
+            { text: "Sinh học thực vật", correct: false },
+            { text: "Bác sĩ dược", correct: false }
+        ],
+        explanation: "Giải thích: Nhà sinh học tế bào nghiên cứu về sự phát triển của bào tử và ứng dụng trong điều trị y tế."
+    }
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

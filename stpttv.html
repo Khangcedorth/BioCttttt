@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const plantGrowthQuestions = [
+    {
+        question: "Câu 1: Quá trình nào cho thấy cây non uốn cong để tìm ánh sáng?",
+        answers: [
+            { text: "Nếp nhăn lá", correct: false },
+            { text: "Lành động chiếc lá", correct: false },
+            { text: "Nghiêng theo ánh sáng", correct: true },
+            { text: "Kéo dài cành", correct: false }
+        ],
+        explanation: "Giải thích: Cây non uốn cong để tìm ánh sáng là quá trình nghiêng theo ánh sáng để tối ưu hóa quá trình quang hợp."
+    },
+    {
+        question: "Câu 2: Hiện tượng gì xảy ra khi cây phát triển ra lá lớn hơn để thu nhận nhiều năng lượng hơn từ ánh sáng?",
+        answers: [
+            { text: "Phát triển rễ", correct: false },
+            { text: "Mọc thêm cành", correct: false },
+            { text: "Nhỏ lá", correct: false },
+            { text: "Phát triển lá", correct: true }
+        ],
+        explanation: "Giải thích: Cây phát triển ra lá lớn hơn để thu nhận nhiều năng lượng hơn từ ánh sáng là quá trình phát triển lá."
+    },
+    {
+        question: "Câu 3: Sự phát triển của cây măng tây dựa vào yếu tố nào?",
+        answers: [
+            { text: "Nước", correct: false },
+            { text: "Ánh sáng", correct: true },
+            { text: "Khí CO2", correct: false },
+            { text: "Đất", correct: false }
+        ],
+        explanation: "Giải thích: Sự phát triển của cây măng tây dựa vào yếu tố ánh sáng, là yếu tố cần thiết cho quá trình quang hợp."
+    },
+    {
+        question: "Câu 4: Cơ chế nào giúp cây xương rồng nhú ra các rễ phụ để tăng khả năng hấp thụ nước?",
+        answers: [
+            { text: "Hấp thụ nước qua cành lá", correct: false },
+            { text: "Tạo rễ phụ", correct: true },
+            { text: "Nhỏ lá", correct: false },
+            { text: "Phát triển cành", correct: false }
+        ],
+        explanation: "Giải thích: Cây xương rồng nhú ra các rễ phụ để tăng khả năng hấp thụ nước là quá trình tạo rễ phụ."
+    },
+    {
+        question: "Câu 5: Tại sao cây thông sẽ mọc lên cao hơn cây thông khác trong môi trường nắng nóng?",
+        answers: [
+            { text: "Chia cành để giảm nhiệt", correct: false },
+            { text: "Nhỏ lá", correct: false },
+            { text: "Cần nhiều nước hơn", correct: false },
+            { text: "Phát triển thân cây", correct: true }
+        ],
+        explanation: "Giải thích: Cây thông mọc lên cao hơn trong môi trường nắng nóng là quá trình phát triển thân cây để cạnh tranh ánh sáng."
+    },
+    {
+        question: "Câu 6: Sự sinh trưởng nhanh của cây chuối liên quan đến yếu tố nào?",
+        answers: [
+            { text: "Nước", correct: false },
+            { text: "Ánh sáng", correct: true },
+            { text: "Khí CO2", correct: false },
+            { text: "Đất", correct: false }
+        ],
+        explanation: "Giải thích: Sự sinh trưởng nhanh của cây chuối liên quan đến yếu tố ánh sáng, là yếu tố thiết yếu trong quá trình quang hợp."
+    },
+    {
+        question: "Câu 7: Hiện tượng nào xảy ra khi cây hoa hồng phát triển ra hoa sau khi mùa xuân sang hè?",
+        answers: [
+            { text: "Chuyển từ mùa lạnh sang mùa nóng", correct: true },
+            { text: "Chuyển từ mùa nóng sang mùa lạnh", correct: false },
+            { text: "Chuyển từ mưa vào mùa khô", correct: false },
+            { text: "Chuyển từ mùa khô vào mùa mưa", correct: false }
+        ],
+        explanation: "Giải thích: Cây hoa hồng phát triển ra hoa sau khi mùa xuân sang hè là quá trình phát triển dựa trên sự thay đổi nhiệt độ và ánh sáng của mùa."
+    },
+    {
+        question: "Câu 8: Quá trình nào giúp cây cối kháng chịu được độ ẩm môi trường thay đổi?",
+        answers: [
+            { text: "Phát triển lá to", correct: false },
+            { text: "Tạo rễ sâu", correct: false },
+            { text: "Phát triển rễ phụ", correct: false },
+            { text: "Tạo rễ thực vật", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình tạo rễ thực vật giúp cây cối kháng chịu được độ ẩm môi trường thay đổi bằng cách cung cấp đủ nước cho cả cây."
+    },
+    {
+        question: "Câu 9: Sự phát triển của cây lúa gạo phụ thuộc vào yếu tố nào trong quá trình sinh trưởng?",
+        answers: [
+            { text: "Sáng", correct: false },
+            { text: "Lá", correct: false },
+            { text: "Cành", correct: false },
+            { text: "Lúa gạo", correct: true }
+        ],
+        explanation: "Giải thích: Sự phát triển của cây lúa gạo phụ thuộc vào yếu tố lúa gạo trong quá trình sinh trưởng, là yếu tố quan trọng nhất cho năng suất."
+    },
+    {
+        question: "Câu 10: Quá trình nào giúp cây lúa gạo cung cấp nguồn dinh dưỡng cho sinh trưởng cây con?",
+        answers: [
+            { text: "Lá non", correct: false },
+            { text: "Thân", correct: false },
+            { text: "Cành lá", correct: false },
+            { text: "Hạt giống", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình hạt giống giúp cây lúa gạo cung cấp nguồn dinh dưỡng cho sinh trưởng cây con, là giai đoạn quan trọng nhất trong vòng đời cây."
+    },
+    {
+        question: "Câu 11: Quá trình nào giúp cây ổi phát triển trái mọng và ngọt?",
+        answers: [
+            { text: "Hạt giống", correct: false },
+            { text: "Phân bón", correct: false },
+            { text: "Lá non", correct: false },
+            { text: "Quả bầu", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình quả bầu giúp cây ổi phát triển trái mọng và ngọt, là giai đoạn quan trọng cuối cùng trong quá trình sinh trưởng."
+    },
+    {
+        question: "Câu 12: Sự phát triển của cây dâu tây phụ thuộc vào yếu tố nào?",
+        answers: [
+            { text: "Sáng", correct: false },
+            { text: "Lá", correct: false },
+            { text: "Cành", correct: false },
+            { text: "Rễ", correct: true }
+        ],
+        explanation: "Giải thích: Sự phát triển của cây dâu tây phụ thuộc vào yếu tố rễ, là yếu tố quan trọng cung cấp nước và dinh dưỡng cho cây."
+    },
+    {
+        question: "Câu 13: Quá trình nào giúp cây cam phát triển vượt qua thời kỳ khô hạn?",
+        answers: [
+            { text: "Lá non", correct: false },
+            { text: "Cành lá", correct: false },
+            { text: "Rễ", correct: true },
+            { text: "Hạt giống", correct: false }
+        ],
+        explanation: "Giải thích: Quá trình rễ giúp cây cam phát triển vượt qua thời kỳ khô hạn bằng cách cung cấp nước và dinh dưỡng từ đất."
+    },
+    {
+        question: "Câu 14: Sự sinh trưởng nhanh của cây hoa hướng dương liên quan đến yếu tố nào?",
+        answers: [
+            { text: "Nước", correct: false },
+            { text: "Ánh sáng", correct: true },
+            { text: "Khí CO2", correct: false },
+            { text: "Đất", correct: false }
+        ],
+        explanation: "Giải thích: Sự sinh trưởng nhanh của cây hoa hướng dương liên quan đến yếu tố ánh sáng, là yếu tố thiết yếu trong quá trình quang hợp."
+    },
+    {
+        question: "Câu 15: Quá trình nào giúp cây dâu tây phát triển quả to và ngọt?",
+        answers: [
+            { text: "Lá non", correct: false },
+            { text: "Rễ phụ", correct: false },
+            { text: "Quả bầu", correct: true },
+            { text: "Thân cây", correct: false }
+        ],
+        explanation: "Giải thích: Quá trình quả bầu giúp cây dâu tây phát triển quả to và ngọt, là giai đoạn quan trọng cuối cùng trong quá trình sinh trưởng."
+    },
+    {
+        question: "Câu 16: Sự phát triển của cây bắp phụ thuộc vào yếu tố nào?",
+        answers: [
+            { text: "Sáng", correct: false },
+            { text: "Lá", correct: false },
+            { text: "Cành", correct: false },
+            { text: "Lúa", correct: true }
+        ],
+        explanation: "Giải thích: Sự phát triển của cây bắp phụ thuộc vào yếu tố lúa, là yếu tố quan trọng nhất cho năng suất."
+    },
+    {
+        question: "Câu 17: Quá trình nào giúp cây bắp cung cấp nguồn dinh dưỡng cho sinh trưởng cây con?",
+        answers: [
+            { text: "Lá non", correct: false },
+            { text: "Thân", correct: false },
+            { text: "Cành lá", correct: false },
+            { text: "Hạt giống", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình hạt giống giúp cây bắp cung cấp nguồn dinh dưỡng cho sinh trưởng cây con, là giai đoạn quan trọng nhất trong vòng đời cây."
+    },
+    {
+        question: "Câu 18: Quá trình nào giúp cây cam phát triển trái mọng và ngọt?",
+        answers: [
+            { text: "Hạt giống", correct: false },
+            { text: "Phân bón", correct: false },
+            { text: "Lá non", correct: false },
+            { text: "Quả bầu", correct: true }
+        ],
+        explanation: "Giải thích: Quá trình quả bầu giúp cây cam phát triển trái mọng và ngọt, là giai đoạn quan trọng cuối cùng trong quá trình sinh trưởng."
+    },
+    {
+        question: "Câu 19: Sự phát triển của cây đậu phụ thuộc vào yếu tố nào?",
+        answers: [
+            { text: "Sáng", correct: false },
+            { text: "Lá", correct: false },
+            { text: "Cành", correct: false },
+            { text: "Rễ", correct: true }
+        ],
+        explanation: "Giải thích: Sự phát triển của cây đậu phụ thuộc vào yếu tố rễ, là yếu tố quan trọng cung cấp nước và dinh dưỡng cho cây."
+    },
+    {
+        question: "Câu 20: Quá trình nào giúp cây cà chua phát triển vượt qua thời kỳ khô hạn?",
+        answers: [
+            { text: "Lá non", correct: false },
+            { text: "Cành lá", correct: false },
+            { text: "Rễ", correct: true },
+            { text: "Hạt giống", correct: false }
+        ],
+        explanation: "Giải thích: Quá trình rễ giúp cây cà chua phát triển vượt qua thời kỳ khô hạn bằng cách cung cấp nước và dinh dưỡng từ đất."
+    }
+    // Các câu hỏi tiếp theo có thể thêm tại đây
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

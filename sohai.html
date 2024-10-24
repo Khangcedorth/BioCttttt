@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Sulfur có thể tồn tại ở những trạng thái số oxi hoá nào ? ",
+                answers: [
+                    { text: "-2; +4; +5; +6.", correct: false },
+                    { text: "-2; 0; +4; +6.", correct: true },
+                    { text: "-3; +2; +4; +6.", correct: false },
+                    { text: "+1; 0; +4; +6.", correct: false }
+                ],
+                explanation: "Sulfur tạo ra nhiều hợp chất với các số oxi hóa khác nhau từ -2 đến +6."
+            },
+            {
+                question: "Câu 2: Phát biểu nào sau đây không đúng?",
+                answers: [
+                    { text: "Sulfur là một phi kim mạnh, có tính oxi hóa mạnh điển hình.", correct: true },
+                    { text: "Khi tham gia phản ứng, sulfur thể hiện tính oxi hóa hoặc tính khử.", correct: false },
+                    { text: "Điều kiện thường, sulfur là chất rắn, màu vàng, không tan trong nước.", correct: false},
+                    { text: "Điều kiện thường, sulfur tồn tại dạng phân tử S8.", correct: false }
+                ],
+                explanation: "Khi tham gia phản ứng hóa học, Sulfur có thể hiện tính oxi hóa hoặc tính khử => A không đúng."
+            },
+            {
+                question: "Câu 3: Sulfur tác dụng với sulfuric acid đặc nóng:  S + 2H2SO4 → 3SO2 + H2O; Trong phản ứng này, tỷ lệ nguyên tử sulfur bị khử và số nguyên tử sulfur bị oxi hóa là:",
+                answers: [
+                    { text: "2:1", correct: true },
+                    { text: "3:1.", correct: false },
+                    { text: "1:3.", correct: false},
+                    { text: "1:2.", correct: false }
+                ],
+                explanation: "Nguyên tử sulfur bị khử/Nguyên tử sulfur bị oxi hóa = nH2SO4/nS = 2:1."
+            },
+            {
+                question: "Câu 4: Phương trình nào sau đây thể hiện tính khử của SO2 ?",
+                answers: [
+                    { text: "SO2 + Br2 + 2H2O -> H2SO4.", correct: true },
+                    { text: "SO2 + NaOH -> NaHSO3.", correct: false },
+                    { text: "SO2 + CaO -> CaSO3.", correct: false},
+                    { text: "SO2 + 2KOH -> K2SO3 + H2O", correct: false }
+                ],
+                explanation: "SO2 thể hiện tính khử trong phản ứng: SO2 + Br2 + 2H2O -> H2SO4."
+            },
+            {
+                question: "Câu 5: Dãy chất nào trong các dãy sau đây gồm các chất đều thể hiện tính oxi hóa khi phản ứng với SO2 ?",
+                answers: [
+                    { text: "O2, nước bromine, dung dịch KMnO4.", correct: true },
+                    { text: "H2S, O2, nước bromine.", correct: false },
+                    { text: "Dung dịch NaOH, O2, dung dịch KMnO4.", correct: false},
+                    { text: "Dung dịch BaCl2, CaO, nước bromine.", correct: false }
+                ],
+                explanation: "SO2 + Br2 + 2H2O -> H2SO4; 3SO2 + O2 -> 3SO3; SO2 + KMnO4 + H2O → MnSO4 + K2SO4 + H2SO4"
+            },
+            {
+                question: "Câu 6: Khí SO2  (sinh ra từ việc đốt các nhiên liệu hóa thạch, quặng sulfide) là một trong những chất gây ô nhiễm môi trường, do đó khí SO2 trong không khí sinh ra",
+                answers: [
+                    { text: "Hiện tượng nhà kính.", correct: false },
+                    { text: "Mưa acid.", correct: true },
+                    { text: "Lỗ thủng tầng ozon.", correct: false},
+                    { text: "Nước thải gây ung thư.", correct: false }
+                ],
+                explanation: "Sulfur dioxide là một trong các tác nhân gây mưa acid."
+            },
+            {
+                question: "Câu 7: Sulfur được dân gian sử dụng để pha chế vào thuốc trị các bệnh ngoài da. Tên gọi dân gian của sulfur là",
+                answers: [
+                    { text: "diêm sinh.", correct: true },
+                    { text: "đá vôi.", correct: false },
+                    { text: "phèn chua.", correct: false},
+                    { text: "giấm ăn.", correct: false }
+                ],
+                explanation: "Trong dân gian, sulfur có tên gọi là diêm sinh."
+            },
+            {
+                question: "Câu 8: Trong tự nhiên, đồng vị của sulfur chiếm thành phần nhiều nhất là",
+                answers: [
+                    { text: "32S.", correct:true },
+{ text: "34S.", correct: false },
+{ text: "36S", correct: false},
+{ text: "33S", correct: false }
+],
+explanation: "Trong tự nhiên, đồng vị của sulfur chiếm thành phần nhiều nhất là 32S (≈ 95%)"
+},
+{
+question: "Câu 9: Thạch cao sống là một đạng tồn tại phổ biến của sulfur trong tự nhiên, được sử dụng làm nguyên liệu để sản xuất xi măng, phấn viết bảng,... Công thức của thạch cao sống là",
+answers: [
+{ text: "BaSO4.", correct: false },
+{ text: "CaSO4.2H2O.", correct: true },
+{ text: "MgSO4.", correct: false},
+{ text: "CaSO4.5H2O", correct: false }
+],
+explanation: "Thạch cao sống có công thức là CaSO4.2H2O."
+},
+{
+question: "Câu 10: Trong công nghiệp, phần lớn sulfur đơn chất sau khi khai thác ở các mỏ được dùng làm nguyên liệu để",
+answers: [
+{ text: "lưu hoá cao su tự nhiên.", correct: false },
+{ text: "sản xuất sulfuric acid.", correct: true },
+{ text: "điều chế thuốc bảo vệ thực vật.", correct: false},
+{ text: "bào chế thuốc đông y.", correct: false }
+],
+explanation: "Trong công nghiệp, phần lớn sulfur đơn chất sau khi khai thác ở các mỏ được dùng làm nguyên liệu để sản xuất sulfuric acid."
+},
+{
+question: "Câu 11: Quá trình đốt than sinh ra nhiều loại khí thải, trong đó có khí SO2. Khí SO2 mùi xốc và có khả năng gây viêm đường hô hấp. Tên gọi của SO2 là",
+answers: [
+{ text: "sulfur trioxide.", correct: false },
+{ text: "sulfur dioxide.", correct: true },
+{ text: "sulfuric acid.", correct: false},
+{ text: "hydrogen sulfide.", correct: false }
+],
+explanation: "Tên gọi của SO2 là sulfur dioxide."
+},
+{
+question: "Câu 12: Trong số các chất khí: SO2, CO2, O2, N2 khí tan tốt trong nước ở điều kiện thường là",
+answers: [
+{ text: "SO2.", correct: true },
+{ text: "CO2", correct: false },
+{ text: "N2", correct: false }
+],
+explanation: "Trong các khí trên, khí tan tốt trong nước ở điều kiện thường là SO2 (9,4 g/ 100 mL nước ở 25oC)."
+},
+{
+question: "Câu 13:Khi nhiệt kế thuỷ ngân vỡ, rắc chất bột nào sau đây lên thuỷ ngân rơi vãi sẽ chuyển hoá chúng thành hợp chất bền, it độc hại?",
+answers: [
+{ text: "Than đá.", correct: false },
+{ text: "Sulfur.", correct: true },
+{ text: "Đá vôi.", correct: false },
+{ text: "Muối ăn.", correct: false },
+],
+explanation: "Phương trình phản ứng : Hg+S→HgS, HgS là chất kết tủa màu vàng, bền và ít độc hại hơn hơi thủy ngân."
+},
+{
+question: "Câu 14: Cho các loại khoáng vật sau: blend, chalcopyrite, thạch cao, pyrite. Số khoáng vật có thành phần chính chứa muối sulfide là",
+answers: [
+{ text: "1 ", correct: false },
+{ text: "2", correct: false },
+{ text: "3", correct: true},
+{ text: "4", correct: false }
+],
+explanation: "Các khoáng vật có thành phần chính chứa muối sulfide là blend, chalcopyrite, pyrite.."
+},
+{
+question: "Câu 15: Dẫn khí SO2 vào 100 mL dung dịch KMnO4 0,02 M đến khi mất màu tím theo sơ đồ phản ứng: SO2+KMnO4+H2O→K2SO4+MnSO4+H2SO4 Thể tích khí SO2 (đkc) đã phản ứng là",
+answers: [
+{ text: "50 mL.", correct: false },
+{ text: " 124 mL.", correct: true },
+{ text: "248 mL. ", correct: false},
+{ text: " 100 mL.", correct: false }
+],
+explanation: "Phương trình phản ứng: 5SO2+2KMnO4+2H2O→K2SO4+2MnSO4+2H2SO4; nKMnO4=0,1.0,02=0,002mol ⇒ nSO2=52.nKMnO4=0,005mol ⇒ VSO2=24,79.0,005=0,124L=124mL"
+},
+{
+question: "Câu 16:Xét phản ứng giữa sulfur và hydrogen ở điều kiện chuẩn: H2(g)+(1/8)S8(s)→H2S(g)ΔrHo298=-20,6kJ Nhiệt tạo thành của H2S(g) là",
+answers: [
+{ text: " -41,2 kJ/mol.", correct: false },
+{ text: "-20,6 kJ/mol.", correct: true },
+{ text: "41,2 kJ/mol.", correct: false},
+{ text: "20,6 kJ/mol.", correct: false }
+],
+explanation: "Nhiệt tạo thành của H2S(g) = biến thiên enthalpy của phản ứng = -20,6 kJ/mol"
+},
+{
+question: "Câu 17: Để điều chế SO2 trong phòng thí nghiệm người ta dùng phương pháp nào?",
+answers: [
+{ text: "Đun nóng dung dịch H2SO3 với muối Na2SO4", correct: false },
+{ text: "Đun nóng dung dịch H2SO4 với muối Na2SO3.", correct: true },
+{ text: "Đốt cháy sulfur trong không khí.", correct: false},
+{ text: "Đốt quặng sulfur kim loại, ví dụ như quặng iron pyrite,… ", correct: false }
+],
+explanation: "H2SO4 + Na2SO3 -> Na2SO4 + SO2"
+},
+{
+question: "Câu 18: Hợp chất nào của nitrogen không được tạo ra khi cho HNO3 tác dụng với kim loại?",
+answers: [
+{ text: "N2O5", correct: true },
+{ text: "NO.", correct: false },
+{ text: "NO2", correct: false},
+{ text: "NH4NO3", correct: false }
+],
+explanation: "N2O5 không được tạo ra khi cho HNO3 tác dụng với kim loại."
+},
+{
+question: "Câu 19: Cho dung dịch HNO3 tác dụng với các chất sau: NH3,CaCO3,Ag,NaOH. Số phản ứng trong đó HNO3 đóng vai trò acid theo thuyết Brønsted - Lowry là",
+answers: [
+{ text: "1", correct: false },
+{ text: "4", correct: false },
+{ text: "2  ", correct: false},
+{ text: "3", correct: true }
+],
+explanation: "HNO3 đóng vai trò acid theo thuyết Brønsted - Lowry khi phản ứng với NH3, CaCO3, NaOH."
+},
+{
+question: "Câu 20: Cho Iron(III) oxide tác dụng với nitric acid thì sản phẩm thu được là",
+answers: [
+{ text: "Fe(NO3)3 và H2O", correct: true },
+{ text: " Fe(NO3)3, NO và H2O.", correct: false },
+{ text: "Fe(NO3)3, NO2 và H2O.", correct: false},
+{ text: "Fe(NO3)3, N2 và H2O", correct: false }
+],
+explanation: "Fe2O3 + 6HNO3 -> 2Fe(NO3)3 + 3H2O  "
+}
+]; 
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Phương pháp chưng cất phân đoạn thường được sử dụng để tách biệt",
+        answers: [
+            { text: "Các chất lỏng có điểm sôi khác nhau", correct: true },
+            { text: "Các chất rắn trong hỗn hợp", correct: false },
+            { text: "Các chất không tan trong nước", correct: false },
+            { text: "Các chất khí", correct: false }
+        ],
+        explanation: "Chưng cất phân đoạn được sử dụng để tách biệt các chất lỏng có điểm sôi khác nhau."
+    },
+    {
+        question: "Câu 2: Phương pháp chiết xuất sử dụng",
+        answers: [
+            { text: "Hai dung môi không hòa tan vào nhau", correct: true },
+            { text: "Nhiệt độ cao", correct: false },
+            { text: "Áp suất cao", correct: false },
+            { text: "Đặc tính điện của các hợp chất", correct: false }
+        ],
+        explanation: "Chiết xuất sử dụng hai dung môi không hòa tan vào nhau để tách các chất dựa vào sự phân bố của chúng."
+    },
+    {
+        question: "Câu 3: Phương pháp kết tinh được sử dụng để",
+        answers: [
+            { text: "Tách chất rắn ra khỏi dung dịch", correct: true },
+            { text: "Tách các chất lỏng", correct: false },
+            { text: "Tách các khí", correct: false },
+            { text: "Làm bay hơi chất lỏng", correct: false }
+        ],
+        explanation: "Kết tinh được sử dụng để tách chất rắn ra khỏi dung dịch thông qua sự kết tinh của chất cần tách."
+    },
+    {
+        question: "Câu 4: Sắc ký là phương pháp tách biệt dựa trên",
+        answers: [
+            { text: "Sự khác nhau về độ hòa tan và hấp phụ", correct: true },
+            { text: "Sự khác nhau về điểm sôi", correct: false },
+            { text: "Sự khác nhau về khối lượng phân tử", correct: false },
+            { text: "Sự khác nhau về mật độ", correct: false }
+        ],
+        explanation: "Sắc ký tách biệt các chất dựa trên sự khác nhau về độ hòa tan và hấp phụ của chúng trên một chất cố định."
+    },
+    {
+        question: "Câu 5: Phương pháp thăng hoa thường được sử dụng để tách",
+        answers: [
+            { text: "Chất rắn thăng hoa dễ dàng khỏi hỗn hợp", correct: true },
+            { text: "Chất lỏng khỏi dung dịch", correct: false },
+            { text: "Khí khỏi hỗn hợp khí", correct: false },
+            { text: "Chất rắn tan trong dung môi", correct: false }
+        ],
+        explanation: "Thăng hoa được sử dụng để tách chất rắn có khả năng thăng hoa dễ dàng khỏi hỗn hợp."
+    },
+    {
+        question: "Câu 6: Trong phương pháp lọc, vai trò của giấy lọc là",
+        answers: [
+            { text: "Giữ lại các chất rắn không tan trong dung dịch", correct: true },
+            { text: "Làm bay hơi dung dịch", correct: false },
+            { text: "Tăng tốc độ phản ứng hóa học", correct: false },
+            { text: "Làm lạnh dung dịch", correct: false }
+        ],
+        explanation: "Giấy lọc được sử dụng để giữ lại các chất rắn không tan trong dung dịch trong quá trình lọc."
+    },
+    {
+        question: "Câu 7: Phương pháp tinh chế hợp chất hữu cơ bằng sắc ký cột chủ yếu dựa vào",
+        answers: [
+            { text: "Sự khác nhau về độ hấp phụ của các chất trên cột", correct: true },
+            { text: "Sự khác nhau về điểm sôi của các chất", correct: false },
+            { text: "Sự khác nhau về khối lượng phân tử", correct: false },
+            { text: "Sự khác nhau về mật độ", correct: false }
+        ],
+        explanation: "Sắc ký cột tách biệt các chất dựa vào sự khác nhau về độ hấp phụ của chúng trên cột."
+    },
+    {
+        question: "Câu 8: Dung môi nào thường được sử dụng trong phương pháp chiết xuất lỏng-lỏng?",
+        answers: [
+            { text: "Ethanol và nước", correct: false },
+            { text: "Ethanol và methanol", correct: false },
+            { text: "Dichloromethane và nước", correct: true },
+            { text: "Methanol và nước", correct: false }
+        ],
+        explanation: "Dichloromethane và nước là hai dung môi không hòa tan vào nhau, thường được sử dụng trong chiết xuất lỏng-lỏng."
+    },
+    {
+        question: "Câu 9: Trong phương pháp chưng cất đơn giản, điều kiện để tách biệt các chất là",
+        answers: [
+            { text: "Có sự khác biệt đáng kể về điểm sôi của các chất", correct: true },
+            { text: "Các chất phải có cùng điểm sôi", correct: false },
+            { text: "Các chất phải không tan vào nhau", correct: false },
+            { text: "Các chất phải có cùng khối lượng phân tử", correct: false }
+        ],
+        explanation: "Chưng cất đơn giản được sử dụng khi có sự khác biệt đáng kể về điểm sôi của các chất cần tách biệt."
+    },
+    {
+        question: "Câu 10: Trong phương pháp chiết xuất sử dụng phễu chiết, hiện tượng nào cho thấy quá trình chiết xuất thành công?",
+        answers: [
+            { text: "Hai lớp dung dịch được tách biệt rõ ràng", correct: true },
+            { text: "Dung dịch trở nên đồng nhất", correct: false },
+            { text: "Dung dịch thay đổi màu sắc", correct: false },
+            { text: "Dung dịch bắt đầu sôi", correct: false }
+        ],
+        explanation: "Quá trình chiết xuất thành công khi hai lớp dung dịch được tách biệt rõ ràng."
+    },
+    {
+        question: "Câu 11: Trong phương pháp sắc ký lớp mỏng (TLC), sự di chuyển của các hợp chất trên bản sắc ký phụ thuộc vào",
+        answers: [
+            { text: "Tính chất phân cực của các hợp chất", correct: true },
+            { text: "Khối lượng phân tử của các hợp chất", correct: false },
+            { text: "Mật độ của các hợp chất", correct: false },
+            { text: "Điểm sôi của các hợp chất", correct: false }
+        ],
+        explanation: "Trong TLC, sự di chuyển của các hợp chất phụ thuộc vào tính chất phân cực của chúng so với pha động và pha tĩnh."
+    },
+    {
+        question: "Câu 12: Phương pháp lọc chân không được sử dụng để",
+        answers: [
+            { text: "Tách nhanh chất rắn khỏi dung dịch", correct: true },
+            { text: "Tách chất lỏng có điểm sôi cao", correct: false },
+            { text: "Tách các khí hòa tan trong dung dịch", correct: false },
+            { text: "Làm bay hơi dung dịch", correct: false }
+        ],
+        explanation: "Lọc chân không tăng tốc quá trình lọc bằng cách tạo áp suất thấp, giúp tách nhanh chất rắn khỏi dung dịch."
+    },
+    {
+        question: "Câu 13: Để tách biệt các hợp chất có điểm sôi rất gần nhau, người ta sử dụng phương pháp",
+        answers: [
+            { text: "Chưng cất chân không", correct: false },
+            { text: "Chưng cất phân đoạn", correct: true },
+            { text: "Chiết xuất lỏng-lỏng", correct: false },
+            { text: "Thăng hoa", correct: false }
+        ],
+        explanation: "Chưng cất phân đoạn được sử dụng để tách biệt các hợp chất có điểm sôi rất gần nhau."
+    },
+    {
+        question: "Câu 14: Phương pháp thăng hoa có thể được sử dụng để tách hợp chất nào sau đây?",
+        answers: [
+            { text: "Iod từ hỗn hợp cát", correct: true },
+            { text: "NaCl từ dung dịch nước", correct: false },
+            { text: "Ethanol từ nước", correct: false },
+            { text: "Benzen từ toluen", correct: false }
+        ],
+        explanation: "Iod có thể thăng hoa dễ dàng, do đó có thể tách nó ra khỏi hỗn hợp cát bằng phương pháp thăng hoa."
+    },
+    {
+        question: "Câu 15: Phương pháp sắc ký khí (GC) chủ yếu được sử dụng để",
+        answers: [
+            { text: "Tách và phân tích các hợp chất dễ bay hơi", correct: true },
+            { text: "Tách các hợp chất không bay hơi", correct: false },
+            { text: "Tách các hợp chất rắn", correct: false },
+            { text: "Tách các hợp chất không tan", correct: false }
+        ],
+        explanation: "Sắc ký khí được sử dụng để tách và phân tích các hợp chất dễ bay hơi."
+    },
+    {
+        question: "Câu 16: Trong phương pháp chưng cất chân không, áp suất giảm có tác dụng",
+        answers: [
+            { text: "Giảm điểm sôi của các chất", correct: true },
+            { text: "Tăng điểm sôi của các chất", correct: false },
+            { text: "Giảm khối lượng phân tử của các chất", correct: false },
+            { text: "Tăng khối lượng phân tử của các chất", correct: false }
+        ],
+        explanation: "Áp suất giảm trong chưng cất chân không giúp giảm điểm sôi của các chất, làm quá trình chưng cất hiệu quả hơn."
+    },
+    {
+        question: "Câu 17: Phương pháp kết tinh lại được sử dụng để",
+        answers: [
+            { text: "Tinh chế các chất rắn", correct: true },
+            { text: "Tinh chế các chất lỏng", correct: false },
+            { text: "Tinh chế các khí", correct: false },
+            { text: "Tinh chế các dung môi", correct: false }
+        ],
+        explanation: "Kết tinh lại được sử dụng để tinh chế các chất rắn thông qua quá trình kết tinh từ dung dịch."
+    },
+    {
+        question: "Câu 18: Sắc ký lỏng hiệu năng cao (HPLC) là phương pháp sắc ký được sử dụng để",
+        answers: [
+            { text: "Phân tích các hợp chất hữu cơ và vô cơ", correct: true },
+            { text: "Tách các hợp chất dễ bay hơi", correct: false },
+            { text: "Tách các hợp chất không tan", correct: false },
+            { text: "Tách các hợp chất rắn", correct: false }
+        ],
+        explanation: "HPLC là phương pháp sắc ký được sử dụng để phân tích các hợp chất hữu cơ và vô cơ với độ nhạy cao."
+    },
+    {
+        question: "Câu 19: Trong phương pháp chiết xuất, hiệu suất chiết xuất phụ thuộc vào",
+        answers: [
+            { text: "Hằng số phân bố của chất giữa hai dung môi", correct: true },
+            { text: "Điểm sôi của dung môi", correct: false },
+            { text: "Áp suất của hệ thống", correct: false },
+            { text: "Nhiệt độ của dung môi", correct: false }
+        ],
+        explanation: "Hiệu suất chiết xuất phụ thuộc vào hằng số phân bố của chất cần tách giữa hai dung môi."
+    },
+    {
+        question: "Câu 20: Phương pháp sắc ký giấy dựa vào nguyên tắc",
+        answers: [
+            { text: "Sự khác nhau về độ hấp phụ của các chất trên giấy", correct: true },
+            { text: "Sự khác nhau về điểm sôi của các chất", correct: false },
+            { text: "Sự khác nhau về khối lượng phân tử của các chất", correct: false },
+            { text: "Sự khác nhau về mật độ của các chất", correct: false }
+        ],
+        explanation: "Sắc ký giấy tách biệt các chất dựa vào sự khác nhau về độ hấp phụ của chúng trên giấy."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

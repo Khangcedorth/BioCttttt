@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Nguyên tố nào chiếm tỷ lệ cao nhất trong thành phần hóa học của tế bào?",
+        answers: [
+            { text: "Carbon", correct: false },
+            { text: "Oxygen", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Oxygen chiếm tỷ lệ cao nhất trong thành phần hóa học của tế bào, chủ yếu là do nước (H2O)."
+    },
+    {
+        question: "Câu 2: Nguyên tố nào là thành phần chính trong phân tử hữu cơ của tế bào?",
+        answers: [
+            { text: "Carbon", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Hydrogen", correct: false },
+            { text: "Phosphorus", correct: false }
+        ],
+        explanation: "Carbon là nguyên tố chính trong phân tử hữu cơ của tế bào, tạo nên các khung xương carbon của hợp chất hữu cơ."
+    },
+    {
+        question: "Câu 3: Tại sao nước là một phần quan trọng trong tế bào?",
+        answers: [
+            { text: "Do nước là dung môi tốt cho nhiều phản ứng sinh hóa", correct: true },
+            { text: "Do nước không tham gia vào các phản ứng hóa học", correct: false },
+            { text: "Do nước có khả năng tạo ra năng lượng", correct: false },
+            { text: "Do nước không có ảnh hưởng đến tế bào", correct: false }
+        ],
+        explanation: "Nước là một phần quan trọng trong tế bào vì nó là dung môi tốt cho nhiều phản ứng sinh hóa và duy trì môi trường nội bào."
+    },
+    {
+        question: "Câu 4: Nguyên tố nào cần thiết cho sự hình thành ATP trong tế bào?",
+        answers: [
+            { text: "Phosphorus", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Nitrogen", correct: false },
+            { text: "Calcium", correct: false }
+        ],
+        explanation: "Phosphorus là nguyên tố cần thiết cho sự hình thành ATP, một phân tử năng lượng quan trọng trong tế bào."
+    },
+    {
+        question: "Câu 5: Nguyên tố nào là thành phần chính của hemoglobin trong tế bào hồng cầu?",
+        answers: [
+            { text: "Iron (Sắt)", correct: true },
+            { text: "Calcium (Canxi)", correct: false },
+            { text: "Magnesium (Magiê)", correct: false },
+            { text: "Potassium (Kali)", correct: false }
+        ],
+        explanation: "Iron (Sắt) là thành phần chính của hemoglobin, giúp vận chuyển oxygen trong máu."
+    },
+    {
+        question: "Câu 6: Nguyên tố nào là thành phần chính của các enzyme trong tế bào?",
+        answers: [
+            { text: "Carbon", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Sulfur", correct: false },
+            { text: "Oxygen", correct: false }
+        ],
+        explanation: "Carbon là thành phần chính của các enzyme, giúp xúc tác các phản ứng sinh hóa trong tế bào."
+    },
+    {
+        question: "Câu 7: Nước chiếm bao nhiêu phần trăm khối lượng của tế bào?",
+        answers: [
+            { text: "60-70%", correct: true },
+            { text: "30-40%", correct: false },
+            { text: "50-60%", correct: false },
+            { text: "70-80%", correct: false }
+        ],
+        explanation: "Nước chiếm khoảng 60-70% khối lượng của tế bào, đóng vai trò quan trọng trong các quá trình sinh hóa."
+    },
+    {
+        question: "Câu 8: Nguyên tố nào là thành phần chính trong xương và răng của con người?",
+        answers: [
+            { text: "Calcium (Canxi)", correct: true },
+            { text: "Iron (Sắt)", correct: false },
+            { text: "Magnesium (Magiê)", correct: false },
+            { text: "Potassium (Kali)", correct: false }
+        ],
+        explanation: "Calcium (Canxi) là thành phần chính trong xương và răng, giúp chúng có cấu trúc và độ cứng cần thiết."
+    },
+    {
+        question: "Câu 9: Nguyên tố nào tham gia vào quá trình truyền tín hiệu thần kinh?",
+        answers: [
+            { text: "Sodium (Natri)", correct: true },
+            { text: "Calcium (Canxi)", correct: false },
+            { text: "Iron (Sắt)", correct: false },
+            { text: "Oxygen", correct: false }
+        ],
+        explanation: "Sodium (Natri) tham gia vào quá trình truyền tín hiệu thần kinh, giúp duy trì sự chênh lệch điện thế màng tế bào."
+    },
+    {
+        question: "Câu 10: Nguyên tố nào là thành phần của các phân tử protein?",
+        answers: [
+            { text: "Nitrogen", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Phosphorus", correct: false },
+            { text: "Calcium", correct: false }
+        ],
+        explanation: "Nitrogen là thành phần của các phân tử protein, cần thiết cho cấu trúc và chức năng của tế bào."
+    },
+    {
+        question: "Câu 11: Tại sao nước là dung môi quan trọng trong tế bào?",
+        answers: [
+            { text: "Do có khả năng hòa tan nhiều chất", correct: true },
+            { text: "Do không tham gia vào phản ứng hóa học", correct: false },
+            { text: "Do có khả năng sinh năng lượng", correct: false },
+            { text: "Do không có ảnh hưởng đến tế bào", correct: false }
+        ],
+        explanation: "Nước là dung môi quan trọng trong tế bào vì nó có khả năng hòa tan nhiều chất, tạo điều kiện cho các phản ứng sinh hóa diễn ra."
+    },
+    {
+        question: "Câu 12: Nguyên tố nào là thành phần chính của các phân tử lipid trong tế bào?",
+        answers: [
+            { text: "Carbon", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Phosphorus", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Carbon là thành phần chính của các phân tử lipid, cần thiết cho cấu trúc màng tế bào và dự trữ năng lượng."
+    },
+    {
+        question: "Câu 13: Nguyên tố nào là thành phần chính của các phân tử DNA và RNA?",
+        answers: [
+            { text: "Phosphorus", correct: true },
+            { text: "Carbon", correct: false },
+            { text: "Oxygen", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Phosphorus là thành phần chính của các phân tử DNA và RNA, tạo nên các liên kết phosphodiester trong chuỗi."
+    },
+    {
+        question: "Câu 14: Nguyên tố nào tham gia vào quá trình quang hợp ở thực vật?",
+        answers: [
+            { text: "Magnesium (Magiê)", correct: true },
+            { text: "Iron (Sắt)", correct: false },
+            { text: "Calcium (Canxi)", correct: false },
+            { text: "Sodium (Natri)", correct: false }
+        ],
+        explanation: "Magnesium (Magiê) là thành phần chính của diệp lục, cần thiết cho quá trình quang hợp ở thực vật."
+    },
+    {
+        question: "Câu 15: Nguyên tố nào tham gia vào quá trình hô hấp tế bào?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Carbon", correct: false },
+            { text: "Nitrogen", correct: false },
+            { text: "Phosphorus", correct: false }
+        ],
+        explanation: "Oxygen là nguyên tố cần thiết cho quá trình hô hấp tế bào, giúp tạo ra năng lượng ATP từ glucose."
+    },
+    {
+        question: "Câu 16: Nguyên tố nào là thành phần của các phân tử amino acid?",
+        answers: [
+            { text: "Nitrogen", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Carbon", correct: false },
+            { text: "Phosphorus", correct: false }
+        ],
+        explanation: "Nitrogen là thành phần của các phân tử amino acid, cần thiết cho sự tổng hợp protein trong tế bào."
+    },
+    {
+        question: "Câu 17: Tại sao nước là dung môi tốt cho các phản ứng sinh hóa?",
+        answers: [
+            { text: "Do có tính phân cực cao", correct: true },
+            { text: "Do không có tính phân cực", correct: false },
+            { text: "Do có khả năng tạo liên kết ion", correct: false },
+            { text: "Do có khả năng tạo liên kết kém", correct: false }
+        ],
+        explanation: "Nước là dung môi tốt cho các phản ứng sinh hóa vì nó có tính phân cực cao, cho phép hòa tan nhiều loại phân tử và ion khác nhau."
+    },
+    {
+        question: "Câu 18: Nguyên tố nào tham gia vào quá trình hình thành liên kết hydro trong nước?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Carbon", correct: false },
+            { text: "Nitrogen", correct: false },
+            { text: "Hydrogen", correct: false }
+        ],
+        explanation: "Oxygen tham gia vào quá trình hình thành liên kết hydro trong nước, tạo nên cấu trúc mạng lưới liên kết mạnh mẽ giữa các phân tử nước."
+    },
+    {
+        question: "Câu 19: Nguyên tố nào là thành phần chính trong cấu trúc xương và răng của người?",
+        answers: [
+            { text: "Calcium (Canxi)", correct: true },
+            { text: "Phosphorus", correct: false },
+            { text: "Magnesium (Magiê)", correct: false },
+            { text: "Sodium (Natri)", correct: false }
+        ],
+        explanation: "Calcium (Canxi) là thành phần chính trong cấu trúc xương và răng của người, giúp chúng chắc khỏe và cứng cáp."
+    },
+    {
+        question: "Câu 20: Nguyên tố nào là thành phần chủ yếu trong các phân tử ATP?",
+        answers: [
+            { text: "Phosphorus", correct: true },
+            { text: "Carbon", correct: false },
+            { text: "Oxygen", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Phosphorus là thành phần chủ yếu trong các phân tử ATP, đóng vai trò quan trọng trong việc lưu trữ và chuyển giao năng lượng trong tế bào."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

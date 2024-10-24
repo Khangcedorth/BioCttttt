@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Hệ miễn dịch có chức năng chính gì?",
+        answers: [
+            { text: "Bảo vệ cơ thể chống lại các tác nhân gây bệnh", correct: true },
+            { text: "Điều khiển hoạt động của các cơ", correct: false },
+            { text: "Tiêu hóa thức ăn", correct: false },
+            { text: "Trao đổi khí", correct: false }
+        ],
+        explanation: "Hệ miễn dịch có chức năng bảo vệ cơ thể chống lại các tác nhân gây bệnh như vi khuẩn, virus, và ký sinh trùng."
+    },
+    {
+        question: "Câu 2: Loại tế bào miễn dịch nào chủ yếu tham gia vào phản ứng miễn dịch không đặc hiệu?",
+        answers: [
+            { text: "Tế bào B", correct: false },
+            { text: "Tế bào T", correct: false },
+            { text: "Đại thực bào", correct: true },
+            { text: "Tế bào mast", correct: false }
+        ],
+        explanation: "Đại thực bào là loại tế bào miễn dịch chủ yếu tham gia vào phản ứng miễn dịch không đặc hiệu."
+    },
+    {
+        question: "Câu 3: Kháng thể là gì?",
+        answers: [
+            { text: "Protein do tế bào B sản xuất để chống lại các tác nhân gây bệnh", correct: true },
+            { text: "Lipid được sản xuất để tiêu hóa thức ăn", correct: false },
+            { text: "Carbohydrate để cung cấp năng lượng", correct: false },
+            { text: "Enzyme để xúc tác các phản ứng hóa học", correct: false }
+        ],
+        explanation: "Kháng thể là protein do tế bào B sản xuất để chống lại các tác nhân gây bệnh."
+    },
+    {
+        question: "Câu 4: Tế bào nào dưới đây không phải là một phần của hệ miễn dịch?",
+        answers: [
+            { text: "Tế bào B", correct: false },
+            { text: "Tế bào T", correct: false },
+            { text: "Tế bào thần kinh", correct: true },
+            { text: "Tế bào mast", correct: false }
+        ],
+        explanation: "Tế bào thần kinh không phải là một phần của hệ miễn dịch."
+    },
+    {
+        question: "Câu 5: Miễn dịch học là gì?",
+        answers: [
+            { text: "Là môn khoa học nghiên cứu về hệ miễn dịch và các phản ứng của nó", correct: true },
+            { text: "Là môn khoa học nghiên cứu về hệ tiêu hóa", correct: false },
+            { text: "Là môn khoa học nghiên cứu về hệ tuần hoàn", correct: false },
+            { text: "Là môn khoa học nghiên cứu về hệ hô hấp", correct: false }
+        ],
+        explanation: "Miễn dịch học là môn khoa học nghiên cứu về hệ miễn dịch và các phản ứng của nó."
+    },
+    {
+        question: "Câu 6: Tế bào T nào có vai trò tiêu diệt tế bào nhiễm virus?",
+        answers: [
+            { text: "Tế bào T hỗ trợ", correct: false },
+            { text: "Tế bào T điều hòa", correct: false },
+            { text: "Tế bào T gây độc", correct: true },
+            { text: "Tế bào B", correct: false }
+        ],
+        explanation: "Tế bào T gây độc có vai trò tiêu diệt tế bào nhiễm virus."
+    },
+    {
+        question: "Câu 7: Hệ miễn dịch đặc hiệu hoạt động như thế nào?",
+        answers: [
+            { text: "Tấn công và loại bỏ các tác nhân gây bệnh cụ thể", correct: true },
+            { text: "Phản ứng nhanh chóng đối với tất cả các tác nhân gây bệnh", correct: false },
+            { text: "Sản xuất các enzyme để tiêu hóa thức ăn", correct: false },
+            { text: "Vận chuyển máu và các chất dinh dưỡng", correct: false }
+        ],
+        explanation: "Hệ miễn dịch đặc hiệu tấn công và loại bỏ các tác nhân gây bệnh cụ thể."
+    },
+    {
+        question: "Câu 8: Tế bào B có vai trò gì trong hệ miễn dịch?",
+        answers: [
+            { text: "Sản xuất kháng thể để chống lại các tác nhân gây bệnh", correct: true },
+            { text: "Tiêu diệt tế bào nhiễm virus", correct: false },
+            { text: "Điều khiển hoạt động của các cơ", correct: false },
+            { text: "Vận chuyển máu và các chất dinh dưỡng", correct: false }
+        ],
+        explanation: "Tế bào B sản xuất kháng thể để chống lại các tác nhân gây bệnh."
+    },
+    {
+        question: "Câu 9: Kháng nguyên là gì?",
+        answers: [
+            { text: "Là các phân tử hoặc cấu trúc trên bề mặt tác nhân gây bệnh mà hệ miễn dịch nhận diện và phản ứng với", correct: true },
+            { text: "Là enzyme tiêu hóa thức ăn", correct: false },
+            { text: "Là lipid dự trữ năng lượng", correct: false },
+            { text: "Là các ion cần thiết cho hoạt động của tế bào", correct: false }
+        ],
+        explanation: "Kháng nguyên là các phân tử hoặc cấu trúc trên bề mặt tác nhân gây bệnh mà hệ miễn dịch nhận diện và phản ứng với."
+    },
+    {
+        question: "Câu 10: Hệ miễn dịch không đặc hiệu phản ứng như thế nào?",
+        answers: [
+            { text: "Phản ứng nhanh chóng và không đặc hiệu đối với bất kỳ tác nhân gây bệnh nào", correct: true },
+            { text: "Tấn công các tác nhân gây bệnh cụ thể", correct: false },
+            { text: "Sản xuất kháng thể đặc hiệu", correct: false },
+            { text: "Điều khiển hoạt động của các cơ", correct: false }
+        ],
+        explanation: "Hệ miễn dịch không đặc hiệu phản ứng nhanh chóng và không đặc hiệu đối với bất kỳ tác nhân gây bệnh nào."
+    },
+    {
+        question: "Câu 11: Loại kháng thể nào là phổ biến nhất trong máu người?",
+        answers: [
+            { text: "IgA", correct: false },
+            { text: "IgE", correct: false },
+            { text: "IgG", correct: true },
+            { text: "IgM", correct: false }
+        ],
+        explanation: "IgG là loại kháng thể phổ biến nhất trong máu người."
+    },
+    {
+        question: "Câu 12: Miễn dịch tự nhiên khác với miễn dịch nhân tạo ở điểm nào?",
+        answers: [
+            { text: "Miễn dịch tự nhiên được phát triển tự nhiên trong cơ thể mà không cần tiêm chủng", correct: true },
+            { text: "Miễn dịch nhân tạo không thể giúp cơ thể chống lại bệnh", correct: false },
+            { text: "Miễn dịch tự nhiên không thể tồn tại lâu dài", correct: false },
+            { text: "Miễn dịch nhân tạo là tự nhiên và không cần can thiệp y tế", correct: false }
+        ],
+        explanation: "Miễn dịch tự nhiên được phát triển tự nhiên trong cơ thể mà không cần tiêm chủng."
+    },
+    {
+        question: "Câu 13: Hệ miễn dịch của động vật bậc cao bao gồm các thành phần nào?",
+        answers: [
+            { text: "Các tế bào miễn dịch, kháng thể, và hệ thống bạch huyết", correct: true },
+            { text: "Hệ tiêu hóa và hệ tuần hoàn", correct: false },
+            { text: "Hệ thần kinh và hệ hô hấp", correct: false },
+            { text: "Hệ bài tiết và hệ nội tiết", correct: false }
+        ],
+        explanation: "Hệ miễn dịch của động vật bậc cao bao gồm các tế bào miễn dịch, kháng thể, và hệ thống bạch huyết."
+    },
+    {
+        question: "Câu 14: Tế bào mast có vai trò gì trong phản ứng miễn dịch?",
+        answers: [
+            { text: "Giải phóng histamine và các chất trung gian khác để gây viêm", correct: true },
+            { text: "Sản xuất kháng thể", correct: false },
+            { text: "Tiêu diệt tế bào nhiễm virus", correct: false },
+            { text: "Vận chuyển oxy trong máu", correct: false }
+        ],
+        explanation: "Tế bào mast giải phóng histamine và các chất trung gian khác để gây viêm."
+    },
+    {
+        question: "Câu 15: Hệ miễn dịch ở động vật có xương sống có điểm khác biệt gì so với động vật không xương sống?",
+        answers: [
+            { text: "Có hệ miễn dịch đặc hiệu và không đặc hiệu", correct: true },
+            { text: "Chỉ có hệ miễn dịch không đặc hiệu", correct: false },
+            { text: "miễn dịch đặc hiệu", correct: false },
+            { text: "miễn dịch bao gồm chỉ hệ miễn dịch đặc hiệu", correct: false }
+        ],
+        explanation: "Hệ miễn dịch ở động vật có xương sống có cả hệ miễn dịch đặc hiệu và không đặc hiệu, trong khi động vật không xương sống thường chỉ có hệ miễn dịch không đặc hiệu."
+    },
+    {
+        question: "Câu 16: Hệ miễn dịch tự nhiên bao gồm những thành phần nào?",
+        answers: [
+            { text: "Da, niêm mạc, và hệ miễn dịch không đặc hiệu", correct: true },
+            { text: "Hệ tiêu hóa và hệ tuần hoàn", correct: false },
+            { text: "Hệ thần kinh và hệ hô hấp", correct: false },
+            { text: "Hệ bài tiết và hệ nội tiết", correct: false }
+        ],
+        explanation: "Hệ miễn dịch tự nhiên bao gồm da, niêm mạc, và hệ miễn dịch không đặc hiệu."
+    },
+    {
+        question: "Câu 17: Phản ứng viêm là gì?",
+        answers: [
+            { text: "Một phản ứng của cơ thể đối với các tác nhân gây bệnh", correct: false },
+            { text: "Một phản ứng của miễn dịch đặc hiệu", correct: false },
+            { text: "Một phản ứng của hệ miễn dịch không đặc hiệu", correct: false },
+            { text: "Một phản ứng cơ thể đối với tổn thương hoặc vi khuẩn", correct: true }
+        ],
+        explanation: "Phản ứng viêm là một phản ứng của cơ thể đối với tổn thương hoặc vi khuẩn, bao gồm các dấu hiệu như đỏ, sưng, và đau."
+    },
+    {
+        question: "Câu 18: Tế bào dendritic làm gì trong hệ miễn dịch?",
+        answers: [
+            { text: "Tham gia vào việc kích thích phản ứng miễn dịch đặc hiệu", correct: true },
+            { text: "Sản xuất kháng thể", correct: false },
+            { text: "Tiêu diệt tế bào nhiễm virus", correct: false },
+            { text: "Vận chuyển oxy trong máu", correct: false }
+        ],
+        explanation: "Tế bào dendritic tham gia vào việc kích thích phản ứng miễn dịch đặc hiệu bằng cách trình bày kháng nguyên cho các tế bào T."
+    },
+    {
+        question: "Câu 19: Tế bào T gây độc làm gì trong phản ứng miễn dịch?",
+        answers: [
+            { text: "Tiêu diệt tế bào nhiễm virus", correct: false },
+            { text: "Tham gia vào việc sản xuất kháng thể", correct: false },
+            { text: "Tấn công và tiêu diệt tế bào nhiễm virus hoặc tế bào biến đổi", correct: true },
+            { text: "Vận chuyển oxy trong máu", correct: false }
+        ],
+        explanation: "Tế bào T gây độc tấn công và tiêu diệt tế bào nhiễm virus hoặc tế bào biến đổi."
+    },
+    {
+        question: "Câu 20: Phản ứng miễn dịch tự nhiên đặc hiệu nhận dạng và tiêu diệt những gì?",
+        answers: [
+            { text: "Những kháng nguyên cụ thể", correct: false },
+            { text: "Mọi tế bào và tác nhân ngoại lai", correct: false },
+            { text: "Những vi khuẩn và virus", correct: false },
+            { text: "Tế bào và tác nhân ngoại lai mà hệ miễn dịch không nhận diện được", correct: true }
+        ],
+        explanation: "Phản ứng miễn dịch tự nhiên đặc hiệu nhận dạng và tiêu diệt những tế bào và tác nhân ngoại lai mà hệ miễn dịch không nhận diện được."
+    }
+];
+
+
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

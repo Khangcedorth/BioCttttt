@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quá trình phân giải các chất trong tế bào là gì?",
+        answers: [
+            { text: "Phân giải các phân tử lớn thành các phân tử nhỏ hơn", correct: true },
+            { text: "Tổng hợp các phân tử từ các chất đơn giản", correct: false },
+            { text: "Chuyển hóa năng lượng từ ATP", correct: false },
+            { text: "Tạo ra năng lượng từ glucose", correct: false }
+        ],
+        explanation: "Quá trình phân giải các chất trong tế bào là quá trình phân tách các phân tử lớn thành các phân tử nhỏ hơn để cung cấp nguyên liệu cho tổng hợp và cung cấp năng lượng."
+    },
+    {
+        question: "Câu 2: Giai đoạn đầu tiên của quá trình tổng hợp protein là gì?",
+        answers: [
+            { text: "Transcription (sao chép)", correct: true },
+            { text: "Translation (dịch mã)", correct: false },
+            { text: "Post-translational modification (sửa đổi sau dịch mã)", correct: false },
+            { text: "Degradation (phân hủy)", correct: false }
+        ],
+        explanation: "Giai đoạn đầu tiên của quá trình tổng hợp protein là transcription, trong đó thông tin gen được sao chép thành mRNA."
+    },
+    {
+        question: "Câu 3: Các phân tử mang năng lượng trong quá trình tổng hợp protein là gì?",
+        answers: [
+            { text: "ATP và GTP", correct: true },
+            { text: "cAMP và cGMP", correct: false },
+            { text: "ADP và GDP", correct: false },
+            { text: "NADH và FADH2", correct: false }
+        ],
+        explanation: "Trong quá trình tổng hợp protein, ATP và GTP là các phân tử mang năng lượng cần thiết để hình thành và liên kết các liên kết peptid giữa các axit amin."
+    },
+    {
+        question: "Câu 4: Quá trình nào giúp tế bào tổng hợp glucose từ các nguồn carbon khác nhau?",
+        answers: [
+            { text: "Glucose synthesis (tổng hợp glucose)", correct: true },
+            { text: "Glycolysis (phân giải glucose)", correct: false },
+            { text: "Citric acid cycle (chu kỳ axit citric)", correct: false },
+            { text: "Gluconeogenesis (tái tổ hợp glucose)", correct: false }
+        ],
+        explanation: "Quá trình tổng hợp glucose (gluconeogenesis) là quá trình sinh học ngược của glycolysis, nơi tế bào tổng hợp glucose từ các nguồn carbon không phải glucose."
+    },
+    {
+        question: "Câu 5: Đâu là giai đoạn quan trọng trong quá trình glycolysis?",
+        answers: [
+            { text: "Phosphorylation of glucose (phosphorylation glucose)", correct: true },
+            { text: "Formation of acetyl-CoA (tạo ra acetyl-CoA)", correct: false },
+            { text: "Conversion of pyruvate to lactate (chuyển đổi pyruvate thành lactate)", correct: false },
+            { text: "Formation of citric acid (tạo thành axit citric)", correct: false }
+        ],
+        explanation: "Phosphorylation của glucose là giai đoạn đầu tiên trong glycolysis, nơi glucose được chuẩn bị để tiếp tục phân giải và tạo ra năng lượng."
+    },
+    {
+        question: "Câu 6: Quá trình nào trong hô hấp tế bào tạo ra nhiều ATP nhất?",
+        answers: [
+            { text: "Chu kỳ axit citric và phôi nhiệt", correct: true },
+            { text: "Glycolysis", correct: false },
+            { text: "Oxidative phosphorylation (phosphorylation oxy hóa)", correct: false },
+            { text: "Gluconeogenesis", correct: false }
+        ],
+        explanation: "Chu kỳ axit citric và phôi nhiệt (citric acid cycle and oxidative phosphorylation) là giai đoạn trong quá trình hô hấp tế bào tạo ra nhiều ATP nhất."
+    },
+    {
+        question: "Câu 7: Đâu là sản phẩm chính của chu kỳ axit citric?",
+        answers: [
+            { text: "NADH và FADH2", correct: true },
+            { text: "ATP và GTP", correct: false },
+            { text: "Glucose và fructose", correct: false },
+            { text: "Acetyl-CoA và oxaloacetate", correct: false }
+        ],
+        explanation: "NADH và FADH2 là các sản phẩm chính của chu kỳ axit citric, được sinh ra từ việc phân giải acetyl-CoA và sản xuất năng lượng."
+    },
+    {
+        question: "Câu 8: Quá trình nào tạo ra CO2 và H2O như sản phẩm cuối cùng?",
+        answers: [
+            { text: "Hô hấp tế bào", correct: true },
+            { text: "Glycolysis", correct: false },
+            { text: "Gluconeogenesis", correct: false },
+            { text: "Glycogen synthesis (tổng hợp glycogen)", correct: false }
+        ],
+        explanation: "Hô hấp tế bào là quá trình trong đó các tế bào sử dụng oxy hóa các chất dinh dưỡng để sản xuất năng lượng, sinh ra CO2 và H2O như sản phẩm cuối cùng."
+    },
+    {
+        question: "Câu 9: Tổng hợp lipid xảy ra ở đâu trong tế bào?",
+        answers: [
+            { text: "Trong mạng lưới endoplasmic (ER)", correct: true },
+            { text: "Trong mitochondria", correct: false },
+            { text: "Trong peroxisome", correct: false },
+            { text: "Trong nhân tế bào", correct: false }
+        ],
+        explanation: "Tổng hợp lipid xảy ra chủ yếu trong mạng lưới endoplasmic (ER) của tế bào, nơi mà các enzyme và substrates cần thiết cho quá trình này được tập trung."
+    },
+    {
+        question: "Câu 10: Đâu là quá trình chính để tạo ra NADPH trong tế bào?",
+        answers: [
+            { text: "Con đường pentose phosphate (đường pentose)", correct: true },
+            { text: "Glycolysis", correct: false },
+            { text: "Hô hấp tế bào", correct: false },
+            { text: "Gluconeogenesis", correct: false }
+        ],
+        explanation: "Con đường pentose phosphate (đường pentose) là quá trình chính để tạo ra NADPH trong tế bào, quan trọng cho việc tái tạo glutathione và tổng hợp lipid."
+    },
+    {
+    question: "Câu 11: Quá trình nào dẫn đến phân hủy glucose để sản xuất năng lượng trong tế bào?",
+    answers: [
+        { text: "Glycolysis (phân giải glucose)", correct: true },
+        { text: "Gluconeogenesis", correct: false },
+        { text: "Chu kỳ axit citric", correct: false },
+        { text: "Glycogen synthesis (tổng hợp glycogen)", correct: false }
+    ],
+    explanation: "Glycolysis (phân giải glucose) là quá trình trong đó glucose được phân hủy để sản xuất ATP, cung cấp năng lượng cho các hoạt động tế bào."
+},
+{
+        question: "Câu 12: Quá trình nào tái tạo ATP từ ADP và phosphate trong tế bào?",
+        answers: [
+            { text: "Phosphorylation oxy hóa", correct: true },
+            { text: "Phosphorylation cấp cao", correct: false },
+            { text: "Phosphorylation cAMP", correct: false },
+            { text: "Phosphorylation tyrosine kinase", correct: false }
+        ],
+        explanation: "Phosphorylation oxy hóa (oxidative phosphorylation) là quá trình trong đó ATP được tổng hợp từ ADP và phosphate, dựa trên sự oxy hóa các chất dinh dưỡng."
+    },
+    {
+        question: "Câu 13: Đâu là quá trình chính để tổng hợp glycogen trong tế bào?",
+        answers: [
+            { text: "Glycogen synthesis (tổng hợp glycogen)", correct: true },
+            { text: "Glycolysis", correct: false },
+            { text: "Gluconeogenesis", correct: false },
+            { text: "Chu kỳ axit citric", correct: false }
+        ],
+        explanation: "Glycogen synthesis (tổng hợp glycogen) là quá trình trong đó glucose được liên kết với nhau để tạo ra glycogen dự trữ năng lượng trong tế bào."
+    },
+    {
+        question: "Câu 14: Nơi nào trong tế bào tổng hợp nucleotide?",
+        answers: [
+            { text: "Trong mạng lưới endoplasmic (ER)", correct: true },
+            { text: "Trong peroxisome", correct: false },
+            { text: "Trong lysosome", correct: false },
+            { text: "Trong mitochondria", correct: false }
+        ],
+        explanation: "Tổng hợp nucleotide chủ yếu xảy ra trong mạng lưới endoplasmic (ER) của tế bào, nơi các nucleotide được tổng hợp và sẵn sàng để sử dụng trong các quá trình sinh học khác."
+    },
+    {
+        question: "Câu 15: Quá trình nào là cơ chế chính để loại bỏ các sản phẩm chất thải trong tế bào?",
+        answers: [
+            { text: "Degradation (phân hủy)", correct: true },
+            { text: "Transcription (sao chép)", correct: false },
+            { text: "Translation (dịch mã)", correct: false },
+            { text: "Post-translational modification (sửa đổi sau dịch mã)", correct: false }
+        ],
+        explanation: "Degradation (phân hủy) là quá trình loại bỏ các sản phẩm chất thải hoặc protein không còn cần thiết trong tế bào để tái sử dụng hoặc tiêu hủy."
+    },
+    {
+        question: "Câu 16: Nguồn carbon chính để tổng hợp lipid trong tế bào là gì?",
+        answers: [
+            { text: "Acetyl-CoA", correct: true },
+            { text: "Glucose", correct: false },
+            { text: "Pyruvate", correct: false },
+            { text: "Glycogen", correct: false }
+        ],
+        explanation: "Acetyl-CoA là nguồn carbon chính để tổng hợp lipid trong tế bào, được hình thành từ phân giải axit béo hoặc từ quá trình chu kỳ axit citric."
+    },
+    {
+        question: "Câu 17: Đâu là quá trình chính để tái tổ hợp nucleotide trong tế bào?",
+        answers: [
+            { text: "Salvage pathway (con đường cứu nguy)", correct: true },
+            { text: "Phosphorylation oxy hóa", correct: false },
+            { text: "Chu kỳ axit citric", correct: false },
+            { text: "Gluconeogenesis", correct: false }
+        ],
+        explanation: "Salvage pathway (con đường cứu nguy) là quá trình tái tổ hợp nucleotide từ các nucleotide phân hủy trong quá trình phân giải nucleotide hoặc DNA."
+    },
+    {
+        question: "Câu 18: Quá trình nào giúp tế bào tái tổ hợp amino axit từ protein phân hủy?",
+        answers: [
+            { text: "Protein degradation (phân hủy protein)", correct: true },
+            { text: "Protein synthesis (tổng hợp protein)", correct: false },
+            { text: "Glycolysis", correct: false },
+            { text: "Gluconeogenesis", correct: false }
+        ],
+        explanation: "Protein degradation (phân hủy protein) là quá trình trong đó protein không còn cần thiết được phân hủy thành amino axit để tái sử dụng."
+    },
+    {
+        question: "Câu 19: Quá trình nào giúp tế bào tái tổ hợp các phân tử nhỏ thành các phân tử lớn hơn?",
+        answers: [
+            { text: "Anabolism (cơ chế anabolism)", correct: true },
+            { text: "Catabolism (phân tách)", correct: false },
+            { text: "Degradation (phân hủy)", correct: false },
+            { text: "Transcription (sao chép)", correct: false }
+        ],
+        explanation: "Anabolism (cơ chế anabolism) là quá trình tổng hợp các phân tử lớn hơn từ các phân tử nhỏ hơn, cung cấp năng lượng và xây dựng tế bào."
+    },
+    {
+        question: "Câu 20: Đâu là quá trình chính để tái tổ hợp hợp chất không thể thiếu, chẳng hạn như heme?",
+        answers: [
+            { text: "Biosynthesis (tổng hợp sinh học)", correct: true },
+            { text: "Glycolysis", correct: false },
+            { text: "Chu kỳ axit citric", correct: false },
+            { text: "Gluconeogenesis", correct: false }
+        ],
+        explanation: "Biosynthesis (tổng hợp sinh học) là quá trình chính để tổng hợp các hợp chất không thể thiếu như heme, các vitamin và các phân tử quan trọng khác trong tế bào."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Mô hình nguyên tử Bohr miêu tả electron chuyển động quanh hạt nhân theo quỹ đạo gì?",
+        answers: [
+            { text: "Quỹ đạo tròn", correct: true },
+            { text: "Quỹ đạo elip", correct: false },
+            { text: "Quỹ đạo ngẫu nhiên", correct: false },
+            { text: "Không chuyển động", correct: false }
+        ],
+        explanation: "Mô hình nguyên tử Bohr miêu tả electron chuyển động quanh hạt nhân theo quỹ đạo tròn."
+    },
+    {
+        question: "Câu 2: Trong mô hình nguyên tử hiện đại, vùng không gian có khả năng cao tìm thấy electron được gọi là gì?",
+        answers: [
+            { text: "Orbital nguyên tử", correct: true },
+            { text: "Quỹ đạo electron", correct: false },
+            { text: "Đám mây electron", correct: false },
+            { text: "Lớp vỏ nguyên tử", correct: false }
+        ],
+        explanation: "Trong mô hình nguyên tử hiện đại, vùng không gian có khả năng cao tìm thấy electron được gọi là orbital nguyên tử."
+    },
+    {
+        question: "Câu 3: Số lượng electron tối đa có thể có trong một orbital là bao nhiêu?",
+        answers: [
+            { text: "2", correct: true },
+            { text: "4", correct: false },
+            { text: "6", correct: false },
+            { text: "8", correct: false }
+        ],
+        explanation: "Số lượng electron tối đa có thể có trong một orbital là 2."
+    },
+    {
+        question: "Câu 4: Ký hiệu n trong số lượng tử chính (principal quantum number) biểu thị điều gì?",
+        answers: [
+            { text: "Mức năng lượng của electron", correct: true },
+            { text: "Hướng của orbital", correct: false },
+            { text: "Spin của electron", correct: false },
+            { text: "Khối lượng của electron", correct: false }
+        ],
+        explanation: "Ký hiệu n trong số lượng tử chính biểu thị mức năng lượng của electron."
+    },
+    {
+        question: "Câu 5: Orbital s có hình dạng gì?",
+        answers: [
+            { text: "Hình cầu", correct: true },
+            { text: "Hình số tám", correct: false },
+            { text: "Hình elip", correct: false },
+            { text: "Hình que", correct: false }
+        ],
+        explanation: "Orbital s có hình dạng hình cầu."
+    },
+    {
+        question: "Câu 6: Orbital p có bao nhiêu hình dạng khác nhau?",
+        answers: [
+            { text: "3", correct: true },
+            { text: "1", correct: false },
+            { text: "2", correct: false },
+            { text: "4", correct: false }
+        ],
+        explanation: "Orbital p có ba hình dạng khác nhau."
+    },
+    {
+        question: "Câu 7: Orbital d có bao nhiêu hướng khác nhau?",
+        answers: [
+            { text: "5", correct: true },
+            { text: "3", correct: false },
+            { text: "4", correct: false },
+            { text: "6", correct: false }
+        ],
+        explanation: "Orbital d có năm hướng khác nhau."
+    },
+    {
+        question: "Câu 8: Nguyên tử có số lớp vỏ electron (shell) được xác định bởi số lượng tử nào?",
+        answers: [
+            { text: "Số lượng tử chính (n)", correct: true },
+            { text: "Số lượng tử phụ (l)", correct: false },
+            { text: "Số lượng tử từ (m)", correct: false },
+            { text: "Số lượng tử spin (s)", correct: false }
+        ],
+        explanation: "Nguyên tử có số lớp vỏ electron được xác định bởi số lượng tử chính (n)."
+    },
+    {
+        question: "Câu 9: Số lượng tử phụ (l) xác định điều gì trong nguyên tử?",
+        answers: [
+            { text: "Hình dạng của orbital", correct: true },
+            { text: "Kích thước của nguyên tử", correct: false },
+            { text: "Năng lượng của nguyên tử", correct: false },
+            { text: "Hướng của orbital", correct: false }
+        ],
+        explanation: "Số lượng tử phụ (l) xác định hình dạng của orbital trong nguyên tử."
+    },
+    {
+        question: "Câu 10: Số lượng tử từ (m) xác định điều gì?",
+        answers: [
+            { text: "Hướng của orbital trong không gian", correct: true },
+            { text: "Hình dạng của orbital", correct: false },
+            { text: "Năng lượng của electron", correct: false },
+            { text: "Khối lượng của electron", correct: false }
+        ],
+        explanation: "Số lượng tử từ (m) xác định hướng của orbital trong không gian."
+    },
+    {
+        question: "Câu 11: Nguyên tắc loại trừ Pauli phát biểu rằng hai electron trong cùng một nguyên tử không thể có điều gì giống nhau?",
+        answers: [
+            { text: "Bốn số lượng tử giống nhau", correct: true },
+            { text: "Cùng spin", correct: false },
+            { text: "Cùng mức năng lượng", correct: false },
+            { text: "Cùng quỹ đạo", correct: false }
+        ],
+        explanation: "Nguyên tắc loại trừ Pauli phát biểu rằng hai electron trong cùng một nguyên tử không thể có bốn số lượng tử giống nhau."
+    },
+    {
+        question: "Câu 12: Trong một phân lớp p, có bao nhiêu orbital?",
+        answers: [
+            { text: "3", correct: true },
+            { text: "1", correct: false },
+            { text: "2", correct: false },
+            { text: "4", correct: false }
+        ],
+        explanation: "Trong một phân lớp p, có ba orbital."
+    },
+    {
+        question: "Câu 13: Các orbital f có bao nhiêu hướng khác nhau?",
+        answers: [
+            { text: "7", correct: true },
+            { text: "5", correct: false },
+            { text: "3", correct: false },
+            { text: "9", correct: false }
+        ],
+        explanation: "Các orbital f có bảy hướng khác nhau."
+    },
+    {
+        question: "Câu 14: Nguyên tắc Hund phát biểu rằng các electron sẽ lấp đầy các orbital như thế nào?",
+        answers: [
+            { text: "Từng orbital một với spin cùng chiều trước", correct: true },
+            { text: "Theo thứ tự ngẫu nhiên", correct: false },
+            { text: "Theo thứ tự năng lượng giảm dần", correct: false },
+            { text: "Theo thứ tự năng lượng tăng dần", correct: false }
+        ],
+        explanation: "Nguyên tắc Hund phát biểu rằng các electron sẽ lấp đầy từng orbital một với spin cùng chiều trước."
+    },
+    {
+        question: "Câu 15: Mức năng lượng của các orbital s, p, d, f tăng theo thứ tự nào?",
+        answers: [
+            { text: "s < p < d < f", correct: true },
+            { text: "s < d < p < f", correct: false },
+            { text: "p < s < d < f", correct: false },
+            { text: "f < d < p < s", correct: false }
+        ],
+        explanation: "Mức năng lượng của các orbital s, p, d, f tăng theo thứ tự s < p < d < f."
+    },
+    {
+        question: "Câu 16: Orbital nào có mức năng lượng thấp nhất?",
+        answers: [
+            { text: "1s", correct: true },
+            { text: "2s", correct: false },
+            { text: "2p", correct: false },
+            { text: "3s", correct: false }
+        ],
+        explanation: "Orbital 1s có mức năng lượng thấp nhất."
+    },
+    {
+        question: "Câu 17: Số lượng tử spin (s) có thể nhận giá trị nào?",
+        answers: [
+            { text: "+1/2 và -1/2", correct: true },
+            { text: "+1 và -1", correct: false },
+            { text: "+1/2 và 0", correct: false },
+            { text: "+1 và 0", correct: false }
+        ],
+        explanation: "Số lượng tử spin (s) có thể nhận giá trị +1/2 và -1/2."
+    },
+    {
+        question: "Câu 18: Trong mô hình nguyên tử Bohr, electron nhảy từ quỹ đạo này sang quỹ đạo khác sẽ gây ra hiện tượng gì?",
+        answers: [
+            { text: "Phát xạ hoặc hấp thụ năng lượng", correct: true },
+            { text: "Phát xạ ánh sáng", correct: false },
+            { text: "Hấp thụ ánh sáng", correct: false },
+            { text: "Phát ra nhiệt", correct: false }
+        ],
+        explanation: "Trong mô hình nguyên tử Bohr, electron nhảy từ quỹ đạo này sang quỹ đạo khác sẽ gây ra hiện tượng phát xạ hoặc hấp thụ năng lượng."
+    },
+    {
+        question: "Câu 19: Nguyên tử nào có cấu hình electron 1s² 2s² 2p⁶?",
+        answers: [
+            { text: "Neon (Ne)", correct: true },
+            { text: "Helium (He)", correct: false },
+            { text: "Oxygen (O)", correct: false },
+            { text: "Nitrogen (N)", correct: false }
+        ],
+        explanation: "Nguyên tử có cấu hình electron 1s² 2s² 2p⁶ là Neon (Ne)."
+    },
+    {
+        question: "Câu 20: Nguyên tử nào có số lượng tử chính (n) bằng 3, số lượng tử phụ (l) bằng 1 và số lượng tử từ (m) bằng -1?",
+        answers: [
+            { text: "Electron trong phân lớp 3p", correct: true },
+            { text: "Electron trong phân lớp 3s", correct: false },
+            { text: "Electron trong phân lớp 3d", correct: false },
+            { text: "Electron trong phân lớp 4p", correct: false }
+        ],
+        explanation: "Nguyên tử có số lượng tử chính (n) bằng 3, số lượng tử phụ (l) bằng 1 và số lượng tử từ (m) bằng -1 là electron trong phân lớp 3p."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

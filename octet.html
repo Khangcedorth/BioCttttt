@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quy tắc bát tử (octet rule) là gì?",
+        answers: [
+            { text: "Nguyên tử có xu hướng đạt được 8 electron ở lớp vỏ ngoài cùng để ổn định", correct: true },
+            { text: "Nguyên tử có xu hướng đạt được 8 proton ở hạt nhân để ổn định", correct: false },
+            { text: "Nguyên tử có xu hướng đạt được 8 neutron ở hạt nhân để ổn định", correct: false },
+            { text: "Nguyên tử có xu hướng đạt được 8 electron ở lớp trong cùng để ổn định", correct: false }
+        ],
+        explanation: "Quy tắc bát tử cho rằng nguyên tử có xu hướng đạt được cấu hình bền vững với 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 2: Nguyên tử nào thường tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "Các nguyên tố phi kim và kim loại nhóm chính", correct: true },
+            { text: "Các nguyên tố kim loại chuyển tiếp", correct: false },
+            { text: "Các nguyên tố khí hiếm", correct: false },
+            { text: "Các nguyên tố kim loại kiềm", correct: false }
+        ],
+        explanation: "Các nguyên tố phi kim và kim loại nhóm chính thường tuân theo quy tắc bát tử để đạt được cấu hình electron bền vững."
+    },
+    {
+        question: "Câu 3: Nguyên tố nào không tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "Hydrogen", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Fluorine", correct: false },
+            { text: "Chlorine", correct: false }
+        ],
+        explanation: "Hydrogen chỉ cần 2 electron để đạt được cấu hình bền vững như helium, do đó không tuân theo quy tắc bát tử."
+    },
+    {
+        question: "Câu 4: Quy tắc bát tử giải thích điều gì về liên kết hóa học?",
+        answers: [
+            { text: "Nguyên tử tạo liên kết để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: true },
+            { text: "Nguyên tử tạo liên kết để giảm số proton", correct: false },
+            { text: "Nguyên tử tạo liên kết để tăng khối lượng nguyên tử", correct: false },
+            { text: "Nguyên tử tạo liên kết để tăng số neutron", correct: false }
+        ],
+        explanation: "Quy tắc bát tử giải thích rằng nguyên tử tạo liên kết để đạt được 8 electron ở lớp vỏ ngoài cùng, giúp ổn định hơn."
+    },
+    {
+        question: "Câu 5: Tại sao các nguyên tố khí hiếm ổn định?",
+        answers: [
+            { text: "Vì chúng đã có 8 electron ở lớp vỏ ngoài cùng", correct: true },
+            { text: "Vì chúng có số proton lớn", correct: false },
+            { text: "Vì chúng có số neutron lớn", correct: false },
+            { text: "Vì chúng có khối lượng nguyên tử nhỏ", correct: false }
+        ],
+        explanation: "Các nguyên tố khí hiếm ổn định vì chúng đã có 8 electron ở lớp vỏ ngoài cùng, tuân theo quy tắc bát tử."
+    },
+    {
+        question: "Câu 6: Nguyên tử nào dễ dàng mất electron để tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "Các kim loại kiềm và kiềm thổ", correct: true },
+            { text: "Các nguyên tố phi kim", correct: false },
+            { text: "Các nguyên tố khí hiếm", correct: false },
+            { text: "Các nguyên tố chuyển tiếp", correct: false }
+        ],
+        explanation: "Các kim loại kiềm và kiềm thổ dễ dàng mất electron để đạt được cấu hình 8 electron ở lớp vỏ ngoài cùng của lớp kế."
+    },
+    {
+        question: "Câu 7: Nguyên tử nào dễ dàng nhận electron để tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "Các nguyên tố phi kim như fluorine và oxygen", correct: true },
+            { text: "Các nguyên tố kim loại kiềm", correct: false },
+            { text: "Các nguyên tố khí hiếm", correct: false },
+            { text: "Các nguyên tố chuyển tiếp", correct: false }
+        ],
+        explanation: "Các nguyên tố phi kim như fluorine và oxygen dễ dàng nhận electron để đạt được cấu hình 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 8: Liên kết cộng hóa trị được hình thành như thế nào theo quy tắc bát tử?",
+        answers: [
+            { text: "Nguyên tử chia sẻ electron để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: true },
+            { text: "Nguyên tử trao đổi proton", correct: false },
+            { text: "Nguyên tử chia sẻ neutron", correct: false },
+            { text: "Nguyên tử trao đổi khối lượng nguyên tử", correct: false }
+        ],
+        explanation: "Liên kết cộng hóa trị hình thành khi nguyên tử chia sẻ electron để đạt được 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 9: Liên kết ion được hình thành như thế nào theo quy tắc bát tử?",
+        answers: [
+            { text: "Nguyên tử trao đổi electron để đạt được cấu hình 8 electron", correct: true },
+            { text: "Nguyên tử trao đổi proton", correct: false },
+            { text: "Nguyên tử chia sẻ neutron", correct: false },
+            { text: "Nguyên tử trao đổi khối lượng nguyên tử", correct: false }
+        ],
+        explanation: "Liên kết ion hình thành khi nguyên tử trao đổi electron để đạt được cấu hình 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 10: Nguyên tử nào trong các hợp chất thường không tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "Nguyên tố nhóm 3A như boron", correct: true },
+            { text: "Nguyên tố nhóm 1A như lithium", correct: false },
+            { text: "Nguyên tố nhóm 7A như chlorine", correct: false },
+            { text: "Nguyên tố nhóm 8A như neon", correct: false }
+        ],
+        explanation: "Nguyên tố nhóm 3A như boron thường không tuân theo quy tắc bát tử vì chỉ cần 6 electron để ổn định."
+    },
+    {
+        question: "Câu 11: Quy tắc bát tử không áp dụng cho phân tử nào sau đây?",
+        answers: [
+            { text: "BF3", correct: true },
+            { text: "CH4", correct: false },
+            { text: "NH3", correct: false },
+            { text: "H2O", correct: false }
+        ],
+        explanation: "BF3 không tuân theo quy tắc bát tử vì boron chỉ có 6 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 12: Quy tắc bát tử áp dụng cho nguyên tử ở trạng thái nào?",
+        answers: [
+            { text: "Trạng thái liên kết", correct: true },
+            { text: "Trạng thái tự do", correct: false },
+            { text: "Trạng thái ion âm", correct: false },
+            { text: "Trạng thái ion dương", correct: false }
+        ],
+        explanation: "Quy tắc bát tử thường áp dụng cho nguyên tử ở trạng thái liên kết để đạt được cấu hình electron bền vững."
+    },
+    {
+        question: "Câu 13: Liên kết đôi trong phân tử O2 giúp nguyên tử oxygen tuân theo quy tắc bát tử bằng cách nào?",
+        answers: [
+            { text: "Chia sẻ 4 electron để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: true },
+            { text: "Chia sẻ 2 electron để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: false },
+            { text: "Chia sẻ 6 electron để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: false },
+            { text: "Chia sẻ 1 electron để đạt được 8 electron ở lớp vỏ ngoài cùng", correct: false }
+        ],
+        explanation: "Liên kết đôi trong phân tử O2 giúp nguyên tử oxygen chia sẻ 4 electron, đạt được 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 14: Phân tử nào sau đây có thể mở rộng quy tắc bát tử?",
+        answers: [
+            { text: "SF6", correct: true },
+            { text: "CH4", correct: false },
+            { text: "NH3", correct: false },
+            { text: "H2O", correct: false }
+        ],
+        explanation: "SF6 có thể mở rộng quy tắc bát tử vì nguyên tử lưu huỳnh có thể có hơn 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 15: Phân tử nào sau đây tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "CO2", correct: true },
+            { text: "BF3", correct: false },
+            { text: "PCl5", correct: false },
+            { text: "SF6", correct: false }
+        ],
+        explanation: "CO2 tuân theo quy tắc bát tử vì mỗi nguyên tử carbon và oxygen đều có 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 16: Nguyên tử có thể có bao nhiêu electron tối đa ở lớp vỏ ngoài cùng mà vẫn ổn định?",
+        answers: [
+            { text: "8", correct: true },
+            { text: "2", correct: false },
+            { text: "10", correct: false },
+            { text: "12", correct: false }
+        ],
+        explanation: "Theo quy tắc bát tử, nguyên tử thường có tối đa 8 electron ở lớp vỏ ngoài cùng để ổn định."
+    },
+    {
+        question: "Câu 17: Nguyên tử nào sau đây có thể không tuân theo quy tắc bát tử trong hợp chất?",
+        answers: [
+            { text: "Phosphorus trong PCl5", correct: true },
+            { text: "Nitrogen trong NH3", correct: false },
+            { text: "Carbon trong CH4", correct: false },
+            { text: "Oxygen trong H2O", correct: false }
+        ],
+        explanation: "Phosphorus trong PCl5 có thể không tuân theo quy tắc bát tử vì nó có thể có hơn 8 electron ở lớp vỏ ngoài cùng."
+    },
+    {
+        question: "Câu 18: Phân tử nào sau đây tuân theo quy tắc bát tử?",
+        answers: [
+            { text: "N2", correct: true },
+            { text: "SF4", correct: false },
+            { text: "XeF2", correct: false },
+            { text: "IF7", correct: false }
+        ],
+        explanation: "N2 tuân theo quy tắc bát tử vì mỗi nguyên tử nitrogen có 8 electron ở lớp vỏ ngoài cùng khi hình thành liên kết ba."
+    },
+    {
+        question: "Câu 19: Nguyên tố nào sau đây có thể mở rộng quy tắc bát tử?",
+        answers: [
+            { text: "Sulfur", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Oxygen", correct: false },
+            { text: "Carbon", correct: false }
+        ],
+        explanation: "Sulfur có thể mở rộng quy tắc bát tử vì nó có thể có hơn 8 electron ở lớp vỏ ngoài cùng trong các hợp chất như SF6."
+    },
+    {
+        question: "Câu 20: Nguyên tử nào sau đây có thể có hơn 8 electron ở lớp vỏ ngoài cùng?",
+        answers: [
+            { text: "Phosphorus trong PCl5", correct: true },
+            { text: "Boron trong BF3", correct: false },
+            { text: "Nitrogen trong NH3", correct: false },
+            { text: "Carbon trong CH4", correct: false }
+        ],
+        explanation: "Phosphorus trong PCl5 có thể có hơn 8 electron ở lớp vỏ ngoài cùng, không tuân theo quy tắc bát tử."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

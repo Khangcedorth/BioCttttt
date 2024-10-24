@@ -1,0 +1,62 @@
+/* Reset margin và padding mặc định */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Sử dụng font chữ hiện đại */
+}
+
+/* Thiết lập kiểu cho section chứa hình ảnh */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Tự động điều chỉnh số cột dựa trên kích thước màn hình */
+    gap: 20px; /* Khoảng cách giữa các ô hình ảnh */
+    padding: 40px; /* Tăng khoảng cách padding */
+    background-color: #f4f4f4; /* Đổi màu nền nhẹ nhàng */
+    min-height: 100vh; /* Chiều cao tối thiểu đầy màn hình */
+}
+
+/* Thiết lập kiểu cho các ô hình ảnh */
+.image-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px; /* Làm tròn góc nhiều hơn */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Giảm độ mờ của bóng đổ */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out; /* Mượt mà hơn khi chuyển đổi */
+    overflow: hidden; /* Ẩn các phần tử thừa ngoài ô hình ảnh */
+    background-color: #fff; /* Nền trắng để hình ảnh nổi bật */
+}
+
+/* Hiệu ứng khi di chuột qua ô hình ảnh */
+.image-tile:hover {
+    transform: scale(1.07); /* Tăng kích thước lớn hơn khi hover */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Tăng độ đậm của bóng đổ khi hover */
+}
+
+/* Thiết lập kiểu cho hình ảnh */
+.image-tile img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Giúp hình ảnh phủ đầy ô mà không bị méo */
+    border-bottom: 3px solid #e0e0e0; /* Đổi màu viền dưới hình ảnh */
+    transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng cho hình ảnh khi hover */
+}
+
+/* Thiết lập kiểu cho lớp phủ văn bản */
+.text-overlay {
+    font-size: 1.2em; /* Giảm kích thước font cho vừa mắt */
+    padding: 12px 0; /* Thêm padding trên và dưới */
+    background-color: rgba(51, 51, 51, 0.8); /* Thêm độ trong suốt cho nền lớp phủ văn bản */
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase; /* Chuyển văn bản thành chữ in hoa */
+    letter-spacing: 1px; /* Tăng khoảng cách giữa các chữ cái */
+    transition: background-color 0.3s ease-in-out; /* Hiệu ứng khi thay đổi màu nền */
+}
+
+.text-overlay:hover {
+    background-color: rgba(51, 51, 51, 1); /* Màu nền lớp phủ đậm hơn khi di chuột qua */
+}

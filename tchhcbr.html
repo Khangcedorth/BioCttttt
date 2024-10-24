@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+               question: "Câu 1: Chất nào sau đây có phản ứng tráng bạc?",
+                answers: [
+                    { text: "Glucose.", correct: true },
+                    { text: "Saccharose.", correct: false },
+                    { text: "Tinh bột.", correct: false},
+                    { text: "Cellulose.", correct: false }
+                ],
+                explanation: "Glucose có nhóm chức aldehyde (-CH=O) nên có khả năng tham gia phản ứng tráng bạc"
+            },
+            {
+question: "Câu 2: Phát biểu nào sau đây sai?",
+                answers: [
+                    { text: "Glucose và saccharose đều là carbohydrate.", correct: false },
+                    { text: "Trong dung dịch, glucose và fructose đều hoà tan được Cu(OH)2.", correct: false },
+                    { text: "Glucose và saccharose đều có phản ứng tráng bạc.", correct:true},
+                    { text: "Tinh bột và cellulose không phải là đồng phân của nhau.", correct: false }
+                ],
+                explanation: "Saccharose không có nhóm -OH hemiacetal nên không có khả năng mở  vòng nên không có phản ứng tráng bạc."
+            },
+            {
+question: "Câu 3: Phản ứng nào sau đây chứng tỏ trong phân tử glucose có nhóm chức aldehyde?",
+                answers: [
+                    { text: "Tác dụng với Cu(OH)2/NaOH ở nhiệt độ thường.", correct: false },
+                    { text: "Lên men tạo ethanol.", correct: false },
+                    { text: "Tác dụng với dung dịch iodine.", correct: false},
+                    { text: "Tác dụng với dung dịch AgNO3 trong NH3.", correct: true }
+                ],
+                explanation: "Để chứng tỏ trong phân tử glucose có nhóm chức aldehyde người cho glucose phản ứng với AgNO3trong NH3 (Thuốc thử Tollens)"
+            },
+            {
+question: "Câu 4: Nhận xét nào dưới đây là không đúng khi nói về glucose và fructose?",
+                answers: [
+                    { text: "Đều tạo dung dịch màu xanh lam khi tác dụng với Cu(OH)2 trong môi trường kiềm.", correct: false },
+                    { text: "Đều tạo kết tủa đỏ gạch Cu2O khi tác dụng với Cu(OH)2 (đun nóng) trong môi trường kiềm.", correct: false},
+                    { text: "Đều tạo kết tủa trắng bạc khi tác dụng với thuốc thử Tollens.", correct: false},
+                    { text: "Đều làm mất màu nước bromine.", correct: true }
+                ],
+                explanation: "Fructose không thể chuyển hóa thành glucose trong môi trường acid (nước bromine) nên fructose không có phản ứng với nước bromine do trong cấu tạo không có nhóm chức aldehyde."
+            },
+            {
+question: "Câu 5: Dãy gồm các dung dịch đều bị oxi hoá bởi thuốc thử Tollens là",
+                answers: [
+                    { text: "Glucose, glycerol, formic acid.", correct: false },
+                    { text: "Glucose, fructose, saccharose.", correct: false },
+                    { text: "Glucose, formic acid, acetic aldehyde.", correct: true},
+                    { text: "Fructose, glycerol, acetic aldehyde.", correct: false }
+                ],
+                explanation: "Glycerol, saccharose không có phản ứng với thuốc thử Tollens."
+            },
+            {
+question: "Câu 6: Phát biểu nào sau đây sai?",
+                answers: [
+                    { text: "Sản phẩm thủy phân cellulose (H+, to) có thể tham gia phản ứng tráng gương.", correct: false },
+                    { text: "Tinh bột bị hóa đen trong H2SO4 đặc.", correct: false },
+                    { text: "Các mắt xích trong amylose và maltose đều liên kết với nhau bằng liên kết α-1,4-glycoside.", correct: false},
+                    { text: "Cellulose trinitrate là nguyên liệu để sản xuất tơ nhân tạo.", correct: true }
+                ],
+                explanation: "Cellulose  là nguyên liệu để sản xuất tơ nhân tạo (tơ visco, tơ cellulose acetate) còn cellulose trinitrate là thuốc súng không khói."
+            },
+            {
+question: "Câu 7: Chất X có các đặc điểm sau: phân tử có nhiều nhóm -OH, có vị ngọt, hoà tan Cu(OH)2 ở nhiệt độ thường, phân tử có liên kết glycoside, làm mất màu nước bromine. Chất X là",
+                answers: [
+                    { text: "cellulose.", correct: false },
+                    { text: "maltose.", correct: true },
+                    { text: "glucose.", correct: false},
+                    { text: "saccharose.", correct: false }
+                ],
+                explanation: "Phân tử maltose có nhiều nhóm -OH, có vị ngọt, hoà tan Cu(OH)2 ở nhiệt độ thường (do có nhiều nhóm OH liền kề) , phân tử có liên kết glycoside (giữa 2 gốc glucose), làm mất màu nước bromine (vì còn nhóm -OH hemiacetal nên maltose có khả năng mở vòng)"
+            },
+            {
+question: "Câu 8: Dung dịch chất X có các tính chất sau: Tác dụng được với dung dịch AgNO3/NH3 khi đun nóng và làm mất màu dung dịch bromine; hoà tan được Cu(OH)2 tạo ra dung dịch màu xanh lam; không bị thủy phân trong môi trường acid hoặc base. Chất X là",
+                answers: [
+                    { text: "fructose.", correct: false },
+                    { text: "glucose.", correct: true },
+                    { text: "cellulose.", correct: false},
+                    { text: "saccharose.", correct: false }
+                ],
+                explanation: "Dung dịch chất glucose có các tính chất sau: Tác dụng được với dung dịch AgNO3/NH3 khi đun nóng và làm mất màu dung dịch bromine (do có nhóm chức aldehyde); hoà tan được Cu(OH)2 tạo ra dung dịch màu xanh lam (do có 4 nhóm OH liền kề); không bị thủy phân trong môi trường acid hoặc base (vì thuộc loại monosaccharide)"
+            },
+            {
+question: "Câu 9: Carbohydrate X là một disacchride có nhiều trong củ cải đường. Thủy phân hoàn toàn X trong môi trường acid, thu được Y có khả năng làm mất màu nước bromine. Tên gọi của X và Y lần lượt là",
+                answers: [
+                    { text: "Maltose, glucose.", correct: false },
+                    { text: "Saccharose, fructose.", correct: false },
+                    { text: "Maltose, fructose.", correct: false},
+                    { text: "Saccharose, glucose.", correct: true }
+                ],
+                explanation: "Saccharose là một disacchride có nhiều trong củ cải đường. Thủy phân hoàn toàn saccharose trong môi trường acid, thu được glucose (có khả năng làm mất màu nước bromine) và frutose."
+            },
+            {
+question: "Câu 10: Polysaccharide X là chất rắn, màu trắng, dạng sợi. Trong bông nõn có gần 98% chất X. Thủy phân X, thu được monosaccharide Y. Phát biểu nào sau đây đúng?",
+                answers: [
+                    { text: "Y không có phản ứng thuốc thử Tollens.", correct: false },
+                    { text: "Y có tính chất của alcohol đa chức.", correct: true },
+                    { text: "Phân tử khối của Y bằng 342.", correct: false},
+                    { text: "X dễ tan trong nước.", correct: false }
+                ],
+explanation: "Cellulose X là chất rắn, màu trắng, dạng sợi, không tan trong nước. Trong bông nõn có gần 98% chất cellulose . Thủy phân cellulose , thu được glucose nên Y (glucose) có phản ứng với thuốc thử Tollens, có tính chất của của polyalcohol, có M=180.  "
+            },
+            {
+question: "Câu 11: Thuốc thử phân biệt glucose với fructose là",
+                answers: [
+                    { text: "AgNO3 trong NH3", correct: false },
+                    { text: "dung dịch Br2.", correct: true },
+                    { text: "Cu(OH)2.", correct: false},
+                    { text: "H2.", correct: false}
+                ],
+                explanation: " Thuốc thử phân biệt glucose với fructose là dung dịch Br2 vì chỉ glucose có phản ứng với Br2 còn fructose thì không có phản ứng. "
+            },             {
+question: "Câu 12: Để nhận biết 3 dung dịch: glucose, ethyl alcohol, saccharose đựng riêng biệt trong 3 lọ mất nhãn, ta dùng thuốc thử là",
+                answers: [
+                    { text: "Na", correct: false },
+                    { text: "Cu(OH)2/OH–.", correct: true },
+                    { text: "dung dịch AgNO3trong NH3.", correct: false},
+                    { text: "CH3OH/HCl.", correct: false}
+                ],
+                explanation: "Ethyl alcohol không tác dụng với Cu(OH)2 (ở điều kiện thường) còn glucose và saccharose tạo phức màu xanh lam (do có nhiều nhóm OH liền kề). Tiếp tục đun nóng hỗn hợp phản ứng thì ta thấy ở ống nghiệm đựng glucose tạo kết tủa đỏ gạch Cu2O (do có nhóm chức aldehyde) còn ống nghiệm đựng saccharose vẫn không thay đổi hiện tượng (do không còn nhóm -OH hemiacetal nên không có khả năng mở vòng)."
+            },
+            {
+question: "Câu 13: Để phân biệt các dung dịch hoá chất riêng biệt là saccharose, maltose, ethanol và fomaldehyde, người ta có thể dùng một trong các hoá chất nào sau đây?",
+                answers: [
+                    { text: "dung dịch AgNO3trong NH3.", correct: false },
+                    { text: "Cu(OH)2/OH–. ", correct: true },
+                    { text: "Ca(OH)2.", correct: false},
+                    { text: "H2/Ni, to.", correct: false}
+                ],
+                explanation: "Ethanol và fomaldehyde không tác dụng với Cu(OH)2 (ở điều kiện thường) còn saccharose, maltose tạo phức màu xanh lam (do có nhiều nhóm OH liền kề). Tiếp tục đun nóng hỗn hợp phản ứng thì ta thấy ở ống nghiệm đựng fomaldehyde và maltose tạo kết tủa đỏ gạch Cu2O (do có nhóm chức aldehyde) còn ống nghiệm đựng ethanol và saccharose vẫn không thay đổi hiện tượng."
+            },
+            {
+question: "Câu 14: Glucose và fructose là carbohydrat, thuộc loại monosaccharide.
+<br>Cho các phát biểu sau:
+<br>(a) Glucose và fructose đều không có phản ứng thủy phân; 
+<br>(b) Glucose và fructose đều tồn tại chủ yếu ở dạng mạch vòng; 
+<br>(c) Glucose, fructose đều tạo kết tủa đỏ gạch với Cu(OH)2/OH khi đun nóng;
+<br>(d) Glucose, fructose đều làm mất màu nước bromine.
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false },
+                    { text: "2.", correct: false },
+                    { text: "4.", correct: false},
+                    { text: "3. ", correct: true}
+                ],
+                explanation: "Phát biểu d sai vì chỉ có glucose làm mất màu nước bromine."
+            },
+            {
+question: "Câu 15: Saccharose là carbohydrat, thuộc loại disaccharide.
+<br>Cho các phát biểu sau:
+<br>(a) Là chất kết tinh, không màu, tan tốt trong nước và có vị ngọt;
+<br>(b) Khi thủy phân hoàn toàn tạo thành sản phẩm duy nhất là glucose;
+<br>(c) Có khả năng tham gia phản ứng tráng gương;
+<br>(d) Dung dịch glucose hoà tan Cu(OH)2 tạo thành dung dịch có màu xanh lam.
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false },
+                    { text: "2.", correct: true },
+                    { text: "3.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: "Phát biểu b sai vì khi thủy phân hoàn toàn saccharosetạo thành sản phẩm là glucose và fructose. Phát biểu c sai vì saccharose không có khả năng tham gia phản ứng tráng gương."
+            },
+            {
+question: "Câu 16: Thủy phân saccharose, thu được hai monosaccharide X và Y. Chất X có trong máu người với nồng độ khoảng (4,4 - 7,2 mmol/L). 
+<br>Cho các phát biểu sau: 
+<br>(a) X là glucose, Y là fructose; 
+<br>(b) Có thể phân biệt X, Y bằng dung dịch nước bromine; 
+<br>(c) X có phân tử khối bằng 180; 
+<br>(d) Ở dạng mạch hở, X và Y đều có 6 nhóm -OH. 
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false },
+                    { text: "2.", correct: false },
+                    { text: "4.", correct: false},
+                    { text: "3.", correct: true }
+                ],
+                explanation: "Phát biểu d sai vì ở dạng mạch hở, X và Y (glucose và fructose) đều có 5 nhóm -OH."
+            },
+            {
+              question: "Câu 17: Carbohydrate được chia làm 3 loại: monosaccharide (glucose, frutose), disaccharide (saccharose, maltose), polysaccharide (tinh bột, cellulose).
+<br>Cho các phát biểu sau: 
+<br>(a) Tất cả hợp chất carbohydrate đều có phản ứng thủy phân;
+<br>(b) Thủy phân hoàn toàn tinh bột hoặc cellulose, thu được glucose;
+<br>(c) Glucose, fructose đều tác dụng với dung dịch AgNO3/NH3 tạo thành kết tủa màu trắng bạc;
+<br>(d) Dung dịch glucose, fructose, maltose, saccharose đều hoà tan được Cu(OH)2. 
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false },
+                    { text: "3.", correct: true },
+                    { text: "2.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: "Phát biểu a sai vì chỉ có disaccharide (saccharose, maltose), polysaccharide (tinh bột, cellulose) mới có phản ứng thủy phân."
+            },
+            {
+question: "Câu 18: Chất X ở dạng sợi, màu trắng, không có mùi vị và không tan trong nước. Thủy phân hoàn toàn chất X, thu được chất Y. Chất Y có nhiều trong quả nho chín nên được gọi là đường nho.
+<br>Cho các phát biểu sau:
+<br>(a) Y không có phản ứng tráng gương;
+<br>(b) Tơ visco được điều chế từ X;
+<br>(c) Methyl alcohol được điều chế từ Y nhờ phản ứng lên men;
+<br>(d) Phân tử khối của X là 342. 
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "3.", correct: false },
+                    { text: "1.", correct: true },
+                    { text: "2.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: "Chất X là cellulose, chất Y là glucose. Phát biểu a sai vì glucose có phản ứng tráng gương. Phát biểu c sai vì glucose lên men thu được ethyl alcohol. Phát biểu d sai vì phân tử khối của X là 162n"
+            },
+            {
+question: "Câu 19: Thủy phân hoàn toàn tinh bột, thu được monosaccharide X. Lên men X (có mặt enzim), thu được chất hữu cơ Y và khí carbonic. Cho các phát biểu sau: (a) Y hoà tan được Cu(OH)2; (b) Độ ngọt của X lớn hơn đường mía; (c) Y là chất gây nghiện; (d) X có nhiều trong quả chuối xanh. Số phát biểu đúng là ",
+                answers: [
+                    { text: "3.", correct: false },
+                    { text: "2.", correct: false },
+                    { text: "1.", correct: true },
+                    { text: "4.", correct: false}
+                ],
+                explanation: "X là glucose, Y là ethanol (ethyl alcohol). Phát biểu a sai vì Y là alcohol đơn chức nên không có phản ứng với  Cu(OH)2. Phát biểu b sai đường mía (saccharose) ngọt hơn glucose. Phát biểu d sai vì chuối xanh chứa nhiều tinh bột còn glucose có nhiều trong chuối chín."
+            },
+            {
+question: "Câu 20: Thủy phân hoàn toàn carbohydrate E, thu được hai monosaccharide X và Y là đồng phân của nhau. Thực hiện phản ứng tráng gương đối với X và Y, thu được chất hữu cơ Z. Cho các phát biểu sau: (a) Phần trăm khối lương oxygen trong Y là 53,33%; (b) E là saccharose; (c) X và Y đều có trong mật ong; (d) Phân tử khối của Z bằng 196. Số phát biểu đúng là",
+                answers: [
+                    { text: "4.", correct: false },
+                    { text: "1.", correct: false},
+                    { text: "2.", correct: false},
+                    { text: "3.", correct: true }
+                ],
+                explanation: "E là saccharose; X và Y là glucose, fructose; Z là ammonium gluconate. Phát biểu d sai vì Phân tử khối của Z bằng 213."
+            },
+            {
+ question: "Câu 21: Đun nóng cellulose trong dung dịch axit H2SO4 70%, thu được chất hữu cơ X. Dẫn khí hydrogen vào dung dịch chất X đun nóng, có Ni làm xúc tác, thu được chất hữu cơ Y. Cho các phát biểu sau: (a) Y là hợp chất đa chức; (b) X là hợp chất tạp chức; (c) Khối lượng phân tử của Y là 182; (d) X bị oxi hoá bởi nước bromine tạo thành gluconic acid. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false },
+                    { text: "3", correct: false } 
+                    { text: "4", correct: true },  
+                ],
+                explanation: "X là glucose, là hợp chất hữu cơ tạp chức (có tính chất của polyalcohol và aldehyde); Y là hợp chất hữu cơ đa chức (6 nhóm OH liền kề, có tên gọi là sorbitol), có M=182; glucose bị oxi hoá bởi nước bromine tạo thành gluconic acid."
+            },
+ question: "Câu 22:Tiến hành thí nghiệm theo các bước sau: 
+<br>Bước 1: Cho vài giọt dung dịch iodine vào ống nghiệm đựng sẵn 2 ml dung dịch hồ tinh bột; 
+<br>Bước 2: Đun nóng dung dịch một lát, sau đó để nguội. 
+<br>Cho các phát biểu sau: 
+<br>(a) Sau bước 1 và 2, dung dịch thu được đều có màu xanh tím;
+<br>(b) Mạch tinh bột xoắn lại tạo các lỗ rỗng, các lỗ rỗng này hấp phụ I2 tạo nên hợp chất màu xanh tím;
+<br>(c) Nếu nhỏ vài giọt dung dịch iodine lên mặt cắt của quả chuối xanh thì màu xanh tím cũng xuất hiệ; <br>(d) Có thể dùng dung dịch iodine để phân biệt hai dung dịch riêng biệt gồm hồ tinh bột và saccharose. Số phát biểu đúng là",
+                answers: [
+                    { text: "1", correct: false},
+                    { text: "2", correct: false},
+                    { text: "4", correct: true  } 
+                    { text: "3", correct: false },  
+                ],
+                explanation: "Tất cả các phát biểu đều đúng."
+            },
+ question: "Câu 23:Tiến hành thí nghiệm theo các bước sau: 
+<br>Bước 1: Cho 0,5 mL dung dịch CuSO4 5% vào ống nghiệm sạch;
+<br> Bước 2: Thêm 2 mL dung dịch NaOH 10% vào ống nghiệm, lắc đều, gạn phần dung dịch, giữ lại kết tủa; 
+<br>Bước 3: Thêm tiếp 3mL dung dịch glucose 2% vào ống nghiệm, lắc đều. 
+<br>Cho các phát biểu sau: 
+<br>(a) Ở bước 2, thu được kết tủa có màu trắng hơi xanh; 
+<br>(b) Sau bước 3, kết tủa đã bị hoà tan, thu được dung dịch màu xanh lam; 
+<br>(c) Thí nghiệm trên chứng minh glucose có tính chất của polyalcohol (alcohol đa chức); 
+<br>(d) Ở bước 3, thay glucose bằng fructose, maltose, saccharose, tinh bột thì hiện tượng xảy ra vẫn tương tự. 
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false},
+                    { text: "4.", correct: false },
+                    { text: "3.", correct: false } 
+                    { text: "2.", correct: true },            
+                ],
+                explanation: "Phát biểu a sai vì ở bước 2, thu được kết tủa có màuxanh lam. Phát biểu d sai vì tinh bột không có phản ứng này."
+            },
+ question: "Câu 24:Tiến hành thí nghiệm theo các bước sau:
+<br>Bước 1: Cho khoảng 2 mL dung dịch AgNO3 1% vào ống nghiệm sạch;
+<br>Bước 2: Thêm từ từ từng giọt dung dịch dung dịch ammonia 5%, lắc đều cho đến khi kết tủa tan hết. Dung dịch thu được là thuốc thử Tollens;
+<br>Bước 3: Thêm tiếp khoảng 2 mL dung dịch glucose 2% lắc đều. Sau đó, ngâm ống nghiệm vào cốc thuỷ tinh chứa nước nóng trong vài phút.
+<br>Cho các phát biểu sau: 
+<br>(a) Sản phẩm hữu cơ thu được sau bước 3 là ammonium gluconate;
+<br>(b) Thí nghiệm trên chứng minh glucose có tính chất của aldehyde; 
+<br>(c) Sau bước 3, có lớp kim loại bạc (silver) bám trên thành ống nghiệm;
+<br> (d) Ở bước 3, thay glucose bằng maltose, saccharose thì hiện tượng xảy ra tương tự. 
+<br>Số phát biểu đúng là",
+                answers: [
+                    { text: "1.", correct: false},
+                    { text: "2.", correct: false },
+                    { text: "4.", correct: false } 
+                    { text: "3.", correct: true },
+                ],
+                explanation: "Phát biểu d sai vì  saccharose tkhông có phản ứng này."
+            },
+ 
+ question: "Câu 25:Cho dãy các chất: glucose, fructose, cellulose, methyl acetate, saccharose. Số chất trong dãy tham gia phản ứng tráng gương là",
+                answers: [
+                    { text: "1.", correct: false},
+                    { text: "3.", correct: false},
+                    { text: "2.", correct: true  } 
+                    { text: "4.", correct: false },  
+                ],
+              explanation: "Glucose, fructose có khả năng tham gia phản ứng tráng gương"            },
+  question: "Câu 26:Cho dung dịch các chất sau: saccharose, glucose, fructose, hồ tinh bột, formic acid. Số chất vừa có khả năng tham gia phản ứng tráng bạc vừa có khả năng phản ứng với Cu(OH)2 ở điều kiện thường là",
+                answers: [
+                    { text: "2.", correct: false },
+                    { text: "3.", correct: true },
+                    { text: "5.", correct: false},
+                    { text: "4.", correct: false }
+                ],
+                explanation: " glucose, fructose, formic acid  vừa có khả năng tham gia phản ứng tráng bạc vừa có khả năng phản ứng với Cu(OH)2 ở điều kiện thường."
+            },
+
+		                question: "Câu 27: Cho các tính chất sau: (1) có vị ngọt, (2) dễ tan trong nước, (3) có phản ứng tráng bạc, (4) bị thủy phân trong môi trường acid, (5) hoà tan Cu(OH)2 thành dung dịch màu xanh lam. Số tính chất đúng với saccharose là",
+                answers: [
+                    { text: "3.", correct: false },
+                    { text: "4.", correct: true },
+                    { text: "5.", correct: false},
+                    { text: "2.", correct: false }
+                ],
+                explanation: "Saccharose không có phản ứng tráng gương."
+            },
+		    question: "Câu 28:Từ m kg mùn cưa chứa 50% cellulose (còn lại là tạp chất trơ) sản xuất được 80 kg glucose với hiệu suất toàn bộ quá trình là 80%. Giá trị của m là",
+                   answers: [
+                    { text: "720.", correct: false},
+                    { text: "180.", correct: true },
+                    { text: "360.", correct: false} 
+                    { text: "162.", correct: false },  
+                ],
+                explanation: "m = 80.162/(180.0,8.0,5) = 180 (g)."
+            },            
+        ];
+question: "Câu 29:Lên men 800 kg tinh bột, thu được V lít rượu 38o. Biết hiệu suất của cả quá trình sản xuất rượu là 72% và khối lượng riêng của ethyl alcohol là 0,8 g/ml. Giá trị của V là",
+                answers: [
+                   { text: "1345.", correct: false},
+                    { text: "2076.", correct: false },
+                    { text: "1076", correct: true} 
+                    { text: "1868.", correct: false }, 
+                ],
+                explanation: "V = 800.2.46.0,72.100/(162.0,8.38) = 1076 (l) "
+            },            
+        ];
+question: "Câu 30: Lên men 66 kg nước rỉ đường (chứa 25% saccharose) thành ethanol với hiệu suất 60%. Toàn bộ lượng ethanol thu được pha thành V lít rượu 40° (khối lượng riêng của ethanol là 0,8 g/ml). Biết quá trình lên men chỉ xảy ra phản ứng: C12H22O11 + H2O → 4C2H5OH + 4CO2. Giá trị của V là",
+                answers: [
+                    { text: "8,3.", correct: false},
+                    { text: "16,64.", correct: true },
+                    { text: "27,7.", correct: false} 
+                    { text: "13,3.", correct: false }, 
+               ],
+                explanation: "V = 66.0,25.4.46.0,6.100/(342.0,8.40) = 16,64."
+            },            
+        ];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        // Hàm để bắt đầu trò chơi
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        // Hàm để hiển thị câu hỏi hiện tại
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        // Hàm để kiểm tra câu trả lời và chuyển sang câu hỏi tiếp theo
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+            if (selectedAnswer) {
+                const currentQuestion = questions[currentQuestionIndex];
+                userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+                if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+                    score++;
+                }
+
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            } else {
+                alert('Vui lòng chọn một đáp án.');
+            }
+        }
+
+        // Hàm để hiển thị kết quả
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        // Hàm để tạo danh sách câu hỏi
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        // Hàm để cập nhật danh sách câu hỏi
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        // Hàm để chuyển đến câu hỏi cụ thể
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        // Hàm để làm lại bài kiểm tra
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            quizForm.style.display = 'block';
+            resultsSection.style.display = 'none';
+            startQuiz();
+        }
+
+        // Bắt đầu trò chơi
+        startQuiz();
+    </script>
+</body>
+</html>

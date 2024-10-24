@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Vi sinh vật là gì?",
+        answers: [
+            { text: "Là các sinh vật có kích thước nhỏ bé, thường không thể thấy bằng mắt thường", correct: true },
+            { text: "Là các sinh vật có kích thước lớn, có thể thấy bằng mắt thường", correct: false },
+            { text: "Là các sinh vật chỉ sống trong môi trường nước", correct: false },
+            { text: "Là các sinh vật chỉ sống trên cạn", correct: false }
+        ],
+        explanation: "Vi sinh vật là các sinh vật có kích thước nhỏ bé, thường không thể thấy bằng mắt thường."
+    },
+    {
+        question: "Câu 2: Vi khuẩn có đặc điểm cấu tạo nào?",
+        answers: [
+            { text: "Có tế bào không nhân thực", correct: true },
+            { text: "Có tế bào nhân thực", correct: false },
+            { text: "Chỉ sống trong môi trường hiếu khí", correct: false },
+            { text: "Chỉ sống trong môi trường kỵ khí", correct: false }
+        ],
+        explanation: "Vi khuẩn có đặc điểm cấu tạo là tế bào không nhân thực."
+    },
+    {
+        question: "Câu 3: Nấm men là một loại vi sinh vật thuộc nhóm nào?",
+        answers: [
+            { text: "Nấm", correct: true },
+            { text: "Vi khuẩn", correct: false },
+            { text: "Virus", correct: false },
+            { text: "Tảo", correct: false }
+        ],
+        explanation: "Nấm men là một loại vi sinh vật thuộc nhóm nấm."
+    },
+    {
+        question: "Câu 4: Kỹ thuật nào được sử dụng để phân lập vi khuẩn từ mẫu môi trường?",
+        answers: [
+            { text: "Nuôi cấy trên môi trường đặc", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Kỹ thuật nuôi cấy trên môi trường đặc được sử dụng để phân lập vi khuẩn từ mẫu môi trường."
+    },
+    {
+        question: "Câu 5: Phương pháp nào được sử dụng để xác định số lượng vi khuẩn trong mẫu?",
+        answers: [
+            { text: "Đếm khuẩn lạc trên đĩa petri", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Phương pháp đếm khuẩn lạc trên đĩa petri được sử dụng để xác định số lượng vi khuẩn trong mẫu."
+    },
+    {
+        question: "Câu 6: Virus có đặc điểm cấu tạo nào?",
+        answers: [
+            { text: "Không có cấu trúc tế bào, chỉ chứa DNA hoặc RNA", correct: true },
+            { text: "Có cấu trúc tế bào hoàn chỉnh", correct: false },
+            { text: "Chỉ chứa protein và lipid", correct: false },
+            { text: "Chỉ chứa carbohydrate", correct: false }
+        ],
+        explanation: "Virus có đặc điểm cấu tạo là không có cấu trúc tế bào, chỉ chứa DNA hoặc RNA."
+    },
+    {
+        question: "Câu 7: Tảo vi sinh vật thường sống ở đâu?",
+        answers: [
+            { text: "Trong môi trường nước", correct: true },
+            { text: "Trong môi trường đất", correct: false },
+            { text: "Trong không khí", correct: false },
+            { text: "Trên bề mặt da động vật", correct: false }
+        ],
+        explanation: "Tảo vi sinh vật thường sống trong môi trường nước."
+    },
+    {
+        question: "Câu 8: Kỹ thuật nào được sử dụng để phát hiện và xác định vi khuẩn gây bệnh?",
+        answers: [
+            { text: "PCR", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "Sắc ký", correct: false }
+        ],
+        explanation: "Kỹ thuật PCR được sử dụng để phát hiện và xác định vi khuẩn gây bệnh."
+    },
+    {
+        question: "Câu 9: Nấm vi sinh vật có thể gây ra những loại bệnh nào?",
+        answers: [
+            { text: "Nhiễm trùng da, viêm phổi, nhiễm trùng móng", correct: true },
+            { text: "Tiêu chảy, đau bụng", correct: false },
+            { text: "Cảm lạnh, ho khan", correct: false },
+            { text: "Viêm gan, viêm tụy", correct: false }
+        ],
+        explanation: "Nấm vi sinh vật có thể gây ra các bệnh như nhiễm trùng da, viêm phổi, nhiễm trùng móng."
+    },
+    {
+        question: "Câu 10: Phương pháp nào được sử dụng để xác định cấu trúc di truyền của vi khuẩn?",
+        answers: [
+            { text: "Giải trình tự gen", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "Sắc ký", correct: false }
+        ],
+        explanation: "Phương pháp giải trình tự gen được sử dụng để xác định cấu trúc di truyền của vi khuẩn."
+    },
+    {
+        question: "Câu 11: Tính chất đặc trưng của vi khuẩn gram âm là gì?",
+        answers: [
+            { text: "Có màng ngoài chứa lipopolysaccharide", correct: true },
+            { text: "Không có màng ngoài", correct: false },
+            { text: "Có màng ngoài chứa peptidoglycan", correct: false },
+            { text: "Không có vỏ nang", correct: false }
+        ],
+        explanation: "Vi khuẩn gram âm có màng ngoài chứa lipopolysaccharide."
+    },
+    {
+        question: "Câu 12: Kỹ thuật nào được sử dụng để đếm số lượng tế bào vi sinh vật sống trong mẫu?",
+        answers: [
+            { text: "Đếm khuẩn lạc trên đĩa petri", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Kỹ thuật đếm khuẩn lạc trên đĩa petri được sử dụng để đếm số lượng tế bào vi sinh vật sống trong mẫu."
+    },
+    {
+        question: "Câu 13: Vi khuẩn quang dưỡng là gì?",
+        answers: [
+            { text: "Vi khuẩn sử dụng ánh sáng làm nguồn năng lượng", correct: true },
+            { text: "Vi khuẩn sử dụng chất hữu cơ làm nguồn năng lượng", correct: false },
+            { text: "Vi khuẩn sử dụng chất vô cơ làm nguồn năng lượng", correct: false },
+            { text: "Vi khuẩn sống ký sinh trên cơ thể động vật", correct: false }
+        ],
+        explanation: "Vi khuẩn quang dưỡng là vi khuẩn sử dụng ánh sáng làm nguồn năng lượng."
+    },
+    {
+        question: "Câu 14: Phương pháp nào được sử dụng để phân tích sự đa dạng vi sinh vật trong mẫu môi trường?",
+        answers: [
+            { text: "Giải trình tự DNA metagenomics", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Phương pháp giải trình tự DNA metagenomics được sử dụng để phân tích sự đa dạng vi sinh vật trong mẫu môi trường."
+    },
+    {
+        question: "Câu 15: Vi khuẩn lactic được sử dụng để làm gì trong công nghiệp thực phẩm?",
+        answers: [
+            { text: "Sản xuất sữa chua và dưa chua", correct: true },
+            { text: "Sản xuất bia", correct: false },
+            { text: "Sản xuất thuốc kháng sinh", correct: false },
+            { text: "Sản xuất vitamin", correct: false }
+        ],
+        explanation: "Vi khuẩn lactic được sử dụng để sản xuất sữa chua và dưa chua trong công nghiệp thực phẩm."
+    },
+    {
+        question: "Câu 16: Vi khuẩn kỵ khí là gì?",
+        answers: [
+            { text: "Vi khuẩn sống trong môi trường không có oxy", correct: true },
+            { text: "Vi khuẩn sống trong môi trường có oxy", correct: false },
+            { text: "Vi khuẩn sống trong môi trường nước", correct: false },
+            { text: "Vi khuẩn sống ký sinh trên cơ thể động vật", correct: false }
+        ],
+        explanation: "Vi khuẩn kỵ khí là vi khuẩn sống trong môi trường không có oxy."
+    },
+    {
+        question: "Câu 17: Kỹ thuật nào được sử dụng để phân tích protein của vi sinh vật?",
+        answers: [
+            { text: "Western blot", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "PCR", correct: false },
+            { text: "Giải trình tự gen", correct: false }
+        ],
+        explanation: "Kỹ thuật Western blot được sử dụng để phân tích protein của vi sinh vật."
+    },
+    {
+        question: "Câu 18: Vi khuẩn chịu nhiệt là gì?",
+        answers: [
+            { text: "Vi khuẩn có thể sống và phát triển ở nhiệt độ cao", correct: true },
+            { text: "Vi khuẩn chỉ sống ở nhiệt độ thấp", correct: false },
+            { text: "Vi khuẩn chỉ sống ở môi trường trung tính", correct: false },
+            { text: "Vi khuẩn chỉ sống ở môi trường kiềm", correct: false }
+        ],
+        explanation: "Vi khuẩn chịu nhiệt là vi khuẩn có thể sống và phát triển ở nhiệt độ cao."
+    },
+    {
+        question: "Câu 19: Vi sinh vật được phân loại thành những nhóm chính nào?",
+        answers: [
+            { text: "Vi khuẩn, nấm, virus, tảo", correct: true },
+            { text: "Vi khuẩn, động vật, thực vật, nấm", correct: false },
+            { text: "Virus, động vật, thực vật, tảo", correct: false },
+            { text: "Vi khuẩn, động vật, thực vật, virus", correct: false }
+        ],
+        explanation: "Vi sinh vật được phân loại thành các nhóm chính: vi khuẩn, nấm, virus, tảo."
+    },
+    {
+        question: "Câu 20: Phương pháp nào được sử dụng để nuôi cấy và phân lập virus?",
+        answers: [
+            { text: "Nuôi cấy trong tế bào sống", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "Sắc ký", correct: false }
+        ],
+        explanation: "Phương pháp nuôi cấy trong tế bào sống được sử dụng để nuôi cấy và phân lập virus."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

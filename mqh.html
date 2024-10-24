@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const physiologicalQuestions = [
+    {
+        question: "Câu 1: Cơ quan nào trong cơ thể sinh vật điều hòa nồng độ glucose trong máu?",
+        answers: [
+            { text: "Thận", correct: false },
+            { text: "Gan", correct: true },
+            { text: "Tuyến tụy", correct: false },
+            { text: "Phổi", correct: false }
+        ],
+        explanation: "Giải thích: Gan điều hòa nồng độ glucose trong máu bằng cách tổng hợp và lưu trữ glycogen."
+    },
+    {
+        question: "Câu 2: Hệ thống nào giúp điều hòa nhiệt độ cơ thể và cân bằng nước và điện giải?",
+        answers: [
+            { text: "Hệ thần kinh", correct: false },
+            { text: "Hệ thống tiết niệu", correct: true },
+            { text: "Hệ thống tiêu hóa", correct: false },
+            { text: "Hệ thống hô hấp", correct: false }
+        ],
+        explanation: "Giải thích: Hệ thống tiết niệu giúp điều hòa nhiệt độ cơ thể và duy trì cân bằng nước và điện giải qua việc điều tiết lượng nước và các chất điện giải."
+    },
+    {
+        question: "Câu 3: Cơ quan nào có vai trò quan trọng trong việc điều hòa huyết áp của cơ thể?",
+        answers: [
+            { text: "Tim", correct: true },
+            { text: "Gan", correct: false },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Phổi", correct: false }
+        ],
+        explanation: "Giải thích: Tim có vai trò quan trọng trong việc điều hòa huyết áp của cơ thể bằng cách bơm máu đi qua mạch máu và tạo áp lực để đẩy máu lên các mạch máu."
+    },
+    {
+        question: "Câu 4: Cơ quan nào trong hệ tiêu hóa hấp thu chất dinh dưỡng từ thức ăn?",
+        answers: [
+            { text: "Dạ dày", correct: false },
+            { text: "Ruột non", correct: true },
+            { text: "Mật", correct: false },
+            { text: "Hậu môn", correct: false }
+        ],
+        explanation: "Giải thích: Ruột non trong hệ tiêu hóa hấp thu chất dinh dưỡng từ thức ăn và chuyển hóa chúng thành dạng có thể hấp thu."
+    },
+    {
+        question: "Câu 5: Cơ quan nào phụ trách điều khiển và duy trì sự cân bằng nước và các chất điện giải trong cơ thể?",
+        answers: [
+            { text: "Thận", correct: true },
+            { text: "Gan", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Bao tử", correct: false }
+        ],
+        explanation: "Giải thích: Thận phụ trách điều khiển và duy trì sự cân bằng nước và các chất điện giải trong cơ thể bằng cách lọc máu và điều tiết lượng nước được giữ lại hay bài tiết ra."
+    },
+    {
+        question: "Câu 6: Cơ quan nào trong hệ hô hấp có vai trò chính trong sự trao đổi khí?",
+        answers: [
+            { text: "Phổi", correct: true },
+            { text: "Lá phổi", correct: false },
+            { text: "Khí quản", correct: false },
+            { text: "Tuyến mù", correct: false }
+        ],
+        explanation: "Giải thích: Phổi trong hệ hô hấp có vai trò chính trong sự trao đổi khí bằng cách hít thở để cung cấp oxi và loại bỏ carbon dioxide."
+    },
+    {
+        question: "Câu 7: Cơ quan nào trong hệ miễn dịch sản xuất các kháng thể để bảo vệ cơ thể khỏi các mầm bệnh?",
+        answers: [
+            { text: "Tủy xương", correct: true },
+            { text: "Tuyến giáp", correct: false },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Tủy xương trong hệ miễn dịch sản xuất các kháng thể để bảo vệ cơ thể khỏi các mầm bệnh bằng cách nhận diện và tiêu diệt các yếu tố gây bệnh."
+    },
+    {
+        question: "Câu 8: Cơ quan nào trong hệ thần kinh có vai trò điều khiển và điều hòa các hoạt động của các cơ quan khác trong cơ thể?",
+        answers: [
+            { text: "Não", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Cơ não", correct: false }
+        ],
+        explanation: "Giải thích: Não trong hệ thần kinh có vai trò điều khiển và điều hòa các hoạt động của các cơ quan khác trong cơ thể bằng cách phát điện và truyền tín hiệu."
+    },
+    {
+        question: "Câu 9: Cơ quan nào trong hệ tiết niệu loại bỏ các chất độc hại và chất dư thừa khỏi cơ thể?",
+        answers: [
+            { text: "Thận", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Thận trong hệ tiết niệu loại bỏ các chất độc hại và chất dư thừa khỏi cơ thể bằng cách lọc máu và tạo nước tiểu."
+    },
+    {
+        question: "Câu 10: Cơ quan nào trong hệ cơ bắp có vai trò sản xuất lực để làm việc cho các hoạt động vận động của cơ thể?",
+        answers: [
+            { text: "Cơ bắp", correct: true },
+            { text: "Xương", correct: false },
+            { text: "Cơ gan", correct: false },
+            { text: "Cơ não", correct: false }
+        ],
+        explanation: "Giải thích: Cơ bắp trong hệ cơ bắp có vai trò sản xuất lực để làm việc cho các hoạt động vận động của cơ thể bằng cách co rút và kéo dài."
+    },
+    {
+        question: "Câu 11: Cơ quan nào trong hệ tiêu hóa hấp thu nước và các chất dinh dưỡng từ thực phẩm để duy trì sự sống?",
+        answers: [
+            { text: "Dạ dày", correct: false },
+            { text: "Ruột non", correct: true },
+            { text: "Mật", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Ruột non trong hệ tiêu hóa hấp thu nước và các chất dinh dưỡng từ thực phẩm để cung cấp năng lượng cho cơ thể và duy trì sự sống."
+    },
+    {
+        question: "Câu 12: Cơ quan nào trong hệ tiết niệu điều chỉnh nồng độ nước và các chất điện giải trong cơ thể?",
+        answers: [
+            { text: "Thận", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Thận trong hệ tiết niệu điều chỉnh nồng độ nước và các chất điện giải trong cơ thể bằng cách điều tiết lượng nước và các chất điện giải được giữ lại hay bài tiết ra."
+    },
+    {
+        question: "Câu 13: Cơ quan nào trong hệ miễn dịch sản xuất các tế bào bạch cầu để chống lại các mầm bệnh?",
+        answers: [
+            { text: "Tủy xương", correct: true },
+            { text: "Tuyến giáp", correct: false },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Tủy xương trong hệ miễn dịch sản xuất các tế bào bạch cầu để phát hiện và tiêu diệt các mầm bệnh trong cơ thể."
+    },
+    {
+        question: "Câu 14: Cơ quan nào trong hệ hô hấp giúp trao đổi khí giữa cơ thể và môi trường bên ngoài?",
+        answers: [
+            { text: "Phổi", correct: true },
+            { text: "Lá phổi", correct: false },
+            { text: "Khí quản", correct: false },
+            { text: "Tuyến mù", correct: false }
+        ],
+        explanation: "Giải thích: Phổi trong hệ hô hấp giúp trao đổi khí bằng cách hít thở để cung cấp oxi cho cơ thể và loại bỏ carbon dioxide ra khỏi cơ thể."
+    },
+    {
+        question: "Câu 15: Cơ quan nào trong hệ thần kinh chịu trách nhiệm điều khiển các hoạt động của cơ thể?",
+        answers: [
+            { text: "Não", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Cơ não", correct: false }
+        ],
+        explanation: "Giải thích: Não trong hệ thần kinh chịu trách nhiệm điều khiển các hoạt động của cơ thể bằng cách phát điện và truyền tín hiệu đến các cơ quan khác trong cơ thể."
+    },
+    {
+        question: "Câu 16: Cơ quan nào trong hệ tiết niệu loại bỏ các chất độc hại và chất dư thừa khỏi cơ thể?",
+        answers: [
+            { text: "Thận", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Thận trong hệ tiết niệu loại bỏ các chất độc hại và chất dư thừa khỏi cơ thể bằng cách lọc máu và tạo nước tiểu."
+    },
+    {
+        question: "Câu 17: Cơ quan nào trong hệ cơ bắp có vai trò chính trong việc sản xuất lực để làm việc cho các hoạt động vận động của cơ thể?",
+        answers: [
+            { text: "Cơ bắp", correct: true },
+            { text: "Xương", correct: false },
+            { text: "Cơ gan", correct: false },
+            { text: "Cơ não", correct: false }
+        ],
+        explanation: "Giải thích: Cơ bắp trong hệ cơ bắp có vai trò chính trong việc sản xuất lực để làm việc cho các hoạt động vận động của cơ thể bằng cách co rút và kéo dài."
+    },
+    {
+        question: "Câu 18: Cơ quan nào trong hệ tiêu hóa hấp thu nước và các chất dinh dưỡng từ thực phẩm để duy trì sự sống?",
+        answers: [
+            { text: "Dạ dày", correct: false },
+            { text: "Ruột non", correct: true },
+            { text: "Mật", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Ruột non trong hệ tiêu hóa hấp thu nước và các chất dinh dưỡng từ thực phẩm để cung cấp năng lượng cho cơ thể và duy trì sự sống."
+    },
+    {
+        question: "Câu 19: Cơ quan nào trong hệ tiết niệu điều chỉnh nồng độ nước và các chất điện giải trong cơ thể?",
+        answers: [
+            { text: "Thận", correct: true },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Tuyến nội tiết", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Thận trong hệ tiết niệu điều chỉnh nồng độ nước và các chất điện giải trong cơ thể bằng cách điều tiết lượng nước và các chất điện giải được giữ lại hay bài tiết ra."
+    },
+    {
+        question: "Câu 20: Cơ quan nào trong hệ miễn dịch sản xuất các tế bào bạch cầu để chống lại các mầm bệnh?",
+        answers: [
+            { text: "Tủy xương", correct: true },
+            { text: "Tuyến giáp", correct: false },
+            { text: "Tuyến thượng thận", correct: false },
+            { text: "Lá phổi", correct: false }
+        ],
+        explanation: "Giải thích: Tủy xương trong hệ miễn dịch sản xuất các tế bào bạch cầu để phát hiện và tiêu diệt các mầm bệnh trong cơ thể."
+    }
+];
+
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

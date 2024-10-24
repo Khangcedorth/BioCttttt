@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Khái niệm về phản ứng hóa học là gì?",
+        answers: [
+            { text: "Sự chuyển đổi của các chất thành các chất khác", correct: true },
+            { text: "Quá trình phân hủy chất", correct: false },
+            { text: "Quá trình tổng hợp chất", correct: false },
+            { text: "Quá trình thay đổi nhiệt độ", correct: false }
+        ],
+        explanation: "Phản ứng hóa học là quá trình sự chuyển đổi của các chất thành các chất khác."
+    },
+    {
+        question: "Câu 2: Đại lượng nào thường được sử dụng để mô tả năng lượng trong phản ứng hóa học?",
+        answers: [
+            { text: "Enthalpy (H)", correct: true },
+            { text: "Entropy (S)", correct: false },
+            { text: "Gibbs free energy (G)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Enthalpy (H) là đại lượng thường được sử dụng để mô tả năng lượng trong phản ứng hóa học."
+    },
+    {
+        question: "Câu 3: Enthalpy của phản ứng hóa học thường được biểu thị như thế nào?",
+        answers: [
+            { text: "ΔH", correct: true },
+            { text: "ΔS", correct: false },
+            { text: "ΔG", correct: false },
+            { text: "ΔEa", correct: false }
+        ],
+        explanation: "Enthalpy của phản ứng hóa học thường được biểu thị bằng ký hiệu ΔH (delta H)."
+    },
+    {
+        question: "Câu 4: Enthalpy dương (ΔH > 0) trong một phản ứng hóa học cho biết điều gì?",
+        answers: [
+            { text: "Phản ứng hấp thụ nhiệt", correct: true },
+            { text: "Phản ứng tỏa nhiệt", correct: false },
+            { text: "Phản ứng có sự gia tăng entropy", correct: false },
+            { text: "Phản ứng không thay đổi nhiệt độ", correct: false }
+        ],
+        explanation: "Enthalpy dương (ΔH > 0) trong một phản ứng hóa học cho biết phản ứng hấp thụ nhiệt từ môi trường xung quanh."
+    },
+    {
+        question: "Câu 5: Enthalpy âm (ΔH < 0) trong một phản ứng hóa học cho biết điều gì?",
+        answers: [
+            { text: "Phản ứng tỏa nhiệt", correct: true },
+            { text: "Phản ứng hấp thụ nhiệt", correct: false },
+            { text: "Phản ứng có sự giảm entropy", correct: false },
+            { text: "Phản ứng không thay đổi nhiệt độ", correct: false }
+        ],
+        explanation: "Enthalpy âm (ΔH < 0) trong một phản ứng hóa học cho biết phản ứng tỏa nhiệt ra môi trường xung quanh."
+    },
+    {
+        question: "Câu 6: Đại lượng nào biểu thị sự thay đổi entropy (độ hỗn loạn) trong phản ứng hóa học?",
+        answers: [
+            { text: "Entropy (S)", correct: true },
+            { text: "Enthalpy (H)", correct: false },
+            { text: "Gibbs free energy (G)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Entropy (S) biểu thị sự thay đổi entropy (độ hỗn loạn) trong phản ứng hóa học."
+    },
+    {
+        question: "Câu 7: Enthalpy tổng hợp của phản ứng hóa học được tính như thế nào?",
+        answers: [
+            { text: "Enthalpy của sản phẩm trừ đi enthalpy của tác chất", correct: true },
+            { text: "Enthalpy của tác chất trừ đi enthalpy của sản phẩm", correct: false },
+            { text: "Enthalpy của tất cả các chất trong phản ứng", correct: false },
+            { text: "Enthalpy của sản phẩm nhân với enthalpy của tác chất", correct: false }
+        ],
+        explanation: "Enthalpy tổng hợp của phản ứng hóa học được tính bằng cách lấy enthalpy của sản phẩm trừ đi enthalpy của tác chất."
+    },
+    {
+        question: "Câu 8: Đại lượng nào xác định tính khả thi của phản ứng hóa học dưới điều kiện tiêu chuẩn?",
+        answers: [
+            { text: "Gibbs free energy (ΔG)", correct: true },
+            { text: "Enthalpy (ΔH)", correct: false },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) xác định tính khả thi của phản ứng hóa học dưới điều kiện tiêu chuẩn."
+    },
+    {
+        question: "Câu 9: Phản ứng hóa học nào được coi là khả thi nếu ΔG < 0?",
+        answers: [
+            { text: "Phản ứng cân bằng", correct: true },
+            { text: "Phản ứng không cân bằng", correct: false },
+            { text: "Phản ứng chậm", correct: false },
+            { text: "Phản ứng không xảy ra", correct: false }
+        ],
+        explanation: "Phản ứng hóa học được coi là khả thi nếu Gibbs free energy (ΔG) nhỏ hơn 0 (ΔG < 0)."
+    },
+    {
+        question: "Câu 10: Đại lượng nào đánh giá sự tỏa nhiệt hay hấp thụ nhiệt trong phản ứng hóa học?",
+        answers: [
+            { text: "Enthalpy (ΔH)", correct: true },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Gibbs free energy (ΔG)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Enthalpy (ΔH) đánh giá sự tỏa nhiệt hay hấp thụ nhiệt trong phản ứng hóa học."
+    },
+    {
+        question: "Câu 11: Enthalpy dương trong phản ứng hóa học cho biết điều gì về nhiệt động học của phản ứng?",
+        answers: [
+            { text: "Phản ứng yêu cầu nhiều năng lượng để xảy ra", correct: true },
+            { text: "Phản ứng tỏa nhiều nhiệt khi xảy ra", correct: false },
+            { text: "Phản ứng không cần năng lượng để xảy ra", correct: false },
+            { text: "Phản ứng chỉ cần năng lượng ít để xảy ra", correct: false }
+        ],
+        explanation: "Enthalpy dương trong phản ứng hóa học cho biết phản ứng yêu cầu nhiều năng lượng (nhiệt) để xảy ra."
+    },
+    {
+        question: "Câu 12: Gibbs free energy (ΔG) âm trong phản ứng hóa học cho biết điều gì về tính khả thi của phản ứng?",
+        answers: [
+            { text: "Phản ứng là khả thi", correct: true },
+            { text: "Phản ứng không khả thi", correct: false },
+            { text: "Phản ứng cân bằng", correct: false },
+            { text: "Phản ứng chậm", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) âm trong phản ứng hóa học cho biết phản ứng là khả thi (diễn ra tự nhiên) dưới điều kiện tiêu chuẩn."
+    },
+    {
+        question: "Câu 13: Đại lượng nào đánh giá sự chất lượng năng lượng tự do của một phản ứng hóa học?",
+        answers: [
+            { text: "Gibbs free energy (ΔG)", correct: true },
+            { text: "Enthalpy (ΔH)", correct: false },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) đánh giá sự chất lượng năng lượng tự do của một phản ứng hóa học."
+    },
+    {
+        question: "Câu 14: Phản ứng hóa học được gọi là phản ứng nhiệt động học khi nào?",
+        answers: [
+            { text: "Khi ΔH ≠ 0 và ΔS ≠ 0", correct: true },
+            { text: "Khi ΔH = 0 và ΔS ≠ 0", correct: false },
+            { text: "Khi ΔH ≠ 0 và ΔS = 0", correct: false },
+            { text: "Khi ΔH = 0 và ΔS = 0", correct: false }
+        ],
+        explanation: "Phản ứng hóa học được gọi là phản ứng nhiệt động học khi cả ΔH và ΔS đều khác không."
+    },
+    {
+        question: "Câu 15: Enthalpy làm thay đổi của điều gì trong một phản ứng hóa học?",
+        answers: [
+            { text: "Nhiệt động học", correct: true },
+            { text: "Sự gia tăng entropy", correct: false },
+            { text: "Năng lượng tự do", correct: false },
+            { text: "Nhiệt độ", correct: false }
+        ],
+        explanation: "Enthalpy làm thay đổi của nhiệt động học trong một phản ứng hóa học."
+    },
+    {
+        question: "Câu 16: Gibbs free energy (ΔG) dương trong một phản ứng hóa học cho biết điều gì?",
+        answers: [
+            { text: "Phản ứng không khả thi", correct: true },
+            { text: "Phản ứng khả thi", correct: false },
+            { text: "Phản ứng cân bằng", correct: false },
+            { text: "Phản ứng không cần năng lượng để xảy ra", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) dương trong một phản ứng hóa học cho biết phản ứng không khả thi dưới điều kiện tiêu chuẩn."
+    },
+    {
+        question: "Câu 17: Đại lượng nào đánh giá tính khả thi của phản ứng hóa học dưới điều kiện khác tiêu chuẩn?",
+        answers: [
+            { text: "Gibbs free energy (ΔG)", correct: true },
+            { text: "Enthalpy (ΔH)", correct: false },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) đánh giá tính khả thi của phản ứng hóa học dưới điều kiện khác tiêu chuẩn."
+    },
+    {
+        question: "Câu 18: Enthalpy thay đổi như thế nào khi nhiệt độ thay đổi trong phản ứng hóa học?",
+        answers: [
+            { text: "Enthalpy thay đổi", correct: true },
+            { text: "Enthalpy không thay đổi", correct: false },
+            { text: "Enthalpy giảm dần", correct: false },
+            { text: "Enthalpy tăng dần", correct: false }
+        ],
+        explanation: "Enthalpy thay đổi khi nhiệt độ thay đổi trong phản ứng hóa học, do enthalpy phụ thuộc vào nhiệt độ."
+    },
+    {
+        question: "Câu 19: Đại lượng nào thường dùng để xác định tính chất nhiệt động học của phản ứng hóa học?",
+        answers: [
+            { text: "Enthalpy (ΔH)", correct: true },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Gibbs free energy (ΔG)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Enthalpy (ΔH) thường dùng để xác định tính chất nhiệt động học của phản ứng hóa học, ví dụ như sự tỏa nhiệt hay hấp thụ nhiệt."
+    },
+    {
+        question: "Câu 20: Đại lượng nào biểu thị sự thay đổi của năng lượng tự do trong phản ứng hóa học?",
+        answers: [
+            { text: "Gibbs free energy (ΔG)", correct: true },
+            { text: "Enthalpy (ΔH)", correct: false },
+            { text: "Entropy (ΔS)", correct: false },
+            { text: "Activation energy (Ea)", correct: false }
+        ],
+        explanation: "Gibbs free energy (ΔG) biểu thị sự thay đổi của năng lượng tự do trong phản ứng hóa học, dựa trên enthalpy và entropy của hệ thống."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

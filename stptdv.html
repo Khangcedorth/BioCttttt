@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const animalQuestions = [
+    {
+        question: "Câu 1: Động vật sinh trưởng như thế nào?",
+        answers: [
+            { text: "Bằng cách gia tăng số lượng tế bào", correct: false },
+            { text: "Bằng cách thay đổi cấu trúc cơ thể", correct: false },
+            { text: "Bằng cách gia tăng kích thước cơ thể", correct: true },
+            { text: "Bằng cách tăng cường chức năng của cơ thể", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng ở động vật là quá trình gia tăng kích thước cơ thể."
+    },
+    {
+        question: "Câu 2: Phát triển của động vật bao gồm những gì?",
+        answers: [
+            { text: "Chỉ bao gồm gia tăng về kích thước cơ thể", correct: false },
+            { text: "Gia tăng về số lượng tế bào", correct: false },
+            { text: "Thay đổi cấu trúc và chức năng của cơ thể", correct: true },
+            { text: "Sự gia tăng khối lượng cơ thể", correct: false }
+        ],
+        explanation: "Giải thích: Phát triển của động vật là quá trình thay đổi cấu trúc và chức năng của cơ thể."
+    },
+    {
+        question: "Câu 3: Quá trình nào không phải là phần của sự phát triển ở động vật?",
+        answers: [
+            { text: "Phân bào", correct: false },
+            { text: "Sinh sản vô tính", correct: true },
+            { text: "Sự biệt hoá tế bào", correct: false },
+            { text: "Hình thành mô mới", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản vô tính không phải là phần của sự phát triển ở động vật."
+    },
+    {
+        question: "Câu 4: Hormone nào quan trọng trong sự sinh trưởng của động vật?",
+        answers: [
+            { text: "Auxin", correct: false },
+            { text: "Insulin", correct: true },
+            { text: "Adrenaline", correct: false },
+            { text: "Thyroxin", correct: false }
+        ],
+        explanation: "Giải thích: Insulin là hormone quan trọng trong sự điều tiết sinh trưởng của động vật."
+    },
+    {
+        question: "Câu 5: Điều gì không ảnh hưởng đến sự sinh trưởng và phát triển của động vật?",
+        answers: [
+            { text: "Nhiệt độ", correct: false },
+            { text: "Ánh sáng", correct: false },
+            { text: "Âm thanh", correct: true },
+            { text: "Thức ăn", correct: false }
+        ],
+        explanation: "Giải thích: Âm thanh không phải yếu tố trực tiếp ảnh hưởng đến sự sinh trưởng và phát triển của động vật."
+    },
+    {
+        question: "Câu 6: Giai đoạn nào trong vòng đời của động vật có sự tăng trưởng nhanh nhất?",
+        answers: [
+            { text: "Sơ sinh", correct: false },
+            { text: "Thiếu niên", correct: false },
+            { text: "Tuổi trưởng thành", correct: true },
+            { text: "Tuổi già", correct: false }
+        ],
+        explanation: "Giải thích: Tuổi trưởng thành là giai đoạn có sự tăng trưởng nhanh nhất trong vòng đời của động vật."
+    },
+    {
+        question: "Câu 7: Sự biệt hoá tế bào là gì?",
+        answers: [
+            { text: "Sự gia tăng số lượng tế bào", correct: false },
+            { text: "Sự thay đổi chức năng của tế bào để thực hiện các nhiệm vụ chuyên biệt", correct: true },
+            { text: "Sự thay đổi về cấu trúc của tế bào", correct: false },
+            { text: "Sự phân bào tế bào", correct: false }
+        ],
+        explanation: "Giải thích: Sự biệt hoá tế bào là quá trình thay đổi chức năng của tế bào để thực hiện các nhiệm vụ chuyên biệt."
+    },
+    {
+        question: "Câu 8: Giai đoạn nào không phải là một phần của chu kỳ tế bào?",
+        answers: [
+            { text: "Kỳ trung gian", correct: false },
+            { text: "Kỳ phân bào", correct: false },
+            { text: "Kỳ hồi phục", correct: true },
+            { text: "Kỳ thụ tinh", correct: false }
+        ],
+        explanation: "Giải thích: Kỳ hồi phục không phải là một phần của chu kỳ tế bào, mà là giai đoạn phục hồi sau khi tế bào phân chia."
+    },
+    {
+        question: "Câu 9: Hormone nào quan trọng cho sự phát triển cơ bắp và xương ở động vật?",
+        answers: [
+            { text: "Insulin", correct: false },
+            { text: "Hormone tăng trưởng (GH)", correct: true },
+            { text: "Cortisol", correct: false },
+            { text: "Estrogen", correct: false }
+        ],
+        explanation: "Giải thích: Hormone tăng trưởng (GH) là hormone quan trọng cho sự phát triển cơ bắp và xương ở động vật."
+    },
+    {
+        question: "Câu 10: Quá trình nào dưới đây không phải là phần của phát triển của động vật?",
+        answers: [
+            { text: "Phát triển tế bào", correct: false },
+            { text: "Biệt hoá tế bào", correct: false },
+            { text: "Hình thành mô mới", correct: false },
+            { text: "Quang hợp", correct: true }
+        ],
+        explanation: "Giải thích: Quang hợp là quá trình của thực vật, không phải của động vật."
+    },
+    {
+        question: "Câu 11: Điều gì không ảnh hưởng đến sinh trưởng của động vật?",
+        answers: [
+            { text: "Nhiệt độ", correct: false },
+            { text: "Ánh sáng", correct: false },
+            { text: "Âm thanh", correct: true },
+            { text: "Thực phẩm", correct: false }
+        ],
+        explanation: "Giải thích: Âm thanh không ảnh hưởng trực tiếp đến sinh trưởng của động vật."
+    },
+    {
+        question: "Câu 12: Sự phát triển thứ cấp ở động vật bao gồm gì?",
+        answers: [
+            { text: "Phát triển chiều cao", correct: false },
+            { text: "Phát triển chiều rộng", correct: true },
+            { text: "Hình thành hoa", correct: false },
+            { text: "Phát triển lá", correct: false }
+        ],
+        explanation: "Giải thích: Sự phát triển thứ cấp ở động vật bao gồm phát triển chiều rộng của cơ thể."
+    },
+    {
+        question: "Câu 13: Hàng loạt nào sau đây không phải là phần của sự phát triển ở động vật?",
+        answers: [
+            { text: "Hình thành mô mới", correct: false },
+            { text: "Biệt hoá tế bào", correct: false },
+            { text: "Phân bào", correct: true },
+            { text: "Quá trình chuyển hóa", correct: false }
+        ],
+        explanation: "Giải thích: Phân bào là quá trình của sinh vật nhưng không phải là phần của sự phát triển của động vật."
+    },
+    {
+        question: "Câu 14: Động vật sinh trưởng như thế nào?",
+        answers: [
+            { text: "Bằng cách gia tăng số lượng tế bào", correct: false },
+            { text: "Bằng cách gia tăng kích thước cơ thể", correct: true },
+            { text: "Bằng cách thay đổi cấu trúc cơ thể", correct: false },
+            { text: "Bằng cách gia tăng khối lượng cơ thể", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng ở động vật là quá trình gia tăng kích thước cơ thể."
+    },
+    {
+        question: "Câu 15: Phát triển của động vật bao gồm những gì?",
+        answers: [
+            { text: "Gia tăng về số lượng tế bào", correct: false },
+            { text: "Gia tăng về kích thước cơ thể", correct: false },
+            { text: "Thay đổi cấu trúc và chức năng của cơ thể", correct: true },
+            { text: "Sự gia tăng khối lượng cơ thể", correct: false }
+        ],
+        explanation: "Giải thích: Phát triển của động vật là quá trình thay đổi cấu trúc và chức năng của cơ thể."
+    },
+    {
+        question: "Câu 16: Quá trình nào không phải là một phần của sự phát triển ở động vật?",
+        answers: [
+            { text: "Sinh sản vô tính", correct: true },
+            { text: "Biệt hoá tế bào", correct: false },
+            { text: "Hình thành mô mới", correct: false },
+            { text: "Phân bào", correct: false }
+        ],
+        explanation: "Giải thích: Sinh sản vô tính không phải là một phần của sự phát triển ở động vật."
+    },
+    {
+        question: "Câu 17: Hormone nào quan trọng trong sự phát triển cơ bắp và xương ở động vật?",
+        answers: [
+            { text: "Insulin", correct: false },
+            { text: "Estrogen", correct: false },
+            { text: "Hormone tăng trưởng (GH)", correct: true },
+            { text: "Cortisol", correct: false }
+        ],
+        explanation: "Giải thích: Hormone tăng trưởng (GH) quan trọng trong sự phát triển cơ bắp và xương ở động vật."
+    },
+    {
+        question: "Câu 18: Giai đoạn nào trong vòng đời của động vật có sự tăng trưởng nhanh nhất?",
+        answers: [
+            { text: "Sơ sinh", correct: false },
+            { text: "Thiếu niên", correct: false },
+            { text: "Tuổi trưởng thành", correct: true },
+            { text: "Tuổi già", correct: false }
+        ],
+        explanation: "Giải thích: Tuổi trưởng thành là giai đoạn có sự tăng trưởng nhanh nhất trong vòng đời của động vật."
+    },
+    {
+        question: "Câu 19: Sự biệt hoá tế bào là gì?",
+        answers: [
+            { text: "Sự thay đổi chức năng của tế bào để thực hiện các nhiệm vụ chuyên biệt", correct: true },
+            { text: "Sự gia tăng số lượng tế bào", correct: false },
+            { text: "Sự thay đổi về cấu trúc của tế bào", correct: false },
+            { text: "Sự phân bào tế bào", correct: false }
+        ],
+        explanation: "Giải thích: Sự biệt hoá tế bào là quá trình thay đổi chức năng của tế bào để thực hiện các nhiệm vụ chuyên biệt."
+    },
+    {
+        question: "Câu 20: Quá trình nào dưới đây là sự gia tăng về số lượng tế bào thông qua phân bào nguyên phân?",
+        answers: [
+            { text: "Sinh trưởng sơ cấp", correct: true },
+            { text: "Sinh trưởng thứ cấp", correct: false },
+            { text: "Phát triển", correct: false },
+            { text: "Biệt hóa", correct: false }
+        ],
+        explanation: "Giải thích: Sinh trưởng sơ cấp là quá trình sự gia tăng về số lượng tế bào thông qua phân bào nguyên phân."
+    }
+];
+
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

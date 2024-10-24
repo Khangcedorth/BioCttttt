@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Trao đổi chất là gì?",
+        answers: [
+            { text: "Là quá trình chuyển đổi các chất trong cơ thể sinh vật để duy trì sự sống", correct: true },
+            { text: "Là quá trình sinh sản của vi sinh vật", correct: false },
+            { text: "Là quá trình phân giải các chất hữu cơ", correct: false },
+            { text: "Là quá trình phát triển và sinh trưởng của vi sinh vật", correct: false }
+        ],
+        explanation: "Trao đổi chất là quá trình chuyển đổi các chất trong cơ thể sinh vật để duy trì sự sống."
+    },
+    {
+        question: "Câu 2: Vi khuẩn sử dụng đường glucose để làm gì trong quá trình trao đổi chất?",
+        answers: [
+            { text: "Để cung cấp năng lượng cho các hoạt động sống", correct: true },
+            { text: "Để tổng hợp protein", correct: false },
+            { text: "Để tổng hợp lipid", correct: false },
+            { text: "Để tổng hợp axit nucleic", correct: false }
+        ],
+        explanation: "Vi khuẩn sử dụng đường glucose để cung cấp năng lượng cho các hoạt động sống."
+    },
+    {
+        question: "Câu 3: Phân giải là gì trong quá trình trao đổi chất của vi sinh vật?",
+        answers: [
+            { text: "Là quá trình phân hủy các chất hữu cơ thành các chất đơn giản hơn", correct: true },
+            { text: "Là quá trình tổng hợp các chất hữu cơ từ các chất vô cơ", correct: false },
+            { text: "Là quá trình trao đổi khí", correct: false },
+            { text: "Là quá trình sinh sản của vi sinh vật", correct: false }
+        ],
+        explanation: "Phân giải là quá trình phân hủy các chất hữu cơ thành các chất đơn giản hơn."
+    },
+    {
+        question: "Câu 4: Sinh trưởng của vi sinh vật là gì?",
+        answers: [
+            { text: "Là sự gia tăng số lượng tế bào của vi sinh vật", correct: true },
+            { text: "Là sự gia tăng kích thước của một tế bào vi sinh vật", correct: false },
+            { text: "Là sự phát triển của vi sinh vật thành các dạng khác nhau", correct: false },
+            { text: "Là sự phân giải các chất hữu cơ", correct: false }
+        ],
+        explanation: "Sinh trưởng của vi sinh vật là sự gia tăng số lượng tế bào của vi sinh vật."
+    },
+    {
+        question: "Câu 5: Các yếu tố nào ảnh hưởng đến sinh trưởng của vi sinh vật?",
+        answers: [
+            { text: "Nhiệt độ, pH, ánh sáng, chất dinh dưỡng", correct: true },
+            { text: "Ánh sáng, âm thanh, không khí", correct: false },
+            { text: "Âm thanh, nhiệt độ, nước", correct: false },
+            { text: "Nhiệt độ, âm thanh, chất dinh dưỡng", correct: false }
+        ],
+        explanation: "Các yếu tố ảnh hưởng đến sinh trưởng của vi sinh vật bao gồm nhiệt độ, pH, ánh sáng và chất dinh dưỡng."
+    },
+    {
+        question: "Câu 6: Sinh sản của vi sinh vật là gì?",
+        answers: [
+            { text: "Là quá trình tạo ra các tế bào mới từ một tế bào ban đầu", correct: true },
+            { text: "Là quá trình gia tăng kích thước của tế bào", correct: false },
+            { text: "Là quá trình phân giải các chất hữu cơ", correct: false },
+            { text: "Là quá trình trao đổi chất của vi sinh vật", correct: false }
+        ],
+        explanation: "Sinh sản của vi sinh vật là quá trình tạo ra các tế bào mới từ một tế bào ban đầu."
+    },
+    {
+        question: "Câu 7: Phương pháp nào được sử dụng để nuôi cấy và phân lập vi sinh vật?",
+        answers: [
+            { text: "Nuôi cấy trên môi trường đặc và lỏng", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Điện di", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Phương pháp nuôi cấy trên môi trường đặc và lỏng được sử dụng để nuôi cấy và phân lập vi sinh vật."
+    },
+    {
+        question: "Câu 8: Vi khuẩn sinh sản theo hình thức nào?",
+        answers: [
+            { text: "Phân bào", correct: true },
+            { text: "Nảy chồi", correct: false },
+            { text: "Nảy mầm", correct: false },
+            { text: "Giao phối", correct: false }
+        ],
+        explanation: "Vi khuẩn thường sinh sản theo hình thức phân bào."
+    },
+    {
+        question: "Câu 9: Quá trình trao đổi chất hiếu khí là gì?",
+        answers: [
+            { text: "Là quá trình trao đổi chất sử dụng oxy", correct: true },
+            { text: "Là quá trình trao đổi chất không sử dụng oxy", correct: false },
+            { text: "Là quá trình trao đổi chất sử dụng carbon dioxide", correct: false },
+            { text: "Là quá trình trao đổi chất sử dụng nước", correct: false }
+        ],
+        explanation: "Quá trình trao đổi chất hiếu khí là quá trình trao đổi chất sử dụng oxy."
+    },
+    {
+        question: "Câu 10: Quá trình trao đổi chất kỵ khí là gì?",
+        answers: [
+            { text: "Là quá trình trao đổi chất không sử dụng oxy", correct: true },
+            { text: "Là quá trình trao đổi chất sử dụng oxy", correct: false },
+            { text: "Là quá trình trao đổi chất sử dụng carbon dioxide", correct: false },
+            { text: "Là quá trình trao đổi chất sử dụng nước", correct: false }
+        ],
+        explanation: "Quá trình trao đổi chất kỵ khí là quá trình trao đổi chất không sử dụng oxy."
+    },
+    {
+        question: "Câu 11: Vi khuẩn quang hợp sử dụng nguồn năng lượng nào?",
+        answers: [
+            { text: "Ánh sáng mặt trời", correct: true },
+            { text: "Chất hữu cơ", correct: false },
+            { text: "Chất vô cơ", correct: false },
+            { text: "Nhiệt độ", correct: false }
+        ],
+        explanation: "Vi khuẩn quang hợp sử dụng ánh sáng mặt trời làm nguồn năng lượng."
+    },
+    {
+        question: "Câu 12: Các vi sinh vật quang dưỡng sử dụng nguồn carbon nào?",
+        answers: [
+            { text: "CO2", correct: true },
+            { text: "CH4", correct: false },
+            { text: "H2O", correct: false },
+            { text: "O2", correct: false }
+        ],
+        explanation: "Các vi sinh vật quang dưỡng sử dụng CO2 làm nguồn carbon."
+    },
+    {
+        question: "Câu 13: Chu kỳ tế bào của vi khuẩn bao gồm những giai đoạn nào?",
+        answers: [
+            { text: "Giai đoạn G1, S, G2, và M", correct: true },
+            { text: "Giai đoạn A, B, C, và D", correct: false },
+            { text: "Giai đoạn 1, 2, 3, và 4", correct: false },
+            { text: "Giai đoạn X, Y, Z, và W", correct: false }
+        ],
+        explanation: "Chu kỳ tế bào của vi khuẩn bao gồm giai đoạn G1, S, G2, và M."
+    },
+    {
+        question: "Câu 14: Vi khuẩn sinh sản vô tính theo hình thức nào?",
+        answers: [
+            { text: "Phân bào", correct: true },
+            { text: "Giao phối", correct: false },
+            { text: "Thụ tinh", correct: false },
+            { text: "Nảy mầm", correct: false }
+        ],
+        explanation: "Vi khuẩn sinh sản vô tính theo hình thức phân bào."
+    },
+    {
+        question: "Câu 15: Vi khuẩn có thể sử dụng nguồn năng lượng nào để tổng hợp ATP?",
+        answers: [
+            { text: "Chất hữu cơ, ánh sáng, chất vô cơ", correct: true },
+            { text: "Nước, oxy, ánh sáng", correct: false },
+            { text: "Carbon dioxide, nước, oxy", correct: false },
+            { text: "Chất hữu cơ, nước, oxy", correct: false }
+        ],
+        explanation: "Vi khuẩn có thể sử dụng chất hữu cơ, ánh sáng, và chất vô cơ để tổng hợp ATP."
+    },
+    {
+    question: "Câu 16: Quá trình trao đổi chất cơ bản nhất ở vi khuẩn là gì?",
+    answers: [
+        { text: "Quang hợp và hô hấp", correct: true },
+        { text: "Quá trình trao đổi ion", correct: false },
+        { text: "Quá trình biến đổi gen", correct: false },
+        { text: "Quá trình sản xuất enzyme", correct: false }
+    ],
+    explanation: "Quá trình trao đổi chất cơ bản nhất ở vi khuẩn bao gồm quang hợp (trong những vi khuẩn có khả năng quang hợp) và hô hấp."
+    },
+    {
+        question: "Câu 17: Vi khuẩn lactic có vai trò gì trong công nghiệp thực phẩm?",
+        answers: [
+            { text: "Lên men tạo ra các sản phẩm như sữa chua", correct: true },
+            { text: "Làm sạch môi trường nước", correct: false },
+            { text: "Chế biến thực phẩm từ các loại rau quả", correct: false },
+            { text: "Sản xuất các loại dược phẩm từ thực vật", correct: false }
+        ],
+        explanation: "Vi khuẩn lactic có vai trò quan trọng trong lên men và sản xuất các sản phẩm như sữa chua."
+    },
+    {
+        question: "Câu 18: Vi khuẩn E. coli sinh sống chủ yếu ở đâu trong cơ thể người?",
+        answers: [
+            { text: "Trong ruột", correct: true },
+            { text: "Trong phổi", correct: false },
+            { text: "Trong não", correct: false },
+            { text: "Trong gan", correct: false }
+        ],
+        explanation: "Vi khuẩn E. coli sinh sống chủ yếu trong ruột của con người."
+    },
+    {
+        question: "Câu 19: Vi khuẩn nitrat giúp cấu trúc sinh trưởng của cây bằng cách nào?",
+        answers: [
+            { text: "Chuyển đổi nitrat thành nitơ phân tử và phân bón", correct: true },
+            { text: "Chuyển đổi CO2 thành O2", correct: false },
+            { text: "Tạo ra các hợp chất hữu cơ từ nước và CO2", correct: false },
+            { text: "Làm giàu đất bằng các dưỡng chất thiết yếu", correct: false }
+        ],
+        explanation: "Vi khuẩn nitrat giúp cây sinh trưởng bằng cách chuyển đổi nitrat thành nitơ phân tử và phân bón."
+    },
+    {
+        question: "Câu 20: Quá trình nào được sử dụng trong biến đổi gen vi khuẩn?",
+        answers: [
+            { text: "Tăng cường tính chất di truyền bằng cách chèn gen mới", correct: true },
+            { text: "Chuyển đổi chất hữu cơ thành chất vô cơ", correct: false },
+            { text: "Sản xuất các loại thuốc từ vi khuẩn", correct: false },
+            { text: "Phân hủy chất thải sinh học", correct: false }
+        ],
+        explanation: "Trong biến đổi gen vi khuẩn, quá trình tăng cường tính chất di truyền bằng cách chèn gen mới là phương pháp được sử dụng."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

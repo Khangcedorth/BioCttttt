@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Quần thể sinh vật là gì?",
+        answers: [
+            { text: "Là tập hợp các cá thể cùng loài sống trong một khu vực nhất định và có khả năng giao phối với nhau.", correct: true },
+            { text: "Là tập hợp các loài khác nhau sống trong cùng một môi trường.", correct: false },
+            { text: "Là tập hợp các yếu tố vô sinh và hữu sinh trong môi trường.", correct: false },
+            { text: "Là tập hợp các sinh vật không có mối quan hệ tương tác với nhau.", correct: false }
+        ],
+        explanation: "Quần thể sinh vật là tập hợp các cá thể cùng loài sống trong một khu vực nhất định và có khả năng giao phối với nhau."
+    },
+    {
+        question: "Câu 2: Yếu tố nào không ảnh hưởng đến kích thước quần thể?",
+        answers: [
+            { text: "Tỷ lệ sinh sản.", correct: false },
+            { text: "Tỷ lệ tử vong.", correct: false },
+            { text: "Di cư vào và di cư ra khỏi quần thể.", correct: false },
+            { text: "Sự thay đổi cấu trúc di truyền của các cá thể.", correct: true }
+        ],
+        explanation: "Sự thay đổi cấu trúc di truyền của các cá thể không ảnh hưởng trực tiếp đến kích thước quần thể."
+    },
+    {
+        question: "Câu 3: Mật độ quần thể là gì?",
+        answers: [
+            { text: "Là số lượng cá thể trên một đơn vị diện tích hoặc thể tích.", correct: true },
+            { text: "Là tổng số lượng cá thể trong quần thể.", correct: false },
+            { text: "Là tỷ lệ sinh sản và tử vong trong quần thể.", correct: false },
+            { text: "Là mức độ phân bố của các loài trong môi trường.", correct: false }
+        ],
+        explanation: "Mật độ quần thể là số lượng cá thể trên một đơn vị diện tích hoặc thể tích."
+    },
+    {
+        question: "Câu 4: Yếu tố nào có thể làm tăng kích thước quần thể?",
+        answers: [
+            { text: "Tỷ lệ sinh sản cao hơn tỷ lệ tử vong.", correct: true },
+            { text: "Tỷ lệ tử vong cao hơn tỷ lệ sinh sản.", correct: false },
+            { text: "Sự di cư ra khỏi quần thể.", correct: false },
+            { text: "Sự cạnh tranh giữa các cá thể trong quần thể.", correct: false }
+        ],
+        explanation: "Tỷ lệ sinh sản cao hơn tỷ lệ tử vong có thể làm tăng kích thước quần thể."
+    },
+    {
+        question: "Câu 5: Quá trình nào không làm thay đổi kích thước quần thể?",
+        answers: [
+            { text: "Tỷ lệ sinh sản.", correct: false },
+            { text: "Tỷ lệ tử vong.", correct: false },
+            { text: "Di cư vào và di cư ra khỏi quần thể.", correct: false },
+            { text: "Sự thay đổi trong cấu trúc di truyền của cá thể.", correct: true }
+        ],
+        explanation: "Sự thay đổi trong cấu trúc di truyền của cá thể không làm thay đổi kích thước quần thể."
+    },
+    {
+        question: "Câu 6: 'Tăng trưởng quần thể theo mô hình chữ J' là gì?",
+        answers: [
+            { text: "Là sự tăng trưởng không giới hạn của quần thể khi các điều kiện môi trường là lý tưởng.", correct: true },
+            { text: "Là sự tăng trưởng giới hạn của quần thể do sự cạnh tranh giữa các cá thể.", correct: false },
+            { text: "Là sự tăng trưởng của quần thể khi các yếu tố môi trường không thay đổi.", correct: false },
+            { text: "Là sự giảm số lượng cá thể trong quần thể do thiếu nguồn tài nguyên.", correct: false }
+        ],
+        explanation: "'Tăng trưởng quần thể theo mô hình chữ J' là sự tăng trưởng không giới hạn của quần thể khi các điều kiện môi trường là lý tưởng."
+    },
+    {
+        question: "Câu 7: Tăng trưởng quần thể theo mô hình chữ S xảy ra khi nào?",
+        answers: [
+            { text: "Khi quần thể đạt đến mức cân bằng với khả năng chịu đựng của môi trường.", correct: true },
+            { text: "Khi quần thể tăng trưởng không giới hạn.", correct: false },
+            { text: "Khi các yếu tố môi trường là lý tưởng.", correct: false },
+            { text: "Khi sự cạnh tranh giữa các cá thể là không đáng kể.", correct: false }
+        ],
+        explanation: "Tăng trưởng quần thể theo mô hình chữ S xảy ra khi quần thể đạt đến mức cân bằng với khả năng chịu đựng của môi trường."
+    },
+    {
+        question: "Câu 8: Khả năng chịu đựng của môi trường là gì?",
+        answers: [
+            { text: "Là mức độ mà môi trường có thể cung cấp các nguồn tài nguyên cần thiết để duy trì sự sống của quần thể.", correct: true },
+            { text: "Là mức độ cạnh tranh giữa các cá thể trong quần thể.", correct: false },
+            { text: "Là khả năng sinh sản của các cá thể trong quần thể.", correct: false },
+            { text: "Là mức độ phân bố của quần thể trong môi trường.", correct: false }
+        ],
+        explanation: "Khả năng chịu đựng của môi trường là mức độ mà môi trường có thể cung cấp các nguồn tài nguyên cần thiết để duy trì sự sống của quần thể."
+    },
+    {
+        question: "Câu 9: Yếu tố nào không phải là yếu tố mật độ phụ thuộc?",
+        answers: [
+            { text: "Cạnh tranh tài nguyên.", correct: false },
+            { text: "Bệnh tật.", correct: false },
+            { text: "Thiếu thức ăn.", correct: false },
+            { text: "Thiên tai.", correct: true }
+        ],
+        explanation: "Thiên tai không phải là yếu tố mật độ phụ thuộc vì nó ảnh hưởng đến quần thể mà không phụ thuộc vào mật độ của quần thể."
+    },
+    {
+        question: "Câu 10: Yếu tố nào có thể làm giảm kích thước quần thể?",
+        answers: [
+            { text: "Tỷ lệ tử vong cao hơn tỷ lệ sinh sản.", correct: true },
+            { text: "Tỷ lệ sinh sản cao hơn tỷ lệ tử vong.", correct: false },
+            { text: "Sự di cư vào quần thể.", correct: false },
+            { text: "Sự gia tăng nguồn tài nguyên.", correct: false }
+        ],
+        explanation: "Tỷ lệ tử vong cao hơn tỷ lệ sinh sản có thể làm giảm kích thước quần thể."
+    },
+    {
+        question: "Câu 11: Mối quan hệ cộng sinh là gì?",
+        answers: [
+            { text: "Là mối quan hệ giữa hai loài sống chung và cả hai đều có lợi.", correct: true },
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó cả hai đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ cộng sinh là mối quan hệ giữa hai loài sống chung và cả hai đều có lợi."
+    },
+    {
+        question: "Câu 12: Yếu tố nào là yếu tố mật độ độc lập?",
+        answers: [
+            { text: "Thiên tai.", correct: true },
+            { text: "Cạnh tranh tài nguyên.", correct: false },
+            { text: "Bệnh tật.", correct: false },
+            { text: "Sự thiếu thức ăn.", correct: false }
+        ],
+        explanation: "Thiên tai là yếu tố mật độ độc lập vì nó ảnh hưởng đến quần thể mà không phụ thuộc vào mật độ của quần thể."
+    },
+    {
+        question: "Câu 13: Sự phân bố ngẫu nhiên của quần thể thường xảy ra khi nào?",
+        answers: [
+            { text: "Khi các cá thể không tương tác mạnh với nhau và môi trường đồng nhất.", correct: true },
+            { text: "Khi các cá thể sống thành nhóm và môi trường không đồng nhất.", correct: false },
+            { text: "Khi các cá thể cạnh tranh gay gắt với nhau.", correct: false },
+            { text: "Khi các cá thể sống thành cặp đôi.", correct: false }
+        ],
+        explanation: "Sự phân bố ngẫu nhiên của quần thể thường xảy ra khi các cá thể không tương tác mạnh với nhau và môi trường đồng nhất."
+    },
+    {
+        question: "Câu 14: Mối quan hệ ký sinh là gì?",
+        answers: [
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia bị hại.", correct: true },
+            { text: "Là mối quan hệ giữa hai loài sống chung và cả hai đều có lợi.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó cả hai đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ ký sinh là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia bị hại."
+    },
+    {
+        question: "Câu 15: Quần thể có thể tự điều chỉnh kích thước của mình như thế nào?",
+        answers: [
+            { text: "Thông qua sự điều chỉnh tỷ lệ sinh sản và tử vong.", correct: true },
+            { text: "Thông qua sự di cư ra khỏi quần thể.", correct: false },
+            { text: "Thông qua sự thay đổi cấu trúc di truyền của cá thể.", correct: false },
+            { text: "Thông qua sự cạnh tranh giữa các cá thể.", correct: false }
+        ],
+        explanation: "Quần thể có thể tự điều chỉnh kích thước của mình thông qua sự điều chỉnh tỷ lệ sinh sản và tử vong."
+    },
+    {
+        question: "Câu 16: Sự phân bố tập trung của quần thể thường xảy ra khi nào?",
+        answers: [
+            { text: "Khi các cá thể sống thành nhóm để tăng khả năng sống sót và sinh sản.", correct: true },
+            { text: "Khi các cá thể không tương tác mạnh với nhau.", correct: false },
+            { text: "Khi môi trường đồng nhất.", correct: false },
+            { text: "Khi các cá thể cạnh tranh gay gắt với nhau.", correct: false }
+        ],
+        explanation: "Sự phân bố tập trung của quần thể thường xảy ra khi các cá thể sống thành nhóm để tăng khả năng sống sót và sinh sản."
+    },
+    {
+        question: "Câu 17: Yếu tố nào không phải là yếu tố mật độ phụ thuộc?",
+        answers: [
+            { text: "Thiếu thức ăn.", correct: false },
+            { text: "Bệnh tật.", correct: false },
+            { text: "Cạnh tranh tài nguyên.", correct: false },
+            { text: "Sự thay đổi khí hậu.", correct: true }
+        ],
+        explanation: "Sự thay đổi khí hậu không phải là yếu tố mật độ phụ thuộc vì nó ảnh hưởng đến quần thể mà không phụ thuộc vào mật độ của quần thể."
+    },
+    {
+        question: "Câu 18: Sự phân bố đều của quần thể thường xảy ra khi nào?",
+        answers: [
+            { text: "Khi các cá thể cạnh tranh gay gắt với nhau và môi trường không đồng nhất.", correct: true },
+            { text: "Khi các cá thể sống thành nhóm và môi trường không đồng nhất.", correct: false },
+            { text: "Khi các cá thể không tương tác mạnh với nhau.", correct: false },
+            { text: "Khi môi trường đồng nhất.", correct: false }
+        ],
+        explanation: "Sự phân bố đều của quần thể thường xảy ra khi các cá thể cạnh tranh gay gắt với nhau và môi trường không đồng nhất."
+    },
+    {
+        question: "Câu 19: Mối quan hệ hỗ sinh là gì?",
+        answers: [
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia không bị ảnh hưởng.", correct: true },
+            { text: "Là mối quan hệ giữa hai loài sống chung và cả hai đều có lợi.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia bị hại.", correct: false },
+            { text: "Là mối quan hệ giữa hai loài trong đó cả hai đều bị hại.", correct: false }
+        ],
+        explanation: "Mối quan hệ hỗ sinh là mối quan hệ giữa hai loài trong đó một loài có lợi và loài kia không bị ảnh hưởng."
+    },
+    {
+        question: "Câu 20: Sự di cư vào quần thể có thể làm thay đổi điều gì?",
+        answers: [
+            { text: "Kích thước quần thể và mật độ quần thể.", correct: true },
+            { text: "Cấu trúc di truyền của cá thể.", correct: false },
+            { text: "Khả năng chịu đựng của môi trường.", correct: false },
+            { text: "Mối quan hệ giữa các loài trong quần thể.", correct: false }
+        ],
+        explanation: "Sự di cư vào quần thể có thể làm thay đổi kích thước quần thể và mật độ quần thể."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

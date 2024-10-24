@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE BIOLOGY - SINH HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+   <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Chuyển hoá cơ bản là gì",
+                answers: [
+                    { text: "Năng lượng tiêu dùng khi cơ thể ở trạng thái nghỉ ngơi", correct: true },
+                    { text: "Năng lượng tiêu dùng khi cơ thể ở trạng thái lao động", correct: false },
+                    { text: "Năng lượng tích luỹ khi cơ thể ở trạng thái lao lực", correct: false},
+                    { text: "Năng lượng tích luỹ khi cơ thể ở trạng thái hoàn toàn nghỉ ngơi", correct: false }
+                ],
+                explanation: "Chuyển hoá cơ bản (Basal Metabolic Rate - BMR) là mức năng lượng cần thiết để duy trì các chức năng cơ bản của cơ thể khi ở trạng thái nghỉ ngơi."
+            },
+            {
+                question: "Câu 2: Các dấu hiệu đặc trưng của trao đổi chất và chuyển hoá năng lượng?",
+                answers: [
+                    { text: "Tiếp nhận và vận chuyển các chất", correct: false },
+                    { text: "Biến đổi các chất kèm theo chuyển hoá năng lượng", correct: false },
+                    { text: "Thải các chất vào môi trường, điều hoà", correct: false},
+                    { text: "Tất cả các ý đều đúng", correct: true }
+                ],
+                explanation: "Trao đổi chất và chuyển hoá năng lượng bao gồm tiếp nhận và vận chuyển các chất, biến đổi các chất kèm theo chuyển hoá năng lượng, và thải các chất ra môi trường cùng với điều hoà quá trình này."
+            },
+            {
+                question: "Câu 3: Có bao nhiêu giai đoạn chuyển hoá năng lượng trong sinh giới",
+                answers: [
+                    { text: "5", correct: false },
+                    { text: "4", correct: false },
+                    { text: "3", correct: true},
+                    { text: "2", correct: false }
+                ],
+                explanation: "Có ba giai đoạn chính trong chuyển hoá năng lượng: 1) Quá trình tổng hợp chất mới (đồng hoá), 2) Quá trình phân giải các chất (dị hoá), 3) Quá trình sử dụng năng lượng để thực hiện các chức năng sống."
+            },
+            {
+                question: "Câu 4: Nguồn năng lượng khởi đầu (cốt lõi) trong sinh giới là gì",
+                answers: [
+                    { text: "Năng lượng từ trường", correct: false },
+                    { text: "Năng lượng ánh sáng", correct: true },
+                    { text: "Năng lượng hoá học", correct: false},
+                    { text: "Năng lượng gió", correct: false }
+                ],
+                explanation: "Nguồn năng lượng khởi đầu trong sinh giới là năng lượng ánh sáng từ mặt trời, được sử dụng trong quá trình quang hợp để tổng hợp chất hữu cơ từ CO2 và nước."
+            },
+            {
+                question: "Câu 5: Giai đoạn nào tập trung năng lượng để phân táng đi các tế bào phục vụ cho hoạt động sống?",
+                answers: [
+                    { text: "Giai đoạn tổng hợp", correct: false },
+                    { text: "Giai đoạn huy động năng lượng", correct: true },
+                    { text: "Giai đoạn phân giải", correct: false},
+                    { text: "Giai đoạn vận chuyển", correct: false }
+                ],
+                explanation: "Giai đoạn huy động năng lượng là giai đoạn mà năng lượng được tích trữ từ các quá trình đồng hoá được sử dụng và phân phối đến các tế bào để thực hiện các chức năng sống."
+            },
+            {
+                question: "Câu 6: Quá trình hấp thu khí oxygen và thải ra khi carbon dioxide được diễn ra tại hệ cơ quan nào trong cơ thể?",
+                answers: [
+                    { text: "Hệ tuần hoàn", correct: false },
+                    { text: "Hệ tiêu hoá", correct: false },
+                    { text: "Hệ thần kinh", correct: false},
+                    { text: "Hệ hô hấp", correct: true }
+                ],
+                explanation: "Quá trình trao đổi khí (hấp thu O2 và thải CO2) diễn ra chủ yếu ở hệ hô hấp, cụ thể là tại phổi nơi diễn ra sự trao đổi khí giữa phế nang và mao mạch máu."
+            },
+            {
+                question: "Câu 7: Quá trình nào sau đây gọi là đồng hoá?",
+                answers: [
+                    { text: "Tổng hợp chất mới, tích luỹ năng lượng", correct: true },
+                    { text: "Phân huỷ các chất", correct: false },
+                    { text: "Giải phóng năng lượng", correct: false},
+                    { text: "Hấp thu năng lượng", correct: false }
+                ],
+                explanation: "Đồng hoá là quá trình tổng hợp các chất mới từ các nguyên liệu đơn giản hơn, kèm theo sự tích luỹ năng lượng."
+            },
+            {
+                question: "Câu 8: Trong các sinh vật sau, nhóm sinh vật nào có khả năng tự dưỡng?",
+                answers: [
+                    { text: "Tảo, cá, chim, rau, cây xà cừ", correct: false },
+                    { text: "Tảo, trùng roi xanh, lúa, cây xà cừ", correct: true },
+                    { text: "Tảo, nấm, rau, lúa, cây xà cừ", correct: false},
+                    { text: "Con người, vật nuôi, cây trồng", correct: false }
+                ],
+                explanation: "Nhóm sinh vật có khả năng tự dưỡng bao gồm các sinh vật như tảo, trùng roi xanh, lúa và cây xà cừ, vì chúng có khả năng tự tổng hợp chất hữu cơ từ các chất vô cơ nhờ quá trình quang hợp."
+            },
+            {
+                question: "Câu 9: Nguồn năng lượng cơ thể sinh vật giải phóng ra ngoài môi trường dưới dạng nào là chủ yếu?",
+                answers: [
+                    { text: "Cơ năng", correct: false },
+                    { text: "Nhiệt năng", correct: true },
+                    { text: "Hoá năng", correct: false},
+                    { text: "Động năng", correct: false }
+                ],
+                explanation: "Năng lượng chủ yếu được giải phóng ra ngoài môi trường dưới dạng nhiệt năng, giúp duy trì nhiệt độ cơ thể và các quá trình sinh lý khác."
+            },
+            {
+                question: "Câu 10: Trong tế bào và cơ thể sinh vật, năng lượng chủ yếu được tích trữ?",
+                answers: [
+                    { text: "Trong các mô mỡ và máu", correct: false },
+                    { text: "Trong các liên kết hoá học", correct: true },
+                    { text: "Trong các phản ứng", correct: false},
+                    { text: "Trong các bào quan của tế bào", correct: false }
+                ],
+                explanation: "Năng lượng trong tế bào và cơ thể sinh vật chủ yếu được tích trữ trong các liên kết hoá học, như trong các phân tử ATP."
+            },
+            {
+                question: "Câu 11: ATP là nguồn năng lượng chính trong tế bào?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false }
+                ],
+                explanation: "ATP là nguồn năng lượng chính cho các quá trình sinh học trong tế bào."
+            },
+            {
+                question: "Câu 12: Chuyển hóa năng lượng trong cơ thể chủ yếu thông qua hô hấp tế bào?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false }
+                ],
+                explanation: "Chuyển hóa năng lượng trong cơ thể sinh vật chủ yếu thông qua quá trình hô hấp tế bào, nơi ATP được sản xuất."
+            },
+            {
+                question: "Câu 13: Quá trình phân giải glucose là một phần của quá trình trao đổi chất?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false }
+                ],
+                explanation: "Phân giải glucose là một phần quan trọng của quá trình trao đổi chất, cung cấp năng lượng cho tế bào."
+            },
+            {
+                question: "Câu 14: Enzyme không ảnh hưởng đến tốc độ của các phản ứng trao đổi chất?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true }
+                ],
+                explanation: "Enzyme là chất xúc tác sinh học, giúp tăng tốc độ các phản ứng trao đổi chất trong cơ thể."
+            },
+            {
+                question: "Câu 15: Các chất độc hại nếu ứ động sẽ không gây hại gì cho cây?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true }
+                ],
+                explanation: "Các chất độc hại nếu ứ động sẽ gây hại cho cây."
+            },
+            
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

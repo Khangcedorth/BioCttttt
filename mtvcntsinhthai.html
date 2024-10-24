@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Môi trường sinh thái là gì?",
+        answers: [
+            { text: "Là toàn bộ các yếu tố vô sinh và hữu sinh tác động đến sinh vật.", correct: true },
+            { text: "Là các yếu tố vô sinh trong môi trường.", correct: false },
+            { text: "Là các yếu tố hữu sinh trong môi trường.", correct: false },
+            { text: "Là các yếu tố không liên quan đến sinh vật.", correct: false }
+        ],
+        explanation: "Môi trường sinh thái là toàn bộ các yếu tố vô sinh và hữu sinh tác động đến sinh vật."
+    },
+    {
+        question: "Câu 2: Yếu tố vô sinh nào sau đây không phải là yếu tố môi trường?",
+        answers: [
+            { text: "Ánh sáng.", correct: false },
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Cấu trúc di truyền.", correct: true },
+            { text: "Độ ẩm.", correct: false }
+        ],
+        explanation: "Cấu trúc di truyền là yếu tố thuộc về sinh vật, không phải yếu tố vô sinh của môi trường."
+    },
+    {
+        question: "Câu 3: Mối quan hệ nào sau đây là mối quan hệ cạnh tranh giữa các sinh vật?",
+        answers: [
+            { text: "Hai loài cây cùng sống trong một khu rừng và cạnh tranh nhau ánh sáng.", correct: true },
+            { text: "Cây và nấm sống cộng sinh với nhau.", correct: false },
+            { text: "Một loài vật ăn thịt săn mồi một loài vật khác.", correct: false },
+            { text: "Một loài chim sống trong tổ cây.", correct: false }
+        ],
+        explanation: "Hai loài cây cùng sống trong một khu rừng và cạnh tranh nhau ánh sáng là mối quan hệ cạnh tranh."
+    },
+    {
+        question: "Câu 4: Nhân tố sinh thái nào ảnh hưởng đến khả năng quang hợp của thực vật?",
+        answers: [
+            { text: "Ánh sáng.", correct: true },
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Độ ẩm.", correct: false },
+            { text: "Độ mặn.", correct: false }
+        ],
+        explanation: "Ánh sáng là nhân tố quan trọng ảnh hưởng đến khả năng quang hợp của thực vật."
+    },
+    {
+        question: "Câu 5: Sự thay đổi nhiệt độ có thể ảnh hưởng đến yếu tố nào trong môi trường sinh thái?",
+        answers: [
+            { text: "Sự phân bố của sinh vật.", correct: true },
+            { text: "Cấu trúc di truyền của sinh vật.", correct: false },
+            { text: "Quá trình quang hợp của thực vật.", correct: false },
+            { text: "Sự phân giải chất hữu cơ.", correct: false }
+        ],
+        explanation: "Sự thay đổi nhiệt độ có thể ảnh hưởng đến sự phân bố của sinh vật trong môi trường sinh thái."
+    },
+    {
+        question: "Câu 6: Sự tương tác nào sau đây không phải là sự tương tác giữa các nhân tố sinh thái?",
+        answers: [
+            { text: "Sự cạnh tranh giữa hai loài cá.", correct: false },
+            { text: "Sự hợp tác giữa cây và vi khuẩn cố định đạm.", correct: false },
+            { text: "Sự thay đổi ngẫu nhiên trong cấu trúc di truyền của sinh vật.", correct: true },
+            { text: "Sự săn mồi của sư tử và hươu.", correct: false }
+        ],
+        explanation: "Sự thay đổi ngẫu nhiên trong cấu trúc di truyền của sinh vật không phải là sự tương tác giữa các nhân tố sinh thái."
+    },
+    {
+        question: "Câu 7: Yếu tố nào không phải là nhân tố hữu sinh trong môi trường?",
+        answers: [
+            { text: "Thực vật.", correct: false },
+            { text: "Động vật.", correct: false },
+            { text: "Vi khuẩn.", correct: false },
+            { text: "Nước.", correct: true }
+        ],
+        explanation: "Nước là yếu tố vô sinh, không phải nhân tố hữu sinh trong môi trường."
+    },
+    {
+        question: "Câu 8: Quá trình nào sau đây thuộc về sự tuần hoàn của các chất trong môi trường?",
+        answers: [
+            { text: "Sự phân giải chất hữu cơ.", correct: true },
+            { text: "Sự thay đổi nhiệt độ.", correct: false },
+            { text: "Sự di cư của các loài động vật.", correct: false },
+            { text: "Sự phân tách địa lý.", correct: false }
+        ],
+        explanation: "Sự phân giải chất hữu cơ là một quá trình quan trọng trong sự tuần hoàn của các chất trong môi trường."
+    },
+    {
+        question: "Câu 9: Mối quan hệ nào sau đây không phải là mối quan hệ cộng sinh?",
+        answers: [
+            { text: "Cây và nấm sống cộng sinh.", correct: false },
+            { text: "Vi khuẩn cố định đạm và rễ cây họ đậu.", correct: false },
+            { text: "Cây và động vật ăn cỏ.", correct: true },
+            { text: "Vi khuẩn đường ruột và con người.", correct: false }
+        ],
+        explanation: "Cây và động vật ăn cỏ có mối quan hệ ăn thịt con mồi, không phải là mối quan hệ cộng sinh."
+    },
+    {
+        question: "Câu 10: Sự thay đổi ngẫu nhiên trong môi trường có thể dẫn đến điều gì?",
+        answers: [
+            { text: "Sự biến đổi của quần thể sinh vật.", correct: true },
+            { text: "Sự hình thành loài mới.", correct: false },
+            { text: "Sự thay đổi trong cấu trúc di truyền của các cá thể.", correct: false },
+            { text: "Sự phân giải chất hữu cơ.", correct: false }
+        ],
+        explanation: "Sự thay đổi ngẫu nhiên trong môi trường có thể dẫn đến sự biến đổi của quần thể sinh vật."
+    },
+    {
+        question: "Câu 11: Nhân tố nào sau đây không phải là nhân tố vô sinh trong môi trường?",
+        answers: [
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Độ ẩm.", correct: false },
+            { text: "Thực vật.", correct: true },
+            { text: "Ánh sáng.", correct: false }
+        ],
+        explanation: "Thực vật là nhân tố hữu sinh, không phải nhân tố vô sinh trong môi trường."
+    },
+    {
+        question: "Câu 12: Khái niệm 'quần xã sinh vật' là gì?",
+        answers: [
+            { text: "Là tập hợp các quần thể sinh vật khác loài cùng sống trong một môi trường nhất định và có mối quan hệ tương tác với nhau.", correct: true },
+            { text: "Là tập hợp các cá thể cùng loài sống trong một môi trường.", correct: false },
+            { text: "Là tập hợp các sinh vật không có mối quan hệ tương tác với nhau.", correct: false },
+            { text: "Là tập hợp các yếu tố vô sinh trong môi trường.", correct: false }
+        ],
+        explanation: "Quần xã sinh vật là tập hợp các quần thể sinh vật khác loài cùng sống trong một môi trường nhất định và có mối quan hệ tương tác với nhau."
+    },
+    {
+        question: "Câu 13: Vai trò của vi khuẩn cố định đạm trong môi trường là gì?",
+        answers: [
+            { text: "Chuyển đổi nitơ từ không khí thành các hợp chất có thể hấp thụ được bởi thực vật.", correct: true },
+            { text: "Phân giải chất hữu cơ thành các chất vô cơ.", correct: false },
+            { text: "Cung cấp năng lượng cho quang hợp.", correct: false },
+            { text: "Tăng cường sự cạnh tranh giữa các loài thực vật.", correct: false }
+        ],
+        explanation: "Vi khuẩn cố định đạm chuyển đổi nitơ từ không khí thành các hợp chất có thể hấp thụ được bởi thực vật."
+    },
+    {
+        question: "Câu 14: Yếu tố nào không ảnh hưởng đến sự phân bố của sinh vật trong môi trường?",
+        answers: [
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Ánh sáng.", correct: false },
+            { text: "Độ ẩm.", correct: false },
+            { text: "Sự tương tác giữa các loài.", correct: true }
+        ],
+        explanation: "Sự tương tác giữa các loài không ảnh hưởng trực tiếp đến sự phân bố của sinh vật trong môi trường."
+    },
+    {
+        question: "Câu 15: Khái niệm 'hệ sinh thái' là gì?",
+        answers: [
+            { text: "Là hệ thống bao gồm các sinh vật và môi trường sống của chúng, có mối quan hệ tương tác với nhau.", correct: true },
+            { text: "Là tập hợp các yếu tố vô sinh trong môi trường.", correct: false },
+            { text: "Là tập hợp các cá thể cùng loài sống trong một môi trường.", correct: false },
+            { text: "Là hệ thống không có mối quan hệ tương tác giữa các thành phần.", correct: false }
+        ],
+        explanation: "Hệ sinh thái là hệ thống bao gồm các sinh vật và môi trường sống của chúng, có mối quan hệ tương tác với nhau."
+    },
+    {
+        question: "Câu 16: Sự biến đổi khí hậu có thể ảnh hưởng đến yếu tố nào trong môi trường sinh thái?",
+        answers: [
+            { text: "Sự phân bố của sinh vật.", correct: true },
+            { text: "Cấu trúc di truyền của sinh vật.", correct: false },
+            { text: "Quá trình quang hợp của thực vật.", correct: false },
+            { text: "Sự phân giải chất hữu cơ.", correct: false }
+        ],
+        explanation: "Sự biến đổi khí hậu có thể ảnh hưởng đến sự phân bố của sinh vật trong môi trường sinh thái."
+    },
+    {
+        question: "Câu 17: Mối quan hệ nào sau đây là mối quan hệ cộng sinh?",
+        answers: [
+            { text: "Cây và nấm sống cộng sinh với nhau.", correct: true },
+            { text: "Hai loài cây cạnh tranh nhau ánh sáng.", correct: false },
+            { text: "Sư tử săn mồi hươu.", correct: false },
+            { text: "Chim ăn sâu bọ trên cây.", correct: false }
+        ],
+        explanation: "Cây và nấm sống cộng sinh với nhau là mối quan hệ cộng sinh."
+    },
+    {
+        question: "Câu 18: Sự thay đổi nhiệt độ có thể ảnh hưởng đến yếu tố nào trong môi trường sinh thái?",
+        answers: [
+            { text: "Sự phân bố của sinh vật.", correct: true },
+            { text: "Cấu trúc di truyền của sinh vật.", correct: false },
+            { text: "Quá trình quang hợp của thực vật.", correct: false },
+            { text: "Sự phân giải chất hữu cơ.", correct: false }
+        ],
+        explanation: "Sự thay đổi nhiệt độ có thể ảnh hưởng đến sự phân bố của sinh vật trong môi trường sinh thái."
+    },
+    {
+        question: "Câu 19: Vai trò của ánh sáng trong môi trường sinh thái là gì?",
+        answers: [
+            { text: "Cung cấp năng lượng cho quá trình quang hợp của thực vật.", correct: true },
+            { text: "Tăng cường sự cạnh tranh giữa các loài.", correct: false },
+            { text: "Phân giải chất hữu cơ thành các chất vô cơ.", correct: false },
+            { text: "Chuyển đổi nitơ từ không khí thành các hợp chất có thể hấp thụ được bởi thực vật.", correct: false }
+        ],
+        explanation: "Ánh sáng cung cấp năng lượng cho quá trình quang hợp của thực vật."
+    },
+    {
+        question: "Câu 20: Nhân tố nào sau đây không ảnh hưởng đến sự sinh trưởng và phát triển của sinh vật?",
+        answers: [
+            { text: "Nhiệt độ.", correct: false },
+            { text: "Ánh sáng.", correct: false },
+            { text: "Độ ẩm.", correct: false },
+            { text: "Cấu trúc di truyền.", correct: true }
+        ],
+        explanation: "Cấu trúc di truyền không phải là yếu tố môi trường ảnh hưởng trực tiếp đến sự sinh trưởng và phát triển của sinh vật."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

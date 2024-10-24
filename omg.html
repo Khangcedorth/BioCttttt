@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Tương tác giữa kiểu gene và môi trường có thể ảnh hưởng đến yếu tố nào trong sinh vật?",
+        answers: [
+            { text: "Chỉ số cơ thể", correct: false },
+            { text: "Hành vi", correct: false },
+            { text: "Tính trạng hình thái", correct: true },
+            { text: "Tính trạng di truyền", correct: false }
+        ],
+        explanation: "Tương tác giữa kiểu gene và môi trường có thể ảnh hưởng đến tính trạng hình thái của sinh vật."
+    },
+    {
+        question: "Câu 2: Tính trạng nào sau đây có thể bị ảnh hưởng bởi yếu tố môi trường?",
+        answers: [
+            { text: "Màu sắc của lông", correct: true },
+            { text: "Màu mắt", correct: false },
+            { text: "Nhóm máu", correct: false},
+            { text: "Số lượng nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Màu sắc của lông có thể bị ảnh hưởng bởi yếu tố môi trường như nhiệt độ, ánh sáng."
+    },
+    {
+        question: "Câu 3: Hiện tượng nào mô tả sự thay đổi tính trạng do tương tác giữa gene và môi trường?",
+        answers: [
+            { text: "Đột biến", correct: false },
+            { text: "Di truyền liên kết", correct: false },
+            { text: "Tính trạng biến thiên", correct: true },
+            { text: "Tính trạng di truyền", correct: false }
+        ],
+        explanation: "Hiện tượng mô tả sự thay đổi tính trạng do tương tác giữa gene và môi trường là tính trạng biến thiên."
+    },
+    {
+        question: "Câu 4: Thành tựu nào là kết quả của việc chọn giống theo kiểu gene và môi trường?",
+        answers: [
+            { text: "Tạo giống cây trồng có năng suất cao", correct: true },
+            { text: "Phát hiện đột biến gen", correct: false },
+            { text: "Tăng cường khả năng chống bệnh", correct: false},
+            { text: "Giảm thiểu rủi ro môi trường", correct: false }
+        ],
+        explanation: "Chọn giống theo kiểu gene và môi trường giúp tạo ra giống cây trồng có năng suất cao."
+    },
+    {
+        question: "Câu 5: Sự điều chỉnh của môi trường có thể dẫn đến kết quả nào trong chọn giống?",
+        answers: [
+            { text: "Tăng cường sự thích nghi của giống", correct: true },
+            { text: "Giảm năng suất của giống", correct: false },
+            { text: "Tăng độ ổn định của gene", correct: false},
+            { text: "Giảm khả năng sinh sản", correct: false }
+        ],
+        explanation: "Sự điều chỉnh của môi trường có thể dẫn đến tăng cường sự thích nghi của giống."
+    },
+    {
+        question: "Câu 6: Thành tựu chọn giống dựa trên khả năng thích nghi với môi trường là gì?",
+        answers: [
+            { text: "Tạo giống chống chịu sâu bệnh", correct: true },
+            { text: "Tạo giống có màu sắc đặc biệt", correct: false },
+            { text: "Tạo giống có khả năng quang hợp cao", correct: false},
+            { text: "Tạo giống có tốc độ sinh trưởng nhanh", correct: false }
+        ],
+        explanation: "Chọn giống dựa trên khả năng thích nghi với môi trường giúp tạo ra giống chống chịu sâu bệnh."
+    },
+    {
+        question: "Câu 7: Môi trường có thể ảnh hưởng đến khả năng di truyền của sinh vật thông qua cơ chế nào?",
+        answers: [
+            { text: "Điều chỉnh hoạt động của gene", correct: true },
+            { text: "Thay đổi cấu trúc nhiễm sắc thể", correct: false },
+            { text: "Thay đổi số lượng nhiễm sắc thể", correct: false},
+            { text: "Gây ra đột biến gen", correct: false }
+        ],
+        explanation: "Môi trường có thể ảnh hưởng đến khả năng di truyền của sinh vật thông qua cơ chế điều chỉnh hoạt động của gene."
+    },
+    {
+        question: "Câu 8: Trong chọn giống cây trồng, tiêu chí nào thường được sử dụng để đánh giá sự thành công?",
+        answers: [
+            { text: "Năng suất và chất lượng sản phẩm", correct: true },
+            { text: "Kích thước của hạt giống", correct: false },
+            { text: "Màu sắc của hoa", correct: false},
+            { text: "Thời gian nảy mầm", correct: false }
+        ],
+        explanation: "Trong chọn giống cây trồng, tiêu chí năng suất và chất lượng sản phẩm thường được sử dụng để đánh giá sự thành công."
+    },
+    {
+        question: "Câu 9: Gene nào sau đây có thể điều chỉnh tính trạng phản ứng với môi trường?",
+        answers: [
+            { text: "Gene điều hòa", correct: true },
+            { text: "Gene cấu trúc", correct: false },
+            { text: "Gene mã hóa", correct: false},
+            { text: "Gene chính", correct: false }
+        ],
+        explanation: "Gene điều hòa có thể điều chỉnh tính trạng phản ứng với môi trường."
+    },
+    {
+        question: "Câu 10: Thành tựu nào của chọn giống đã cải thiện khả năng chống chịu với môi trường khắc nghiệt?",
+        answers: [
+            { text: "Tạo giống cây chịu hạn", correct: true },
+            { text: "Tạo giống có màu sắc sáng", correct: false },
+            { text: "Tạo giống có mùi thơm đặc biệt", correct: false},
+            { text: "Tạo giống có kích thước lớn", correct: false }
+        ],
+        explanation: "Tạo giống cây chịu hạn là một thành tựu của chọn giống đã cải thiện khả năng chống chịu với môi trường khắc nghiệt."
+    },
+    {
+        question: "Câu 11: Tương tác giữa kiểu gene và môi trường có thể dẫn đến hiện tượng gì trong sinh vật?",
+        answers: [
+            { text: "Biến dị di truyền", correct: false },
+            { text: "Biến dị không di truyền", correct: true },
+            { text: "Di truyền liên kết", correct: false},
+            { text: "Đột biến gene", correct: false }
+        ],
+        explanation: "Tương tác giữa kiểu gene và môi trường có thể dẫn đến biến dị không di truyền."
+    },
+    {
+        question: "Câu 12: Gene nào có thể bị ảnh hưởng bởi điều kiện môi trường trong chọn giống?",
+        answers: [
+            { text: "Gene mã hóa enzyme", correct: true },
+            { text: "Gene không mã hóa", correct: false },
+            { text: "Gene cấu trúc của tế bào", correct: false},
+            { text: "Gene điều hòa biểu hiện", correct: false }
+        ],
+        explanation: "Gene mã hóa enzyme có thể bị ảnh hưởng bởi điều kiện môi trường trong chọn giống."
+    },
+    {
+        question: "Câu 13: Trong chọn giống động vật, yếu tố môi trường nào sau đây có thể được điều chỉnh để cải thiện năng suất?",
+        answers: [
+            { text: "Chế độ ăn uống", correct: true },
+            { text: "Màu sắc của lông", correct: false },
+            { text: "Hình dạng cơ thể", correct: false},
+            { text: "Số lượng con", correct: false }
+        ],
+        explanation: "Chế độ ăn uống là yếu tố môi trường có thể được điều chỉnh để cải thiện năng suất trong chọn giống động vật."
+    },
+    {
+        question: "Câu 14: Sự tương tác giữa gene và môi trường có thể được kiểm soát bằng phương pháp nào trong chọn giống?",
+        answers: [
+            { text: "Tuyển chọn và lai giống", correct: true },
+            { text: "Chọn lọc tự nhiên", correct: false },
+            { text: "Đột biến nhân tạo", correct: false},
+            { text: "Phân tích di truyền học", correct: false }
+        ],
+        explanation: "Sự tương tác giữa gene và môi trường có thể được kiểm soát bằng phương pháp tuyển chọn và lai giống."
+    },
+    {
+        question: "Câu 15: Trong chọn giống cây trồng, ảnh hưởng của môi trường đến sự phát triển của giống được kiểm soát như thế nào?",
+        answers: [
+            { text: "Thông qua việc điều chỉnh điều kiện môi trường", correct: true },
+            { text: "Thông qua việc thay đổi gene", correct: false },
+            { text: "Thông qua việc loại bỏ các gen không cần thiết", correct: false},
+            { text: "Thông qua việc tăng cường các đặc tính di truyền", correct: false }
+        ],
+        explanation: "Ảnh hưởng của môi trường đến sự phát triển của giống được kiểm soát thông qua việc điều chỉnh điều kiện môi trường."
+    },
+    {
+        question: "Câu 16: Sự điều chỉnh chọn giống có thể dẫn đến kết quả gì trong việc cải thiện khả năng sinh trưởng của cây trồng?",
+        answers: [
+            { text: "Tăng cường khả năng thích nghi với môi trường", correct: true },
+            { text: "Tăng cường khả năng sinh sản", correct: false },
+            { text: "Tăng cường khả năng quang hợp", correct: false},
+            { text: "Tăng cường khả năng chống sâu bệnh", correct: false }
+        ],
+        explanation: "Sự điều chỉnh chọn giống có thể dẫn đến tăng cường khả năng thích nghi với môi trường của cây trồng."
+    },
+    {
+        question: "Câu 17: Đâu là yếu tố quan trọng trong việc chọn giống để tăng cường khả năng chống chịu môi trường?",
+        answers: [
+            { text: "Cải thiện cơ chế phản ứng với môi trường", correct: true },
+            { text: "Tăng cường khả năng sinh sản", correct: false },
+            { text: "Thay đổi màu sắc của cây trồng", correct: false},
+            { text: "Tăng cường tốc độ phát triển", correct: false }
+        ],
+        explanation: "Cải thiện cơ chế phản ứng với môi trường là yếu tố quan trọng trong việc chọn giống để tăng cường khả năng chống chịu môi trường."
+    },
+    {
+        question: "Câu 18: Tương tác giữa kiểu gene và môi trường có thể dẫn đến hiện tượng nào trong chọn giống?",
+        answers: [
+            { text: "Biến dị không di truyền", correct: true },
+            { text: "Biến dị di truyền", correct: false },
+            { text: "Di truyền liên kết", correct: false},
+            { text: "Tạo giống mới", correct: false }
+        ],
+        explanation: "Tương tác giữa kiểu gene và môi trường có thể dẫn đến biến dị không di truyền trong chọn giống."
+    },
+    {
+        question: "Câu 19: Trong việc chọn giống, việc áp dụng quy trình nào có thể giúp tối ưu hóa ảnh hưởng của môi trường?",
+        answers: [
+            { text: "Chọn lọc môi trường", correct: true },
+            { text: "Chọn lọc gene", correct: false },
+            { text: "Chọn lọc di truyền", correct: false},
+            { text: "Chọn lọc enzyme", correct: false }
+        ],
+        explanation: "Chọn lọc môi trường là quy trình giúp tối ưu hóa ảnh hưởng của môi trường trong việc chọn giống."
+    },
+    {
+        question: "Câu 20: Thành tựu chọn giống nào đã đạt được nhờ việc tối ưu hóa tương tác giữa gene và môi trường?",
+        answers: [
+            { text: "Tạo giống cây trồng có năng suất cao hơn", correct: true },
+            { text: "Tạo giống có màu sắc đặc biệt", correct: false },
+            { text: "Tạo giống có khả năng chống sâu bệnh", correct: false},
+            { text: "Tạo giống có kích thước lớn hơn", correct: false }
+        ],
+        explanation: "Tạo giống cây trồng có năng suất cao hơn là thành tựu chọn giống đạt được nhờ việc tối ưu hóa tương tác giữa gene và môi trường."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

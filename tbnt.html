@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Tế bào nhân thực có bao nhiêu lớp màng bao bọc bên ngoài?",
+        answers: [
+            { text: "Một lớp màng bao bọc bên ngoài", correct: true },
+            { text: "Hai lớp màng bao bọc bên ngoài", correct: false },
+            { text: "Không có lớp màng bao bọc bên ngoài", correct: false },
+            { text: "Nhiều hơn hai lớp màng bao bọc bên ngoài", correct: false }
+        ],
+        explanation: "Tế bào nhân thực thường có một lớp màng bao bọc bên ngoài để bảo vệ và duy trì cấu trúc nội bào."
+    },
+    {
+        question: "Câu 2: Vị trí chủ yếu của ribosome trong tế bào nhân thực là gì?",
+        answers: [
+            { text: "Tổng hợp protein", correct: true },
+            { text: "Tạo ra năng lượng", correct: false },
+            { text: "Chuyển gen", correct: false },
+            { text: "Làm nhiệm vụ sinh học", correct: false }
+        ],
+        explanation: "Ribosome trong tế bào nhân thực chủ yếu là nơi tổng hợp protein từ các phân tử amino acid."
+    },
+    {
+        question: "Câu 3: Tế bào nhân thực có hệ thống nội bào phát triển phức tạp như thế nào?",
+        answers: [
+            { text: "Có cấu trúc nội bào phát triển phức tạp", correct: true },
+            { text: "Thiếu các bào quan và hệ thống nội bào phát triển như tế bào nhân sơ", correct: false },
+            { text: "Không có sự khác biệt về tổ chức nội bào", correct: false },
+            { text: "Có các bào quan nhưng thiếu hệ thống nội bào phát triển", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có cấu trúc nội bào phát triển phức tạp, bao gồm các bào quan và các cấu trúc nội bào phức tạp hơn so với tế bào nhân sơ."
+    },
+    {
+        question: "Câu 4: Tế bào nhân thực có bao nhiêu cấu trúc chính để duy trì cấu trúc tế bào?",
+        answers: [
+            { text: "Nhiều hơn ba cấu trúc chính", correct: true },
+            { text: "Một cấu trúc chính bao gồm màng tế bào ngoài và màng tế bào trong", correct: false },
+            { text: "Hai cấu trúc chính bao gồm màng ngoài và lớp bào quan", correct: false },
+            { text: "Ba cấu trúc chính bao gồm các bào quan và nhân thực", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có nhiều hơn ba cấu trúc chính để duy trì cấu trúc tế bào, bao gồm màng tế bào ngoài, màng tế bào trong, và các bào quan."
+    },
+    {
+        question: "Câu 5: Tế bào nhân thực thường có màng tế bào bao gồm những thành phần nào?",
+        answers: [
+            { text: "Màng tế bào ngoài và màng tế bào trong", correct: true },
+            { text: "Màng ngoài và màng trong", correct: false },
+            { text: "Màng tế bào mỏng và màng tế bào dày", correct: false },
+            { text: "Màng ngoài và lớp bào quan", correct: false }
+        ],
+        explanation: "Màng tế bào của tế bào nhân thực bao gồm màng tế bào ngoài (cell membrane) và màng tế bào trong (cell wall) để bảo vệ và duy trì cấu trúc nội bào."
+    },
+    {
+        question: "Câu 6: Tế bào nhân thực có nhân thực để làm gì?",
+        answers: [
+            { text: "Tổ chức nội bào phát triển", correct: true },
+            { text: "Sinh năng lượng", correct: false },
+            { text: "Tổng hợp protein", correct: false },
+            { text: "Không có nhân thực", correct: false }
+        ],
+        explanation: "Nhân thực trong tế bào nhân thực giúp tổ chức các cấu trúc nội bào phát triển và duy trì các hoạt động sinh học của tế bào."
+    },
+    {
+        question: "Câu 7: Tế bào nhân thực có khả năng tự di chuyển như thế nào?",
+        answers: [
+            { text: "Di chuyển bằng cơ chế đẩy hoặc hút", correct: true },
+            { text: "Tự di chuyển bằng cấu trúc như flagella hoặc pili", correct: false },
+            { text: "Không có khả năng tự di chuyển", correct: false },
+            { text: "Di chuyển bằng cơ chế tự lực", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có khả năng di chuyển bằng cơ chế đẩy hoặc hút, không có cấu trúc như flagella hoặc pili để tự di chuyển."
+    },
+    {
+        question: "Câu 8: Cấu trúc nào trong tế bào nhân thực tham gia vào quá trình tổng hợp protein?",
+        answers: [
+            { text: "Ribosome", correct: true },
+            { text: "Mesosome", correct: false },
+            { text: "Nucleoid", correct: false },
+            { text: "Màng tế bào ngoài", correct: false }
+        ],
+        explanation: "Ribosome trong tế bào nhân thực tham gia vào quá trình tổng hợp protein từ các phân tử amino acid."
+    },
+    {
+        question: "Câu 9: Tế bào nhân thực có cấu trúc nội bào phát triển phức tạp như tế bào nhân sơ không?",
+        answers: [
+            { text: "Có cấu trúc nội bào phát triển tương tự tế bào nhân sơ", correct: false },
+            { text: "Không có cấu trúc nội bào phát triển phức tạp", correct: true },
+            { text: "Có cấu trúc nội bào phát triển nhưng ít hơn tế bào nhân sơ", correct: false },
+            { text: "Không có sự khác biệt về tổ chức nội bào", correct: false }
+        ],
+        explanation: "Tế bào nhân thực không có cấu trúc nội bào phát triển phức tạp như tế bào nhân sơ, mà thiếu các bào quan và hệ thống nội bào phát triển."
+    },
+    {
+        question: "Câu 10: Hệ thống nào trong tế bào nhân thực giúp duy trì cấu trúc tế bào và bảo vệ nội bào?",
+        answers: [
+            { text: "Màng tế bào", correct: true },
+            { text: "Ribosome", correct: false },
+            { text: "Nucleoid", correct: false },
+            { text: "Mesosome", correct: false }
+        ],
+        explanation: "Màng tế bào trong tế bào nhân thực giúp duy trì cấu trúc tế bào và bảo vệ nội bào bằng cách kiểm soát dòng chất lỏng và chất rắn."
+    },
+    {
+        question: "Câu 11: Tế bào nhân thực có khả năng tự di chuyển bằng cấu trúc nào?",
+        answers: [
+            { text: "Không có khả năng tự di chuyển", correct: false },
+            { text: "Di chuyển bằng cơ chế đẩy hoặc hút", correct: false },
+            { text: "Tự di chuyển bằng cấu trúc như flagella hoặc pili", correct: true },
+            { text: "Di chuyển bằng cơ chế tự lực", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có khả năng tự di chuyển bằng cấu trúc như flagella (dài và ít) hoặc pili (ngắn và nhiều)."
+    },
+    {
+        question: "Câu 12: Tế bào nhân thực có bao nhiêu lớp màng bao bọc bên ngoài?",
+        answers: [
+            { text: "Một lớp màng bao bọc bên ngoài", correct: false },
+            { text: "Hai lớp màng bao bọc bên ngoài", correct: true },
+            { text: "Không có lớp màng bao bọc bên ngoài", correct: false },
+            { text: "Nhiều hơn hai lớp màng bao bọc bên ngoài", correct: false }
+        ],
+        explanation: "Tế bào nhân thực thường có hai lớp màng bao bọc bên ngoài để bảo vệ và duy trì cấu trúc nội bào."
+    },
+    {
+        question: "Câu 13: Vị trí chủ yếu của ribosome trong tế bào nhân thực là gì?",
+        answers: [
+            { text: "Tổng hợp protein", correct: true },
+            { text: "Tạo ra năng lượng", correct: false },
+            { text: "Chuyển gen", correct: false },
+            { text: "Làm nhiệm vụ sinh học", correct: false }
+        ],
+        explanation: "Ribosome trong tế bào nhân thực chủ yếu là nơi tổng hợp protein từ các phân tử amino acid."
+    },
+    {
+        question: "Câu 14: Tế bào nhân thực có hệ thống nội bào phát triển phức tạp như thế nào?",
+        answers: [
+            { text: "Có cấu trúc nội bào phát triển phức tạp", correct: true },
+            { text: "Thiếu các bào quan và hệ thống nội bào phát triển như tế bào nhân sơ", correct: false },
+            { text: "Không có sự khác biệt về tổ chức nội bào", correct: false },
+            { text: "Có các bào quan nhưng thiếu hệ thống nội bào phát triển", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có cấu trúc nội bào phát triển phức tạp, bao gồm các bào quan và các cấu trúc nội bào phức tạp hơn so với tế bào nhân sơ."
+    },
+    {
+        question: "Câu 15: Tế bào nhân thực có bao nhiêu cấu trúc chính để duy trì cấu trúc tế bào?",
+        answers: [
+            { text: "Nhiều hơn ba cấu trúc chính", correct: true },
+            { text: "Một cấu trúc chính bao gồm màng tế bào ngoài và màng tế bào trong", correct: false },
+            { text: "Hai cấu trúc chính bao gồm màng ngoài và lớp bào quan", correct: false },
+            { text: "Ba cấu trúc chính bao gồm các bào quan và nhân thực", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có nhiều hơn ba cấu trúc chính để duy trì cấu trúc tế bào, bao gồm màng tế bào ngoài, màng tế bào trong, và các bào quan."
+    },
+    {
+        question: "Câu 16: Tế bào nhân thực thường có màng tế bào bao gồm những thành phần nào?",
+        answers: [
+            { text: "Màng tế bào ngoài và màng tế bào trong", correct: true },
+            { text: "Màng ngoài và màng trong", correct: false },
+            { text: "Màng tế bào mỏng và màng tế bào dày", correct: false },
+            { text: "Màng ngoài và lớp bào quan", correct: false }
+        ],
+        explanation: "Màng tế bào của tế bào nhân thực bao gồm màng tế bào ngoài (cell membrane) và màng tế bào trong (cell wall) để bảo vệ và duy trì cấu trúc nội bào."
+    },
+    {
+        question: "Câu 17: Tế bào nhân thực có nhân thực để làm gì?",
+        answers: [
+            { text: "Tổ chức nội bào phát triển", correct: true },
+            { text: "Sinh năng lượng", correct: false },
+            { text: "Tổng hợp protein", correct: false },
+            { text: "Không có nhân thực", correct: false }
+        ],
+        explanation: "Nhân thực trong tế bào nhân thực giúp tổ chức các cấu trúc nội bào phát triển và duy trì các hoạt động sinh học của tế bào."
+    },
+    {
+        question: "Câu 18: Tế bào nhân thực có khả năng tự di chuyển như thế nào?",
+        answers: [
+            { text: "Di chuyển bằng cơ chế đẩy hoặc hút", correct: true },
+            { text: "Tự di chuyển bằng cấu trúc như flagella hoặc pili", correct: false },
+            { text: "Không có khả năng tự di chuyển", correct: false },
+            { text: "Di chuyển bằng cơ chế tự lực", correct: false }
+        ],
+        explanation: "Tế bào nhân thực có khả năng di chuyển bằng cơ chế đẩy hoặc hút, không có cấu trúc như flagella hoặc pili để tự di chuyển."
+    },
+    {
+        question: "Câu 19: Cấu trúc nào trong tế bào nhân thực tham gia vào quá trình tổng hợp protein?",
+        answers: [
+            { text: "Ribosome", correct: true },
+            { text: "Mesosome", correct: false },
+            { text: "Nucleoid", correct: false },
+            { text: "Màng tế bào ngoài", correct: false }
+        ],
+        explanation: "Ribosome trong tế bào nhân thực tham gia vào quá trình tổng hợp protein từ các phân tử amino acid."
+    },
+    {
+        question: "Câu 20: Tế bào nhân thực có cấu trúc nội bào phát triển phức tạp như tế bào nhân sơ không?",
+        answers: [
+            { text: "Có cấu trúc nội bào phát triển tương tự tế bào nhân sơ", correct: false },
+            { text: "Không có cấu trúc nội bào phát triển phức tạp", correct: true },
+            { text: "Có cấu trúc nội bào phát triển nhưng ít hơn tế bào nhân sơ", correct: false },
+            { text: "Không có sự khác biệt về tổ chức nội bào", correct: false }
+        ],
+        explanation: "Tế bào nhân thực không có cấu trúc nội bào phát triển phức tạp như tế bào nhân sơ, mà thiếu các bào quan và hệ thống nội bào phát triển."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

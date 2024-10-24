@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Sinh thái học phục hồi là gì?",
+        answers: [
+            { text: "Quá trình khôi phục lại các hệ sinh thái đã bị suy thoái hoặc phá hủy.", correct: true },
+            { text: "Quá trình loại bỏ các loài xâm lấn khỏi môi trường.", correct: false },
+            { text: "Quá trình bảo tồn các loài động vật quý hiếm.", correct: false },
+            { text: "Quá trình phục hồi các cá thể đã bị tổn thương trong môi trường.", correct: false }
+        ],
+        explanation: "Sinh thái học phục hồi là quá trình khôi phục lại các hệ sinh thái đã bị suy thoái hoặc phá hủy."
+    },
+    {
+        question: "Câu 2: Mục tiêu chính của bảo tồn đa dạng sinh học là gì?",
+        answers: [
+            { text: "Bảo tồn sự đa dạng của các loài, gen và hệ sinh thái.", correct: true },
+            { text: "Tăng cường sự phát triển kinh tế bằng cách sử dụng tài nguyên thiên nhiên.", correct: false },
+            { text: "Khôi phục lại các hệ sinh thái đã bị phá hủy hoàn toàn.", correct: false },
+            { text: "Chỉ bảo vệ các loài động vật và thực vật quý hiếm.", correct: false }
+        ],
+        explanation: "Mục tiêu chính của bảo tồn đa dạng sinh học là bảo tồn sự đa dạng của các loài, gen và hệ sinh thái."
+    },
+    {
+        question: "Câu 3: Tại sao bảo tồn đa dạng sinh học là quan trọng?",
+        answers: [
+            { text: "Đa dạng sinh học cung cấp các dịch vụ hệ sinh thái thiết yếu cho con người.", correct: true },
+            { text: "Đa dạng sinh học giúp gia tăng sự đô thị hóa và phát triển công nghiệp.", correct: false },
+            { text: "Đa dạng sinh học là không cần thiết cho sự sống của con người.", correct: false },
+            { text: "Đa dạng sinh học chỉ ảnh hưởng đến các loài động vật hoang dã.", correct: false }
+        ],
+        explanation: "Bảo tồn đa dạng sinh học quan trọng vì nó cung cấp các dịch vụ hệ sinh thái thiết yếu cho con người."
+    },
+    {
+        question: "Câu 4: Những thách thức chính trong bảo tồn đa dạng sinh học là gì?",
+        answers: [
+            { text: "Mất môi trường sống, biến đổi khí hậu, và các loài xâm lấn.", correct: true },
+            { text: "Sự gia tăng dân số và sự phát triển công nghiệp.", correct: false },
+            { text: "Thiếu tài nguyên nước và thiếu lương thực.", correct: false },
+            { text: "Sự ô nhiễm không khí và nước.", correct: false }
+        ],
+        explanation: "Những thách thức chính trong bảo tồn đa dạng sinh học bao gồm mất môi trường sống, biến đổi khí hậu, và các loài xâm lấn."
+    },
+    {
+        question: "Câu 5: Các khu bảo tồn thiên nhiên có vai trò gì trong bảo tồn đa dạng sinh học?",
+        answers: [
+            { text: "Cung cấp nơi trú ẩn an toàn cho các loài nguy cấp và duy trì các hệ sinh thái tự nhiên.", correct: true },
+            { text: "Cung cấp tài nguyên cho việc khai thác công nghiệp.", correct: false },
+            { text: "Chỉ bảo vệ động vật hoang dã khỏi săn bắt.", correct: false },
+            { text: "Giúp gia tăng dân số các loài động vật nuôi trong môi trường nhân tạo.", correct: false }
+        ],
+        explanation: "Các khu bảo tồn thiên nhiên cung cấp nơi trú ẩn an toàn cho các loài nguy cấp và duy trì các hệ sinh thái tự nhiên."
+    },
+    {
+        question: "Câu 6: Nguyên nhân chính gây suy thoái các hệ sinh thái là gì?",
+        answers: [
+            { text: "Hoạt động của con người như phá rừng, khai thác tài nguyên và ô nhiễm.", correct: true },
+            { text: "Sự thay đổi khí hậu tự nhiên và sự tiến hóa của loài.", correct: false },
+            { text: "Sự gia tăng các loài săn mồi tự nhiên.", correct: false },
+            { text: "Thiếu nước và tài nguyên lương thực.", correct: false }
+        ],
+        explanation: "Nguyên nhân chính gây suy thoái các hệ sinh thái là do hoạt động của con người như phá rừng, khai thác tài nguyên và ô nhiễm."
+    },
+    {
+        question: "Câu 7: Tại sao việc loại bỏ các loài xâm lấn là cần thiết trong sinh thái học phục hồi?",
+        answers: [
+            { text: "Các loài xâm lấn có thể cạnh tranh với các loài bản địa và gây suy giảm đa dạng sinh học.", correct: true },
+            { text: "Các loài xâm lấn làm tăng sự đa dạng của hệ sinh thái.", correct: false },
+            { text: "Các loài xâm lấn thường không ảnh hưởng đến hệ sinh thái.", correct: false },
+            { text: "Các loài xâm lấn chỉ ảnh hưởng đến một số loài động vật nhỏ.", correct: false }
+        ],
+        explanation: "Việc loại bỏ các loài xâm lấn là cần thiết vì chúng có thể cạnh tranh với các loài bản địa và gây suy giảm đa dạng sinh học."
+    },
+    {
+        question: "Câu 8: 'Hệ sinh thái đồng cỏ' thường đối mặt với thách thức bảo tồn nào?",
+        answers: [
+            { text: "Sự chuyển đổi đất đồng cỏ thành đất nông nghiệp và đô thị hóa.", correct: true },
+            { text: "Thiếu nước và sự xâm lấn của sa mạc.", correct: false },
+            { text: "Sự gia tăng của các loài thú săn mồi.", correct: false },
+            { text: "Sự biến mất của các loài chim di cư.", correct: false }
+        ],
+        explanation: "Hệ sinh thái đồng cỏ thường đối mặt với thách thức bảo tồn từ sự chuyển đổi đất đồng cỏ thành đất nông nghiệp và đô thị hóa."
+    },
+    {
+        question: "Câu 9: 'Quá trình phục hồi hệ sinh thái' bao gồm các bước nào?",
+        answers: [
+            { text: "Đánh giá hiện trạng, thiết lập mục tiêu, và thực hiện các biện pháp khôi phục.", correct: true },
+            { text: "Tăng cường khai thác tài nguyên và giám sát sự phát triển.", correct: false },
+            { text: "Chỉ cần tái tạo lại các loài động vật đã mất.", correct: false },
+            { text: "Giảm thiểu tác động của biến đổi khí hậu.", correct: false }
+        ],
+        explanation: "Quá trình phục hồi hệ sinh thái bao gồm đánh giá hiện trạng, thiết lập mục tiêu, và thực hiện các biện pháp khôi phục."
+    },
+    {
+        question: "Câu 10: Lợi ích của việc bảo tồn các loài nguy cấp là gì?",
+        answers: [
+            { text: "Duy trì sự cân bằng sinh thái và bảo vệ các dịch vụ hệ sinh thái quan trọng.", correct: true },
+            { text: "Tăng cường du lịch sinh thái và lợi nhuận kinh tế.", correct: false },
+            { text: "Chỉ làm tăng số lượng các loài động vật.", correct: false },
+            { text: "Tăng cường sự phát triển nông nghiệp và công nghiệp.", correct: false }
+        ],
+        explanation: "Bảo tồn các loài nguy cấp giúp duy trì sự cân bằng sinh thái và bảo vệ các dịch vụ hệ sinh thái quan trọng."
+    },
+    {
+        question: "Câu 11: Các khu vực sinh thái quan trọng nào cần được bảo vệ để bảo tồn đa dạng sinh học?",
+        answers: [
+            { text: "Các khu rừng nhiệt đới, rạn san hô, và các vùng đất ngập nước.", correct: true },
+            { text: "Các khu vực đô thị hóa và đất nông nghiệp.", correct: false },
+            { text: "Các khu vực sa mạc và vùng đồng bằng khô cằn.", correct: false },
+            { text: "Các khu vực đã bị suy thoái hoàn toàn.", correct: false }
+        ],
+        explanation: "Các khu vực sinh thái quan trọng như rừng nhiệt đới, rạn san hô, và các vùng đất ngập nước cần được bảo vệ để bảo tồn đa dạng sinh học."
+    },
+    {
+        question: "Câu 12: 'Biến đổi khí hậu' ảnh hưởng như thế nào đến sự đa dạng sinh học?",
+        answers: [
+            { text: "Gây ra sự thay đổi trong phân bố của các loài và sự mất mát môi trường sống.", correct: true },
+            { text: "Tạo ra các môi trường sống mới và tăng cường sự đa dạng sinh học.", correct: false },
+            { text: "Chỉ ảnh hưởng đến một số loài động vật cụ thể.", correct: false },
+            { text: "Không có ảnh hưởng lớn đến sự đa dạng sinh học.", correct: false }
+        ],
+        explanation: "Biến đổi khí hậu có thể gây ra sự thay đổi trong phân bố của các loài và sự mất mát môi trường sống, ảnh hưởng tiêu cực đến sự đa dạng sinh học."
+    },
+    {
+        question: "Câu 13: Các 'loài chỉ thị' trong hệ sinh thái có vai trò gì?",
+        answers: [
+            { text: "Chỉ ra tình trạng sức khỏe của hệ sinh thái và cảnh báo về các vấn đề môi trường.", correct: true },
+            { text: "Cung cấp nguồn thức ăn chính cho các loài khác.", correct: false },
+            { text: "Giúp duy trì sự cân bằng giữa các loài săn mồi và con mồi.", correct: false },
+            { text: "Chỉ ra sự tiến hóa của hệ sinh thái.", correct: false }
+        ],
+        explanation: "Các loài chỉ thị có vai trò chỉ ra tình trạng sức khỏe của hệ sinh thái và cảnh báo về các vấn đề môi trường."
+    },
+    {
+        question: "Câu 14: 'Công ước về đa dạng sinh học' là gì?",
+        answers: [
+            { text: "Một hiệp ước quốc tế nhằm bảo tồn và sử dụng bền vững đa dạng sinh học.", correct: true },
+            { text: "Một hiệp ước quốc tế nhằm khai thác tài nguyên thiên nhiên một cách tối đa.", correct: false },
+            { text: "Một hiệp ước quốc tế chỉ tập trung vào bảo vệ động vật hoang dã.", correct: false },
+            { text: "Một hiệp ước quốc tế về việc phục hồi các hệ sinh thái đã bị suy thoái.", correct: false }
+        ],
+        explanation: "Công ước về đa dạng sinh học là một hiệp ước quốc tế nhằm bảo tồn và sử dụng bền vững đa dạng sinh học."
+    },
+    {
+        question: "Câu 15: Các biện pháp khuyến khích bảo tồn đa dạng sinh học là gì?",
+        answers: [
+            { text: "Bảo tồn các khu bảo tồn thiên nhiên, tăng cường giáo dục và nhận thức về bảo tồn.", correct: true },
+            { text: "Phát triển các khu đô thị và công nghiệp lớn hơn.", correct: false },
+            { text: "Chỉ bảo vệ các loài động vật và thực vật quý hiếm.", correct: false },
+            { text: "Loại bỏ các khu vực tự nhiên để phát triển kinh tế.", correct: false }
+        ],
+        explanation: "Các biện pháp khuyến khích bảo tồn đa dạng sinh học bao gồm bảo tồn các khu bảo tồn thiên nhiên và tăng cường giáo dục và nhận thức về bảo tồn."
+    },
+    {
+        question: "Câu 16: Tại sao việc giảm sự suy thoái của rạn san hô là quan trọng?",
+        answers: [
+            { text: "Rạn san hô là nơi cư trú cho nhiều loài sinh vật biển và đóng vai trò quan trọng trong bảo vệ bờ biển.", correct: true },
+            { text: "Rạn san hô cung cấp nguồn thức ăn chính cho con người.", correct: false },
+            { text: "Rạn san hô là nguồn tài nguyên quan trọng cho khai thác dầu khí.", correct: false },
+            { text: "Rạn san hô là nơi sinh sống chủ yếu của cá mập.", correct: false }
+        ],
+        explanation: "Việc giảm sự suy thoái của rạn san hô là quan trọng vì chúng là nơi cư trú cho nhiều loài sinh vật biển và đóng vai trò quan trọng trong bảo vệ bờ biển."
+    },
+    {
+        question: "Câu 17: Các chương trình tái định cư cho các loài động vật nguy cấp có thể có lợi ích gì?",
+        answers: [
+            { text: "Tăng cường khả năng sống sót của loài bằng cách di chuyển chúng đến các môi trường sống an toàn hơn.", correct: true },
+            { text: "Giúp loài tăng cường sự phát triển dân số.", correct: false },
+            { text: "Chỉ cần bảo vệ các loài trong môi trường tự nhiên hiện tại.", correct: false },
+            { text: "Tạo ra các loài mới thông qua lai tạo.", correct: false }
+        ],
+        explanation: "Các chương trình tái định cư cho các loài động vật nguy cấp có thể tăng cường khả năng sống sót của loài bằng cách di chuyển chúng đến các môi trường sống an toàn hơn."
+    },
+    {
+        question: "Câu 18: 'Quản lý tài nguyên thiên nhiên bền vững' có nghĩa là gì?",
+        answers: [
+            { text: "Sử dụng tài nguyên thiên nhiên một cách hợp lý để không làm suy giảm nguồn tài nguyên cho thế hệ tương lai.", correct: true },
+            { text: "Khai thác tài nguyên thiên nhiên ở mức tối đa để phát triển kinh tế.", correct: false },
+            { text: "Chỉ sử dụng tài nguyên thiên nhiên cho các mục đích công nghiệp.", correct: false },
+            { text: "Không sử dụng tài nguyên thiên nhiên để bảo tồn chúng.", correct: false }
+        ],
+        explanation: "Quản lý tài nguyên thiên nhiên bền vững có nghĩa là sử dụng tài nguyên thiên nhiên một cách hợp lý để không làm suy giảm nguồn tài nguyên cho thế hệ tương lai."
+    },
+    {
+        question: "Câu 19: Tại sao các loài động vật biển lớn như cá voi và cá mập quan trọng đối với hệ sinh thái biển?",
+        answers: [
+            { text: "Chúng đóng vai trò quan trọng trong duy trì sự cân bằng của chuỗi thức ăn và các dịch vụ hệ sinh thái biển.", correct: true },
+            { text: "Chúng cung cấp nguồn thực phẩm quan trọng cho con người.", correct: false },
+            { text: "Chúng giúp duy trì sự phát triển của san hô và các loài cá nhỏ.", correct: false },
+            { text: "Chúng không có vai trò quan trọng trong hệ sinh thái biển.", correct: false }
+        ],
+        explanation: "Các loài động vật biển lớn như cá voi và cá mập quan trọng vì chúng đóng vai trò trong duy trì sự cân bằng của chuỗi thức ăn và các dịch vụ hệ sinh thái biển."
+    },
+    {
+        question: "Câu 20: Các chiến lược nào có thể giúp giảm thiểu sự suy thoái của các khu rừng nhiệt đới?",
+        answers: [
+            { text: "Bảo vệ các khu bảo tồn thiên nhiên, giảm khai thác rừng và tăng cường tái trồng rừng.", correct: true },
+            { text: "Chuyển đổi rừng thành đất nông nghiệp và đô thị hóa.", correct: false },
+            { text: "Chỉ bảo vệ các loài động vật trong rừng.", correct: false },
+            { text: "Không sử dụng bất kỳ tài nguyên nào từ rừng.", correct: false }
+        ],
+        explanation: "Các chiến lược giúp giảm thiểu sự suy thoái của các khu rừng nhiệt đới bao gồm bảo vệ các khu bảo tồn thiên nhiên, giảm khai thác rừng và tăng cường tái trồng rừng."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

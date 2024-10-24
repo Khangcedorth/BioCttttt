@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Nguyên tố nào có ký hiệu hóa học là H?",
+        answers: [
+            { text: "Hydro", correct: true },
+            { text: "Helium", correct: false },
+            { text: "Hydroxide", correct: false },
+            { text: "Hafnium", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học H đại diện cho nguyên tố Hydro."
+    },
+    {
+        question: "Câu 2: Nguyên tố nào có số nguyên tử là 6?",
+        answers: [
+            { text: "Carbon", correct: true },
+            { text: "Oxygen", correct: false },
+            { text: "Nitrogen", correct: false },
+            { text: "Sulfur", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 6 là Carbon."
+    },
+    {
+        question: "Câu 3: Nguyên tố nào có ký hiệu hóa học là O?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Osmium", correct: false },
+            { text: "Oganesson", correct: false },
+            { text: "Oxygenium", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học O đại diện cho nguyên tố Oxygen."
+    },
+    {
+        question: "Câu 4: Nguyên tố nào là kim loại kiềm?",
+        answers: [
+            { text: "Lithium", correct: true },
+            { text: "Boron", correct: false },
+            { text: "Carbon", correct: false },
+            { text: "Nitrogen", correct: false }
+        ],
+        explanation: "Lithium là một nguyên tố thuộc nhóm kim loại kiềm."
+    },
+    {
+        question: "Câu 5: Nguyên tố nào có số nguyên tử là 79?",
+        answers: [
+            { text: "Vàng (Gold)", correct: true },
+            { text: "Bạc (Silver)", correct: false },
+            { text: "Platinum", correct: false },
+            { text: "Mercury", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 79 là Vàng (Gold)."
+    },
+    {
+        question: "Câu 6: Nguyên tố nào có ký hiệu hóa học là Fe?",
+        answers: [
+            { text: "Sắt (Iron)", correct: true },
+            { text: "Fluorine", correct: false },
+            { text: "Fermium", correct: false },
+            { text: "Francium", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học Fe đại diện cho nguyên tố Sắt (Iron)."
+    },
+    {
+        question: "Câu 7: Nguyên tố nào có số nguyên tử là 2?",
+        answers: [
+            { text: "Helium", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Lithium", correct: false },
+            { text: "Beryllium", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 2 là Helium."
+    },
+    {
+        question: "Câu 8: Nguyên tố nào có ký hiệu hóa học là Na?",
+        answers: [
+            { text: "Natri (Sodium)", correct: true },
+            { text: "Nitrogen", correct: false },
+            { text: "Neon", correct: false },
+            { text: "Nickel", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học Na đại diện cho nguyên tố Natri (Sodium)."
+    },
+    {
+        question: "Câu 9: Nguyên tố nào là phi kim?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Iron", correct: false },
+            { text: "Copper", correct: false },
+            { text: "Zinc", correct: false }
+        ],
+        explanation: "Oxygen là một nguyên tố phi kim."
+    },
+    {
+        question: "Câu 10: Nguyên tố nào có số nguyên tử là 17?",
+        answers: [
+            { text: "Chlorine", correct: true },
+            { text: "Sulfur", correct: false },
+            { text: "Argon", correct: false },
+            { text: "Potassium", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 17 là Chlorine."
+    },
+    {
+        question: "Câu 11: Nguyên tố nào có ký hiệu hóa học là C?",
+        answers: [
+            { text: "Carbon", correct: true },
+            { text: "Calcium", correct: false },
+            { text: "Cadmium", correct: false },
+            { text: "Cesium", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học C đại diện cho nguyên tố Carbon."
+    },
+    {
+        question: "Câu 12: Nguyên tố nào là kim loại kiềm thổ?",
+        answers: [
+            { text: "Magnesium", correct: true },
+            { text: "Aluminum", correct: false },
+            { text: "Iron", correct: false },
+            { text: "Copper", correct: false }
+        ],
+        explanation: "Magnesium là một nguyên tố thuộc nhóm kim loại kiềm thổ."
+    },
+    {
+        question: "Câu 13: Nguyên tố nào có số nguyên tử là 26?",
+        answers: [
+            { text: "Sắt (Iron)", correct: true },
+            { text: "Nickel", correct: false },
+            { text: "Cobalt", correct: false },
+            { text: "Zinc", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 26 là Sắt (Iron)."
+    },
+    {
+        question: "Câu 14: Nguyên tố nào có ký hiệu hóa học là N?",
+        answers: [
+            { text: "Nitrogen", correct: true },
+            { text: "Neon", correct: false },
+            { text: "Nickel", correct: false },
+            { text: "Nobelium", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học N đại diện cho nguyên tố Nitrogen."
+    },
+    {
+        question: "Câu 15: Nguyên tố nào là khí hiếm?",
+        answers: [
+            { text: "Neon", correct: true },
+            { text: "Hydrogen", correct: false },
+            { text: "Oxygen", correct: false },
+            { text: "Carbon", correct: false }
+        ],
+        explanation: "Neon là một nguyên tố thuộc nhóm khí hiếm."
+    },
+    {
+        question: "Câu 16: Nguyên tố nào có số nguyên tử là 3?",
+        answers: [
+            { text: "Lithium", correct: true },
+            { text: "Beryllium", correct: false },
+            { text: "Boron", correct: false },
+            { text: "Carbon", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 3 là Lithium."
+    },
+    {
+        question: "Câu 17: Nguyên tố nào có ký hiệu hóa học là K?",
+        answers: [
+            { text: "Kali (Potassium)", correct: true },
+            { text: "Krypton", correct: false },
+            { text: "Calcium", correct: false },
+            { text: "Kobold", correct: false }
+        ],
+        explanation: "Ký hiệu hóa học K đại diện cho nguyên tố Kali (Potassium)."
+    },
+    {
+        question: "Câu 18: Nguyên tố nào có số nguyên tử là 11?",
+        answers: [
+            { text: "Natri (Sodium)", correct: true },
+            { text: "Magnesium", correct: false },
+            { text: "Aluminum", correct: false },
+            { text: "Silicon", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 11 là Natri (Sodium)."
+    },
+    {
+        question: "Câu 19: Tính chất nào sau đây không phải của Helium?",
+        answers: [
+            { text: "Khí hiếm", correct: false },
+            { text: "Khí không màu", correct: false },
+            { text: "Nặng hơn không khí", correct: true },
+            { text: "Không phản ứng", correct: false }
+        ],
+        explanation: "Helium là khí nhẹ hơn không khí."
+    },
+    {
+        question: "Câu 20: Nguyên tố nào có số nguyên tử là 12?",
+        answers: [
+            { text: "Magnesium", correct: true },
+            { text: "Aluminum", correct: false },
+            { text: "Silicon", correct: false },
+            { text: "Phosphorus", correct: false }
+        ],
+        explanation: "Nguyên tố có số nguyên tử là 12 là Magnesium."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
