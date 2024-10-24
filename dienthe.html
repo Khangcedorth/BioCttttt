@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Diễn thế sinh thái là gì?",
+        answers: [
+            { text: "Quá trình thay đổi cấu trúc cộng đồng sinh vật theo thời gian.", correct: true },
+            { text: "Sự phân bố của các loài sinh vật trong một hệ sinh thái.", correct: false },
+            { text: "Sự cạnh tranh giữa các loài sinh vật trong cùng một môi trường.", correct: false },
+            { text: "Quá trình phân hủy các chất hữu cơ trong hệ sinh thái.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái là quá trình thay đổi cấu trúc cộng đồng sinh vật theo thời gian trong một hệ sinh thái."
+    },
+    {
+        question: "Câu 2: Diễn thế sinh thái có thể được chia thành mấy loại chính?",
+        answers: [
+            { text: "Diễn thế nguyên sinh và diễn thế thứ sinh.", correct: true },
+            { text: "Diễn thế tự nhiên và diễn thế nhân tạo.", correct: false },
+            { text: "Diễn thế nhanh và diễn thế chậm.", correct: false },
+            { text: "Diễn thế nội địa và diễn thế biển.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái chủ yếu được chia thành diễn thế nguyên sinh (bắt đầu từ môi trường chưa có sinh vật) và diễn thế thứ sinh (xảy ra sau khi môi trường đã bị phá hủy nhưng có sẵn một số sinh vật)."
+    },
+    {
+        question: "Câu 3: Quá trình nào sau đây xảy ra trong diễn thế nguyên sinh?",
+        answers: [
+            { text: "Hình thành cộng đồng sinh vật từ môi trường không có sinh vật.", correct: true },
+            { text: "Khôi phục cộng đồng sinh vật sau một cuộc khai thác.", correct: false },
+            { text: "Thay đổi cấu trúc cộng đồng sinh vật hiện có.", correct: false },
+            { text: "Tăng cường sự cạnh tranh giữa các loài.", correct: false }
+        ],
+        explanation: "Diễn thế nguyên sinh bắt đầu từ một môi trường không có sinh vật và hình thành cộng đồng sinh vật từ đầu."
+    },
+    {
+        question: "Câu 4: Diễn thế thứ sinh xảy ra trong trường hợp nào?",
+        answers: [
+            { text: "Sau khi một môi trường bị phá hủy nhưng có sẵn một số sinh vật còn sót lại.", correct: true },
+            { text: "Khi một vùng đất mới hình thành từ dung nham.", correct: false },
+            { text: "Khi một khu vực được khai thác để trồng trọt.", correct: false },
+            { text: "Khi có sự thay đổi khí hậu đột ngột.", correct: false }
+        ],
+        explanation: "Diễn thế thứ sinh xảy ra sau khi một môi trường bị phá hủy nhưng có sẵn một số sinh vật còn lại, giúp tái tạo và phục hồi cộng đồng sinh vật."
+    },
+    {
+        question: "Câu 5: Trong diễn thế sinh thái, giai đoạn nào thường có sự xuất hiện của cây bụi và cây gỗ nhỏ?",
+        answers: [
+            { text: "Giai đoạn trung gian.", correct: true },
+            { text: "Giai đoạn khởi đầu.", correct: false },
+            { text: "Giai đoạn cuối cùng.", correct: false },
+            { text: "Giai đoạn chuyển tiếp.", correct: false }
+        ],
+        explanation: "Giai đoạn trung gian của diễn thế sinh thái thường chứng kiến sự xuất hiện của cây bụi và cây gỗ nhỏ khi cộng đồng sinh vật trở nên đa dạng hơn."
+    },
+    {
+        question: "Câu 6: Trong diễn thế sinh thái, cộng đồng sinh vật nào thường là cộng đồng cuối cùng đạt được sự cân bằng ổn định?",
+        answers: [
+            { text: "Cộng đồng trưởng thành.", correct: true },
+            { text: "Cộng đồng sơ cấp.", correct: false },
+            { text: "Cộng đồng sơ khai.", correct: false },
+            { text: "Cộng đồng tái sinh.", correct: false }
+        ],
+        explanation: "Cộng đồng trưởng thành là giai đoạn cuối cùng của diễn thế sinh thái, nơi cộng đồng sinh vật đạt được sự cân bằng ổn định với môi trường."
+    },
+    {
+        question: "Câu 7: Loại cây nào thường xuất hiện đầu tiên trong diễn thế nguyên sinh?",
+        answers: [
+            { text: "Rêu và địa y.", correct: true },
+            { text: "Cây bụi.", correct: false },
+            { text: "Cây gỗ lớn.", correct: false },
+            { text: "Cây thân cỏ.", correct: false }
+        ],
+        explanation: "Rêu và địa y thường là những loài đầu tiên xuất hiện trong diễn thế nguyên sinh do khả năng chịu đựng điều kiện khắc nghiệt và khả năng tạo ra lớp đất."
+    },
+    {
+        question: "Câu 8: Diễn thế sinh thái có thể xảy ra ở đâu?",
+        answers: [
+            { text: "Cả trên đất liền và dưới nước.", correct: true },
+            { text: "Chỉ trên đất liền.", correct: false },
+            { text: "Chỉ dưới nước.", correct: false },
+            { text: "Chỉ ở các khu vực có khí hậu ôn đới.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái có thể xảy ra cả trên đất liền và dưới nước, với các giai đoạn khác nhau tùy thuộc vào loại môi trường."
+    },
+    {
+        question: "Câu 9: Đặc điểm nào sau đây không phải là đặc điểm của diễn thế sinh thái?",
+        answers: [
+            { text: "Tăng sự đa dạng sinh học.", correct: false },
+            { text: "Thay đổi cấu trúc cộng đồng sinh vật theo thời gian.", correct: false },
+            { text: "Đạt đến trạng thái cân bằng ổn định cuối cùng.", correct: false },
+            { text: "Làm giảm chất dinh dưỡng trong môi trường.", correct: true }
+        ],
+        explanation: "Diễn thế sinh thái thường làm tăng sự đa dạng sinh học và thay đổi cấu trúc cộng đồng sinh vật, không phải làm giảm chất dinh dưỡng."
+    },
+    {
+        question: "Câu 10: Giai đoạn nào trong diễn thế sinh thái thường chứng kiến sự gia tăng các loài động vật và thực vật lớn hơn?",
+        answers: [
+            { text: "Giai đoạn cuối cùng.", correct: true },
+            { text: "Giai đoạn đầu tiên.", correct: false },
+            { text: "Giai đoạn giữa.", correct: false },
+            { text: "Giai đoạn phục hồi.", correct: false }
+        ],
+        explanation: "Giai đoạn cuối cùng của diễn thế sinh thái thường chứng kiến sự gia tăng của các loài động vật và thực vật lớn hơn khi cộng đồng sinh vật đạt đến trạng thái cân bằng ổn định."
+    },
+    {
+        question: "Câu 11: Tại sao diễn thế sinh thái lại quan trọng đối với môi trường?",
+        answers: [
+            { text: "Nó giúp duy trì sự ổn định và cân bằng của hệ sinh thái.", correct: true },
+            { text: "Nó làm giảm sự đa dạng sinh học trong hệ sinh thái.", correct: false },
+            { text: "Nó loại bỏ các loài sinh vật không mong muốn.", correct: false },
+            { text: "Nó tăng cường sự cạnh tranh giữa các loài sinh vật.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái giúp duy trì sự ổn định và cân bằng của hệ sinh thái, đảm bảo rằng các loài sinh vật có thể có được môi trường sống thích hợp."
+    },
+    {
+        question: "Câu 12: Khi diễn thế sinh thái xảy ra trên một khu vực đất bị đốt cháy, giai đoạn nào là giai đoạn đầu tiên phục hồi cộng đồng sinh vật?",
+        answers: [
+            { text: "Sự phát triển của thực vật thân cỏ.", correct: true },
+            { text: "Sự xuất hiện của cây bụi.", correct: false },
+            { text: "Sự hình thành của rừng cây lớn.", correct: false },
+            { text: "Sự phát triển của địa y và rêu.", correct: false }
+        ],
+        explanation: "Sau một khu vực đất bị đốt cháy, giai đoạn đầu tiên của phục hồi cộng đồng sinh vật thường là sự phát triển của thực vật thân cỏ."
+    },
+    {
+        question: "Câu 13: Diễn thế sinh thái có thể bị ảnh hưởng bởi các yếu tố nào?",
+        answers: [
+            { text: "Khí hậu, đất đai, và hoạt động của con người.", correct: true },
+            { text: "Sự di cư của động vật.", correct: false },
+            { text: "Sự sinh sản của thực vật.", correct: false },
+            { text: "Sự cạnh tranh giữa các loài động vật.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái có thể bị ảnh hưởng bởi các yếu tố như khí hậu, điều kiện đất đai, và hoạt động của con người, tất cả đều tác động đến sự phát triển và thay đổi của cộng đồng sinh vật."
+    },
+    {
+        question: "Câu 14: Giai đoạn nào trong diễn thế sinh thái thường có sự gia tăng các loài cây gỗ và động vật lớn?",
+        answers: [
+            { text: "Giai đoạn cuối cùng.", correct: true },
+            { text: "Giai đoạn đầu tiên.", correct: false },
+            { text: "Giai đoạn giữa.", correct: false },
+            { text: "Giai đoạn phục hồi.", correct: false }
+        ],
+        explanation: "Giai đoạn cuối cùng của diễn thế sinh thái chứng kiến sự gia tăng các loài cây gỗ và động vật lớn khi cộng đồng sinh vật đã đạt đến sự cân bằng ổn định."
+    },
+    {
+        question: "Câu 15: Đặc điểm nào sau đây là một dấu hiệu của diễn thế sinh thái trong một cộng đồng sinh vật?",
+        answers: [
+            { text: "Sự thay đổi từ cây bụi sang rừng cây.", correct: true },
+            { text: "Sự gia tăng của các loài xâm lấn.", correct: false },
+            { text: "Sự giảm thiểu số lượng loài thực vật.", correct: false },
+            { text: "Sự giảm đa dạng sinh học.", correct: false }
+        ],
+        explanation: "Một dấu hiệu của diễn thế sinh thái là sự thay đổi từ cây bụi sang rừng cây, biểu hiện sự phát triển và thay đổi trong cộng đồng sinh vật."
+    },
+    {
+        question: "Câu 16: Diễn thế sinh thái có thể dẫn đến sự hình thành của loại cộng đồng nào?",
+        answers: [
+            { text: "Cộng đồng ổn định với sự đa dạng sinh học cao.", correct: true },
+            { text: "Cộng đồng chỉ có một loài sinh vật.", correct: false },
+            { text: "Cộng đồng không có sự phân tầng.", correct: false },
+            { text: "Cộng đồng bị chiếm ưu thế bởi một loài xâm lấn.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái có thể dẫn đến sự hình thành của cộng đồng ổn định với sự đa dạng sinh học cao, nơi các loài sinh vật tương tác và duy trì sự cân bằng."
+    },
+    {
+        question: "Câu 17: Trong diễn thế sinh thái, giai đoạn nào thường thấy sự xuất hiện của các loài cây gỗ lớn?",
+        answers: [
+            { text: "Giai đoạn cuối cùng.", correct: true },
+            { text: "Giai đoạn đầu tiên.", correct: false },
+            { text: "Giai đoạn giữa.", correct: false },
+            { text: "Giai đoạn chuyển tiếp.", correct: false }
+        ],
+        explanation: "Giai đoạn cuối cùng của diễn thế sinh thái thường chứng kiến sự xuất hiện của các loài cây gỗ lớn khi cộng đồng sinh vật đạt đến sự ổn định."
+    },
+    {
+        question: "Câu 18: Giai đoạn nào trong diễn thế sinh thái thường có sự xuất hiện của các loài cây bụi và cây gỗ nhỏ?",
+        answers: [
+            { text: "Giai đoạn trung gian.", correct: true },
+            { text: "Giai đoạn đầu tiên.", correct: false },
+            { text: "Giai đoạn cuối cùng.", correct: false },
+            { text: "Giai đoạn phục hồi.", correct: false }
+        ],
+        explanation: "Giai đoạn trung gian của diễn thế sinh thái thường chứng kiến sự xuất hiện của các loài cây bụi và cây gỗ nhỏ khi cộng đồng sinh vật đang phát triển."
+    },
+    {
+        question: "Câu 19: Tại sao diễn thế sinh thái quan trọng trong việc quản lý và bảo vệ môi trường?",
+        answers: [
+            { text: "Nó giúp hiểu rõ quá trình phục hồi và duy trì sự cân bằng của hệ sinh thái.", correct: true },
+            { text: "Nó giúp loại bỏ các loài xâm lấn khỏi môi trường.", correct: false },
+            { text: "Nó giảm thiểu sự cạnh tranh giữa các loài sinh vật.", correct: false },
+            { text: "Nó làm giảm sự đa dạng sinh học.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái quan trọng vì nó giúp hiểu rõ quá trình phục hồi và duy trì sự cân bằng của hệ sinh thái, hỗ trợ trong việc quản lý và bảo vệ môi trường."
+    },
+    {
+        question: "Câu 20: Diễn thế sinh thái có thể bị tác động bởi yếu tố nào trong môi trường tự nhiên?",
+        answers: [
+            { text: "Sự thay đổi khí hậu và các hiện tượng thiên nhiên.", correct: true },
+            { text: "Sự thay đổi trong cấu trúc di truyền của loài.", correct: false },
+            { text: "Sự phân bố của các loài sinh vật trong hệ sinh thái.", correct: false },
+            { text: "Sự gia tăng hoặc giảm thiểu của các loài động vật ăn thịt.", correct: false }
+        ],
+        explanation: "Diễn thế sinh thái có thể bị tác động bởi sự thay đổi khí hậu và các hiện tượng thiên nhiên, ảnh hưởng đến quá trình thay đổi và phục hồi cộng đồng sinh vật."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

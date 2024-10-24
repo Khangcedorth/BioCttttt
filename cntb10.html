@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Công nghệ tế bào là gì?",
+        answers: [
+            { text: "Là việc sử dụng các kỹ thuật sinh học để thao tác và biến đổi các tế bào sống nhằm mục đích nghiên cứu và ứng dụng", correct: true },
+            { text: "Là việc sử dụng máy tính để phân tích dữ liệu sinh học", correct: false },
+            { text: "Là việc sử dụng vi khuẩn để sản xuất thuốc", correct: false },
+            { text: "Là việc lai tạo các giống cây trồng mới", correct: false }
+        ],
+        explanation: "Công nghệ tế bào là việc sử dụng các kỹ thuật sinh học để thao tác và biến đổi các tế bào sống nhằm mục đích nghiên cứu và ứng dụng."
+    },
+    {
+        question: "Câu 2: Ứng dụng của công nghệ tế bào trong y học là gì?",
+        answers: [
+            { text: "Điều trị bệnh bằng liệu pháp gen", correct: true },
+            { text: "Tăng cường năng suất cây trồng", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false }
+        ],
+        explanation: "Công nghệ tế bào được ứng dụng trong y học để điều trị bệnh bằng liệu pháp gen."
+    },
+    {
+        question: "Câu 3: Công nghệ tế bào thực vật được sử dụng để làm gì?",
+        answers: [
+            { text: "Lai tạo và nhân giống cây trồng mới", correct: true },
+            { text: "Điều trị bệnh ung thư", correct: false },
+            { text: "Sản xuất protein tái tổ hợp", correct: false },
+            { text: "Phân tích cấu trúc ADN", correct: false }
+        ],
+        explanation: "Công nghệ tế bào thực vật được sử dụng để lai tạo và nhân giống cây trồng mới."
+    },
+    {
+        question: "Câu 4: Tế bào gốc có thể phân chia và biến đổi thành loại tế bào nào?",
+        answers: [
+            { text: "Bất kỳ loại tế bào nào trong cơ thể", correct: true },
+            { text: "Chỉ tế bào da", correct: false },
+            { text: "Chỉ tế bào gan", correct: false },
+            { text: "Chỉ tế bào máu", correct: false }
+        ],
+        explanation: "Tế bào gốc có khả năng phân chia và biến đổi thành bất kỳ loại tế bào nào trong cơ thể."
+    },
+    {
+        question: "Câu 5: Kỹ thuật CRISPR-Cas9 được sử dụng để làm gì?",
+        answers: [
+            { text: "Chỉnh sửa gen một cách chính xác", correct: true },
+            { text: "Nhân giống tế bào nhanh chóng", correct: false },
+            { text: "Phân lập tế bào từ cơ thể", correct: false },
+            { text: "Tạo mô hình động vật mới", correct: false }
+        ],
+        explanation: "Kỹ thuật CRISPR-Cas9 được sử dụng để chỉnh sửa gen một cách chính xác."
+    },
+    {
+        question: "Câu 6: Ứng dụng của công nghệ tế bào động vật là gì?",
+        answers: [
+            { text: "Sản xuất protein tái tổ hợp", correct: true },
+            { text: "Lai tạo giống cây trồng mới", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false }
+        ],
+        explanation: "Công nghệ tế bào động vật được ứng dụng để sản xuất protein tái tổ hợp."
+    },
+    {
+        question: "Câu 7: Tế bào gốc phôi có nguồn gốc từ đâu?",
+        answers: [
+            { text: "Phôi thai ở giai đoạn sớm", correct: true },
+            { text: "Tủy xương", correct: false },
+            { text: "Máu dây rốn", correct: false },
+            { text: "Da người trưởng thành", correct: false }
+        ],
+        explanation: "Tế bào gốc phôi có nguồn gốc từ phôi thai ở giai đoạn sớm."
+    },
+    {
+        question: "Câu 8: Kỹ thuật nào được sử dụng để tách tế bào khỏi mô cơ thể?",
+        answers: [
+            { text: "Enzyme phân giải mô", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Đông lạnh", correct: false },
+            { text: "PCR", correct: false }
+        ],
+        explanation: "Kỹ thuật enzyme phân giải mô được sử dụng để tách tế bào khỏi mô cơ thể."
+    },
+    {
+        question: "Câu 9: Lợi ích của liệu pháp tế bào gốc trong điều trị bệnh là gì?",
+        answers: [
+            { text: "Thay thế các tế bào hư hại hoặc bị mất", correct: true },
+            { text: "Tăng cường khả năng miễn dịch", correct: false },
+            { text: "Giảm đau nhanh chóng", correct: false },
+            { text: "Tăng cường sản xuất hormone", correct: false }
+        ],
+        explanation: "Liệu pháp tế bào gốc giúp thay thế các tế bào hư hại hoặc bị mất."
+    },
+    {
+        question: "Câu 10: Công nghệ tế bào có thể giúp gì trong nông nghiệp?",
+        answers: [
+            { text: "Tạo giống cây trồng kháng bệnh", correct: true },
+            { text: "Sản xuất thuốc", correct: false },
+            { text: "Tăng cường sản xuất protein", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể tạo giống cây trồng kháng bệnh."
+    },
+    {
+        question: "Câu 11: Công nghệ tế bào được sử dụng để sản xuất loại protein nào?",
+        answers: [
+            { text: "Insulin tái tổ hợp", correct: true },
+            { text: "Protein cấu trúc", correct: false },
+            { text: "Protein vận chuyển", correct: false },
+            { text: "Protein điều hòa", correct: false }
+        ],
+        explanation: "Công nghệ tế bào được sử dụng để sản xuất insulin tái tổ hợp."
+    },
+    {
+        question: "Câu 12: Tế bào gốc có khả năng tự đổi mới và phân chia trong bao lâu?",
+        answers: [
+            { text: "Suốt đời", correct: true },
+            { text: "Chỉ trong giai đoạn phát triển phôi", correct: false },
+            { text: "Chỉ trong giai đoạn trưởng thành", correct: false },
+            { text: "Chỉ trong giai đoạn lão hóa", correct: false }
+        ],
+        explanation: "Tế bào gốc có khả năng tự đổi mới và phân chia suốt đời."
+    },
+    {
+        question: "Câu 13: Kỹ thuật nào được sử dụng để nhân giống tế bào trong phòng thí nghiệm?",
+        answers: [
+            { text: "Nuôi cấy tế bào", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "PCR", correct: false },
+            { text: "Western blot", correct: false }
+        ],
+        explanation: "Kỹ thuật nuôi cấy tế bào được sử dụng để nhân giống tế bào trong phòng thí nghiệm."
+    },
+    {
+        question: "Câu 14: Công nghệ tế bào động vật có thể giúp gì trong nghiên cứu y học?",
+        answers: [
+            { text: "Phát triển các mô hình bệnh tật", correct: true },
+            { text: "Tăng cường năng suất cây trồng", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false }
+        ],
+        explanation: "Công nghệ tế bào động vật có thể giúp phát triển các mô hình bệnh tật."
+    },
+    {
+        question: "Câu 15: Kỹ thuật nào được sử dụng để phân tích biểu hiện gen trong tế bào?",
+        answers: [
+            { text: "RT-PCR", correct: true },
+            { text: "Ly tâm", correct: false },
+            { text: "Enzyme phân giải mô", correct: false },
+            { text: "Western blot", correct: false }
+        ],
+        explanation: "Kỹ thuật RT-PCR được sử dụng để phân tích biểu hiện gen trong tế bào."
+    },
+    {
+        question: "Câu 16: Công nghệ tế bào có thể giúp gì trong bảo tồn động vật hoang dã?",
+        answers: [
+            { text: "Nhân giống các loài có nguy cơ tuyệt chủng", correct: true },
+            { text: "Tăng cường sản xuất thuốc", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể nhân giống các loài có nguy cơ tuyệt chủng."
+    },
+    {
+        question: "Câu 17: Công nghệ tế bào có thể giúp gì trong sản xuất thực phẩm?",
+        answers: [
+            { text: "Sản xuất thịt nhân tạo", correct: true },
+            { text: "Sản xuất protein tái tổ hợp", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false },
+            { text: "Tăng cường sản xuất insulin", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể giúp sản xuất thịt nhân tạo."
+    },
+    {
+        question: "Câu 18: Công nghệ tế bào có thể giúp gì trong ngành công nghiệp dược phẩm?",
+        answers: [
+            { text: "Phát triển thuốc mới từ tế bào gốc", correct: true },
+            { text: "Lai tạo giống cây trồng mới", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false },
+            { text: "Phân tích dữ liệu gen", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể giúp phát triển thuốc mới từ tế bào gốc."
+    },
+    {
+        question: "Câu 19: Công nghệ tế bào có thể giúp gì trong nghiên cứu ung thư?",
+        answers: [
+            { text: "Phát triển mô hình tế bào ung thư để nghiên cứu", correct: true },
+            { text: "Tăng cường khả năng miễn dịch", correct: false },
+            { text: "Sản xuất protein tái tổ hợp", correct: false },
+            { text: "Nhân giống động vật hoang dã", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể giúp phát triển mô hình tế bào ung thư để nghiên cứu."
+    },
+    {
+        question: "Câu 20: Công nghệ tế bào có thể giúp gì trong y học tái tạo?",
+        answers: [
+            { text: "Tạo ra các mô và cơ quan thay thế", correct: true },
+            { text: "Phân tích dữ liệu gen", correct: false },
+            { text: "Sản xuất nhiên liệu sinh học", correct: false },
+            { text: "Lai tạo giống cây trồng mới", correct: false }
+        ],
+        explanation: "Công nghệ tế bào có thể giúp tạo ra các mô và cơ quan thay thế."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Cảm ứng ở thực vật là gì?",
+        answers: [
+            { text: "Quá trình tiêu hóa thức ăn", correct: false },
+            { text: "Phản ứng của thực vật với các kích thích từ môi trường", correct: true },
+            { text: "Sản xuất năng lượng", correct: false },
+            { text: "Phát triển rễ cây", correct: false },
+        ],
+        explanation: "Cảm ứng ở thực vật là phản ứng của thực vật với các kích thích từ môi trường như ánh sáng, nước, và nhiệt độ."
+    },
+    {
+        question: "Câu 2: Thực vật có thể phản ứng với ánh sáng bằng cách nào?",
+        answers: [
+            { text: "Hấp thụ chất dinh dưỡng", correct: false },
+            { text: "Quang hợp", correct: false },
+            { text: "Hướng quang", correct: true },
+            { text: "Sản xuất hạt", correct: false }
+        ],
+        explanation: "Hướng quang là hiện tượng thực vật mọc về phía nguồn sáng."
+    },
+    {
+        question: "Câu 3: Hướng đất là gì?",
+        answers: [
+            { text: "Phản ứng của thực vật với ánh sáng", correct: false },
+            { text: "Phản ứng của rễ cây với lực hấp dẫn", correct: true },
+            { text: "Phản ứng của lá cây với nhiệt độ", correct: false },
+            { text: "Phản ứng của hoa với độ ẩm", correct: false }
+        ],
+        explanation: "Hướng đất là phản ứng của rễ cây mọc hướng xuống dưới, theo lực hấp dẫn của Trái Đất."
+    },
+    {
+        question: "Câu 4: Thực vật có thể phản ứng với nước bằng cách nào?",
+        answers: [
+            { text: "Hướng nước", correct: true },
+            { text: "Hướng quang", correct: false },
+            { text: "Hướng nhiệt", correct: false },
+            { text: "Hướng đất", correct: false }
+        ],
+        explanation: "Hướng nước là hiện tượng rễ cây mọc về phía nguồn nước."
+    },
+    {
+        question: "Câu 5: Chức năng của hormone auxin trong thực vật là gì?",
+        answers: [
+            { text: "Điều hòa nhiệt độ", correct: false },
+            { text: "Kích thích sự phát triển của cây", correct: true },
+            { text: "Giúp thực vật quang hợp", correct: false },
+            { text: "Tạo màu sắc cho hoa", correct: false }
+        ],
+        explanation: "Hormone auxin kích thích sự kéo dài của tế bào và sự phát triển của cây."
+    },
+    {
+        question: "Câu 6: Hướng nhiệt là gì?",
+        answers: [
+            { text: "Phản ứng của thực vật với nhiệt độ", correct: true },
+            { text: "Phản ứng của thực vật với ánh sáng", correct: false },
+            { text: "Phản ứng của thực vật với nước", correct: false },
+            { text: "Phản ứng của thực vật với lực hấp dẫn", correct: false }
+        ],
+        explanation: "Hướng nhiệt là hiện tượng thực vật phản ứng với sự thay đổi nhiệt độ."
+    },
+    {
+        question: "Câu 7: Thực vật leo có thể phản ứng với sự tiếp xúc bằng cách nào?",
+        answers: [
+            { text: "Hướng nước", correct: false },
+            { text: "Hướng quang", correct: false },
+            { text: "Hướng tiếp xúc", correct: true },
+            { text: "Hướng nhiệt", correct: false }
+        ],
+        explanation: "Hướng tiếp xúc là hiện tượng thực vật leo quấn quanh các vật thể khi tiếp xúc với chúng."
+    },
+    {
+        question: "Câu 8: Chức năng của hormone gibberellin là gì?",
+        answers: [
+            { text: "Điều chỉnh quang hợp", correct: false },
+            { text: "Kích thích sự nảy mầm của hạt và sự phát triển của quả", correct: true },
+            { text: "Điều chỉnh hướng quang", correct: false },
+            { text: "Tạo màu sắc cho lá", correct: false }
+        ],
+        explanation: "Hormone gibberellin kích thích sự nảy mầm của hạt và sự phát triển của quả."
+    },
+    {
+        question: "Câu 9: Phản ứng của thực vật với kích thích cơ học gọi là gì?",
+        answers: [
+            { text: "Hướng quang", correct: false },
+            { text: "Hướng tiếp xúc", correct: true },
+            { text: "Hướng nước", correct: false },
+            { text: "Hướng nhiệt", correct: false }
+        ],
+        explanation: "Hướng tiếp xúc là phản ứng của thực vật với kích thích cơ học như sự tiếp xúc với các vật thể."
+    },
+    {
+        question: "Câu 10: Hướng sáng tiêu cực là gì?",
+        answers: [
+            { text: "Phản ứng của thực vật mọc hướng về nguồn sáng", correct: false },
+            { text: "Phản ứng của thực vật mọc tránh xa nguồn sáng", correct: true },
+            { text: "Phản ứng của thực vật mọc hướng về nước", correct: false },
+            { text: "Phản ứng của thực vật mọc hướng về nhiệt độ", correct: false }
+        ],
+        explanation: "Hướng sáng tiêu cực là hiện tượng thực vật mọc tránh xa nguồn sáng."
+    },
+    {
+        question: "Câu 11: Thực vật có thể phản ứng với sự thay đổi trong chu kỳ ánh sáng như thế nào?",
+        answers: [
+            { text: "Hướng quang", correct: false },
+            { text: "Nhiệt ứng", correct: false },
+            { text: "Quang chu kỳ", correct: true },
+            { text: "Thủy ứng", correct: false }
+        ],
+        explanation: "Quang chu kỳ là phản ứng của thực vật với sự thay đổi trong chu kỳ ánh sáng và bóng tối."
+    },
+    {
+        question: "Câu 12: Chức năng của hormone ethylene là gì?",
+        answers: [
+            { text: "Kích thích sự phát triển của rễ", correct: false },
+            { text: "Kích thích quả chín và lá rụng", correct: true },
+            { text: "Điều chỉnh quang hợp", correct: false },
+            { text: "Điều chỉnh sự nảy mầm của hạt", correct: false }
+        ],
+        explanation: "Hormone ethylene kích thích quả chín và lá rụng."
+    },
+    {
+        question: "Câu 13: Thực vật có thể cảm nhận sự thay đổi nồng độ CO2 bằng cách nào?",
+        answers: [
+            { text: "Thông qua khí khổng", correct: true },
+            { text: "Thông qua rễ", correct: false },
+            { text: "Thông qua lá", correct: false },
+            { text: "Thông qua hoa", correct: false }
+        ],
+        explanation: "Thực vật có thể cảm nhận sự thay đổi nồng độ CO2 thông qua khí khổng."
+    },
+    {
+        question: "Câu 14: Chức năng của hormone cytokinins là gì?",
+        answers: [
+            { text: "Kích thích sự phân chia tế bào", correct: true },
+            { text: "Điều chỉnh quang hợp", correct: false },
+            { text: "Kích thích quả chín", correct: false },
+            { text: "Kích thích sự nảy mầm của hạt", correct: false }
+        ],
+        explanation: "Hormone cytokinins kích thích sự phân chia tế bào và sự phát triển của chồi."
+    },
+    {
+        question: "Câu 15: Hướng trọng lực là gì?",
+        answers: [
+            { text: "Phản ứng của thực vật với lực hấp dẫn", correct: true },
+            { text: "Phản ứng của thực vật với ánh sáng", correct: false },
+            { text: "Phản ứng của thực vật với nhiệt độ", correct: false },
+            { text: "Phản ứng của thực vật với nước", correct: false }
+        ],
+        explanation: "Hướng trọng lực là hiện tượng thực vật phản ứng với lực hấp dẫn, thường thấy ở rễ mọc xuống và thân cây mọc lên."
+    },
+    {
+        question: "Câu 16: Thụ thể trong thực vật là gì?",
+        answers: [
+            { text: "Cấu trúc giúp cây hấp thụ nước", correct: false },
+            { text: "Protein nhận biết và phản ứng với kích thích môi trường", correct: true },
+            { text: "Hormon điều chỉnh sự phát triển", correct: false },
+            { text: "Enzyme phân giải chất dinh dưỡng", correct: false }
+        ],
+        explanation: "Thụ thể trong thực vật là các protein nhận biết và phản ứng với các kích thích từ môi trường."
+    },
+    {
+        question: "Câu 17: Chức năng của thụ thể phytochrome là gì?",
+        answers: [
+            { text: "Điều chỉnh sự quang hợp", correct: false },
+            { text: "Phát hiện ánh sáng đỏ và xa đỏ", correct: true },
+            { text: "Phát hiện nhiệt độ", correct: false },
+            { text: "Phát hiện độ ẩm", correct: false }
+        ],
+        explanation: "Thụ thể phytochrome phát hiện ánh sáng đỏ và xa đỏ, giúp thực vật điều chỉnh các phản ứng quang chu kỳ."
+    },
+    {
+        question: "Câu 18: Tại sao thực vật cần phản ứng với môi trường?",
+        answers: [
+            { text: "Để quang hợp hiệu quả hơn", correct: false },
+            { text: "Để sinh trưởng và phát triển tốt hơn", correct: true },
+            { text: "Để tiêu hóa thức ăn", correct: false },
+            { text: "Để sản xuất hormone", correct: false }
+        ],
+        explanation: "Thực vật phản ứng với môi trường để sinh trưởng và phát triển tốt hơn, giúp tối ưu hóa việc hấp thụ ánh sáng, nước, và các chất dinh dưỡng."
+    },
+    {
+        question: "Câu 19: Thực vật có thể phản ứng với âm thanh không?",
+        answers: [
+            { text: "Có, một số nghiên cứu cho thấy thực vật có thể phản ứng với âm thanh", correct: true },
+            { text: "Không, thực vật không thể cảm nhận âm thanh", correct: false }
+        ],
+        explanation: "Một số nghiên cứu cho thấy thực vật có thể phản ứng với âm thanh, mặc dù cơ chế chưa được hiểu rõ hoàn toàn."
+    },
+    {
+        question: "Câu 20: Hướng thụ động là gì?",
+        answers: [
+            { text: "Phản ứng của thực vật với lực hấp dẫn", correct: false },
+            { text: "Phản ứng của thực vật với ánh sáng", correct: false },
+            { text: "Phản ứng của thực vật không dựa vào hướng của kích thích", correct: true },
+            { text: "Phản ứng của thực vật với nước", correct: false }
+        ],
+        explanation: "Hướng thụ động là phản ứng của thực vật không dựa vào hướng của kích thích, ví dụ như phản ứng với sự thay đổi nhiệt độ hoặc độ ẩm."
+    }
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Nhiễm sắc thể là gì?",
+                answers: [
+                    { text: "Cấu trúc chứa RNA và lipid", correct: false },
+                    { text: "Cấu trúc chứa chỉ protein", correct: false },
+                    { text: "Cấu trúc chứa DNA và protein", correct: true },
+                    { text: "Cấu trúc chứa chỉ DNA", correct: false }
+                ],
+                explanation: "Nhiễm sắc thể là cấu trúc chứa DNA và protein, nằm trong nhân tế bào."
+            },
+            {
+                question: "Câu 2: Cấu trúc của một nhiễm sắc thể điển hình gồm có gì?",
+                answers: [
+                    { text: "Tâm động, cánh ngắn, cánh dài, đầu mút", correct: true },
+                    { text: "Tâm động, cánh ngắn, trung thể, đầu mút", correct: false },
+                    { text: "Tâm động, trung thể, cánh dài, đầu mút", correct: false },
+                    { text: "Tâm động, cánh ngắn, cánh dài, màng nhân", correct: false }
+                ],
+                explanation: "Nhiễm sắc thể điển hình gồm có tâm động, cánh ngắn, cánh dài và đầu mút."
+            },
+            {
+                question: "Câu 3: Tâm động (centromere) có vai trò gì?",
+                answers: [
+                    { text: "Liên kết DNA với màng nhân", correct: false },
+                    { text: "Tạo ra các nucleotide mới", correct: false },
+                    { text: "Liên kết các sợi nhiễm sắc", correct: true },
+                    { text: "Phân chia tế bào", correct: false }
+                ],
+                explanation: "Tâm động là nơi liên kết các sợi nhiễm sắc với nhau và với thoi vô sắc trong quá trình phân chia tế bào."
+            },
+            {
+                question: "Câu 4: Đầu mút (telomere) của nhiễm sắc thể có chức năng gì?",
+                answers: [
+                    { text: "Giúp nhiễm sắc thể sao chép", correct: false },
+                    { text: "Điều chỉnh biểu hiện gene", correct: false },
+                    { text: "Tạo ra các protein mới", correct: false },
+                    { text: "Bảo vệ nhiễm sắc thể khỏi bị mất đoạn", correct: true },
+                ],
+                explanation: "Đầu mút bảo vệ nhiễm sắc thể khỏi bị mất đoạn trong quá trình sao chép và phân chia tế bào."
+            },
+            {
+                question: "Câu 5: Nhiễm sắc thể đơn (chromatid) là gì?",
+                answers: [
+                    { text: "Một trong hai bản sao của nhiễm sắc thể sau khi nhân đôi", correct: true },
+                    { text: "Cấu trúc protein giúp phân chia tế bào", correct: false },
+                    { text: "Một đoạn DNA không chứa gene", correct: false },
+                    { text: "Một đoạn RNA trong nhân tế bào", correct: false }
+                ],
+                explanation: "Nhiễm sắc thể đơn là một trong hai bản sao của nhiễm sắc thể sau khi nhân đôi."
+            },
+            {
+                question: "Câu 6: Bộ nhiễm sắc thể lưỡng bội (diploid) của con người có bao nhiêu nhiễm sắc thể?",
+                answers: [
+                    { text: "23", correct: false },
+                    { text: "46", correct: true },
+                    { text: "22", correct: false },
+                    { text: "44", correct: false }
+                ],
+                explanation: "Bộ nhiễm sắc thể lưỡng bội của con người có 46 nhiễm sắc thể, chia thành 23 cặp."
+            },
+            {
+                question: "Câu 7: Bộ nhiễm sắc thể đơn bội (haploid) của con người có bao nhiêu nhiễm sắc thể?",
+                answers: [
+                    { text: "46", correct: false },
+                    { text: "22", correct: false },
+                    { text: "23", correct: true },
+                    { text: "44", correct: false }
+                ],
+                explanation: "Bộ nhiễm sắc thể đơn bội của con người có 23 nhiễm sắc thể."
+            },
+            {
+                question: "Câu 8: Nhiễm sắc thể giới tính ở người nữ là gì?",
+                answers: [
+                    { text: "XY", correct: false },
+                    { text: "YY", correct: false },
+                    { text: "XX", correct: true },
+                    { text: "XO", correct: false }
+                ],
+                explanation: "Người nữ có cặp nhiễm sắc thể giới tính là XX."
+            },
+            {
+                question: "Câu 9: Nhiễm sắc thể giới tính ở người nam là gì?",
+                answers: [
+                    { text: "XX", correct: false },
+                    { text: "YY", correct: false },
+                    { text: "XY", correct: true },
+                    { text: "XO", correct: false }
+                ],
+                explanation: "Người nam có cặp nhiễm sắc thể giới tính là XY."
+            },
+            {
+                question: "Câu 10: Nhiễm sắc thể tương đồng (homologous chromosomes) là gì?",
+                answers: [
+                    { text: "Hai nhiễm sắc thể khác nhau về hình thái", correct: false },
+                    { text: "Hai nhiễm sắc thể giống nhau về hình thái và chứa các gene tương ứng", correct: true },
+                    { text: "Một nhiễm sắc thể từ mẹ và một từ bố", correct: false },
+                    { text: "Hai nhiễm sắc thể chứa các gene không tương ứng", correct: false }
+                ],
+                explanation: "Nhiễm sắc thể tương đồng là hai nhiễm sắc thể giống nhau về hình thái và chứa các gene tương ứng."
+            },
+            {
+                question: "Câu 11: Đột biến cấu trúc nhiễm sắc thể có thể bao gồm những loại nào?",
+                answers: [
+                    { text: "Mất đoạn, lặp đoạn, đảo đoạn, chuyển đoạn", correct: true },
+                    { text: "Thay thế nucleotide, lặp đoạn, đảo đoạn, chuyển đoạn", correct: false },
+                    { text: "Mất đoạn, thay thế nucleotide, đảo đoạn, chuyển đoạn", correct: false },
+                    { text: "Mất đoạn, lặp đoạn, thay thế nucleotide, chuyển đoạn", correct: false }
+                ],
+                explanation: "Đột biến cấu trúc nhiễm sắc thể có thể bao gồm mất đoạn, lặp đoạn, đảo đoạn và chuyển đoạn."
+            },
+            {
+                question: "Câu 12: Đột biến mất đoạn (deletion) là gì?",
+                answers: [
+                    { text: "Một đoạn nhiễm sắc thể bị mất đi", correct: true },
+                    { text: "Một đoạn nhiễm sắc thể được sao chép nhiều lần", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể bị đảo ngược", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể được chuyển đến vị trí khác", correct: false }
+                ],
+                explanation: "Đột biến mất đoạn là khi một đoạn nhiễm sắc thể bị mất đi."
+            },
+            {
+                question: "Câu 13: Đột biến lặp đoạn (duplication) là gì?",
+                answers: [
+                    { text: "Một đoạn nhiễm sắc thể được sao chép nhiều lần", correct: true },
+                    { text: "Một đoạn nhiễm sắc thể bị mất đi", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể bị đảo ngược", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể được chuyển đến vị trí khác", correct: false }
+                ],
+                explanation: "Đột biến lặp đoạn là khi một đoạn nhiễm sắc thể được sao chép nhiều lần."
+            },
+            {
+                question: "Câu 14: Đột biến đảo đoạn (inversion) là gì?",
+                answers: [
+                    { text: "Một đoạn nhiễm sắc thể bị đảo ngược", correct: true },
+                    { text: "Một đoạn nhiễm sắc thể được sao chép nhiều lần", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể bị mất đi", correct: false },
+                    { text: "Một đoạn nhiễm sắc thể được chuyển đến vị trí khác", correct: false }
+                ],
+                explanation: "Đột biến đảo đoạn là khi một đoạn nhiễm sắc thể bị đảo ngược."
+            },
+            {
+                question: "Câu 15: Đột biến chuyển đoạn (translocation) là : một đoạn nhiễm sắc thể được chuyển đến vị trí khác?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Đột biến chuyển đoạn là khi một đoạn nhiễm sắc thể được chuyển đến vị trí khác."
+            },
+            {
+                question: "Câu 16: Đột biến gen (gene mutation) là : thay đổi trong cấu trúc của một nhiễm sắc thể?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Đột biến gen là thay đổi trong trình tự nucleotide của một gen."
+            },
+            {
+                question: "Câu 17: Chuyển đoạn chỉ có trên 1 NST?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Đột biến điểm là khi có thay đổi một nucleotide duy nhất trong trình tự DNA."
+            },
+            {
+                question: "Câu 18: Đột biến thay thế (substitution mutation) là : Một nucleotide được thay thế bởi một nucleotide khác?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Đột biến thay thế là khi một nucleotide được thay thế bởi một nucleotide khác."
+            },
+            {
+                question: "Câu 19: Đột biến chèn (insertion mutation) là : một hoặc nhiều nucleotide được chèn vào trong trình tự DNA?",
+                answers: [
+                    { text: "Đúng", correct: true },
+                    { text: "Sai", correct: false },
+                ],
+                explanation: "Đột biến chèn là khi một hoặc nhiều nucleotide được chèn vào trong trình tự DNA."
+            },
+            {
+                question: "Câu 20: Đột biến mất đoạn (deletion mutation) là : một đoạn DNA được chuyển đến vị trí khác?",
+                answers: [
+                    { text: "Đúng", correct: false },
+                    { text: "Sai", correct: true },
+                ],
+                explanation: "Đột biến mất đoạn là khi một hoặc nhiều nucleotide bị mất khỏi trình tự DNA."
+            }
+        ];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

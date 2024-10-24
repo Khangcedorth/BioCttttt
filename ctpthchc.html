@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Công thức phân tử của metan là",
+        answers: [
+            { text: "CH4", correct: true },
+            { text: "C2H6", correct: false },
+            { text: "CH3OH", correct: false },
+            { text: "C2H4", correct: false }
+        ],
+        explanation: "Metan có công thức phân tử là CH4."
+    },
+    {
+        question: "Câu 2: Công thức phân tử của etanol là",
+        answers: [
+            { text: "C2H5OH", correct: true },
+            { text: "CH3OH", correct: false },
+            { text: "C3H7OH", correct: false },
+            { text: "C2H4", correct: false }
+        ],
+        explanation: "Ethanol có công thức phân tử là C2H5OH."
+    },
+    {
+        question: "Câu 3: Công thức phân tử của axit axetic là",
+        answers: [
+            { text: "CH3COOH", correct: true },
+            { text: "C2H5OH", correct: false },
+            { text: "CH3OH", correct: false },
+            { text: "C2H4", correct: false }
+        ],
+        explanation: "Axit axetic có công thức phân tử là CH3COOH."
+    },
+    {
+        question: "Câu 4: Công thức phân tử của benzen là",
+        answers: [
+            { text: "C6H6", correct: true },
+            { text: "C6H12", correct: false },
+            { text: "C5H6", correct: false },
+            { text: "C7H8", correct: false }
+        ],
+        explanation: "Benzen có công thức phân tử là C6H6."
+    },
+    {
+        question: "Câu 5: Tính khối lượng mol của ethanol (C2H5OH)",
+        answers: [
+            { text: "46 g/mol", correct: true },
+            { text: "45 g/mol", correct: false },
+            { text: "44 g/mol", correct: false },
+            { text: "47 g/mol", correct: false }
+        ],
+        explanation: "Khối lượng mol của ethanol: (2x12) + (6x1) + 16 = 46 g/mol."
+    },
+    {
+        question: "Câu 6: Tính số mol của 92 gam axit acetic (CH3COOH)",
+        answers: [
+            { text: "1,5 mol", correct: false },
+            { text: "2 mol", correct: true },
+            { text: "2,5 mol", correct: false },
+            { text: "3 mol", correct: false }
+        ],
+        explanation: "Số mol của axit acetic: 92 g / 46 g/mol = 2 mol."
+    },
+    {
+        question: "Câu 7: Công thức phân tử của butan là",
+        answers: [
+            { text: "C4H10", correct: true },
+            { text: "C4H8", correct: false },
+            { text: "C4H6", correct: false },
+            { text: "C3H8", correct: false }
+        ],
+        explanation: "Butan có công thức phân tử là C4H10."
+    },
+    {
+        question: "Câu 8: Công thức phân tử của toluen là",
+        answers: [
+            { text: "C7H8", correct: true },
+            { text: "C6H6", correct: false },
+            { text: "C8H10", correct: false },
+            { text: "C6H5CH3", correct: true }
+        ],
+        explanation: "Toluene có công thức phân tử là C7H8, còn được viết là C6H5CH3."
+    },
+    {
+        question: "Câu 9: Công thức phân tử của axit citric là",
+        answers: [
+            { text: "C6H8O7", correct: true },
+            { text: "C6H12O6", correct: false },
+            { text: "C5H7O7", correct: false },
+            { text: "C4H8O6", correct: false }
+        ],
+        explanation: "Axit citric có công thức phân tử là C6H8O7."
+    },
+    {
+        question: "Câu 10: Công thức phân tử của axit fumaric là",
+        answers: [
+            { text: "C4H4O4", correct: true },
+            { text: "C4H6O4", correct: false },
+            { text: "C3H4O4", correct: false },
+            { text: "C5H6O4", correct: false }
+        ],
+        explanation: "Axit fumaric có công thức phân tử là C4H4O4."
+    },
+    {
+        question: "Câu 11: Công thức phân tử của glycine là",
+        answers: [
+            { text: "C2H5NO2", correct: true },
+            { text: "C3H7NO2", correct: false },
+            { text: "C2H6NO2", correct: false },
+            { text: "C4H9NO2", correct: false }
+        ],
+        explanation: "Glycine có công thức phân tử là C2H5NO2."
+    },
+    {
+        question: "Câu 12: Tính phần trăm khối lượng của carbon trong glucose (C6H12O6)",
+        answers: [
+            { text: "40%", correct: true },
+            { text: "50%", correct: false },
+            { text: "60%", correct: false },
+            { text: "70%", correct: false }
+        ],
+        explanation: "Phần trăm khối lượng của carbon trong glucose: (6x12)/(6x12 + 12x1 + 6x16) x 100% = 40%."
+    },
+    {
+        question: "Câu 13: Công thức phân tử của acetone là",
+        answers: [
+            { text: "C3H6O", correct: true },
+            { text: "C3H8O", correct: false },
+            { text: "C2H4O", correct: false },
+            { text: "C4H8O", correct: false }
+        ],
+        explanation: "Acetone có công thức phân tử là C3H6O."
+    },
+    {
+        question: "Câu 14: Công thức phân tử của formaldehyde là",
+        answers: [
+            { text: "CH2O", correct: true },
+            { text: "CH4O", correct: false },
+            { text: "CH3O", correct: false },
+            { text: "C2H2O", correct: false }
+        ],
+        explanation: "Formaldehyde có công thức phân tử là CH2O."
+    },
+    {
+        question: "Câu 15: Tính số mol của 150 gam glucose (C6H12O6)",
+        answers: [
+            { text: "0,5 mol", correct: false },
+            { text: "0,75 mol", correct: true },
+            { text: "1 mol", correct: false },
+            { text: "1,25 mol", correct: false }
+        ],
+        explanation: "Số mol của glucose: 150 g / 180 g/mol = 0,83 mol."
+    },
+    {
+        question: "Câu 16: Công thức phân tử của axit ascorbic (vitamin C) là",
+        answers: [
+            { text: "C6H8O6", correct: true },
+            { text: "C6H8O7", correct: false },
+            { text: "C5H8O6", correct: false },
+            { text: "C6H6O6", correct: false }
+        ],
+        explanation: "Axit ascorbic (vitamin C) có công thức phân tử là C6H8O6."
+    },
+    {
+        question: "Câu 17: Công thức phân tử của ethylene là",
+        answers: [
+            { text: "C2H4", correct: true },
+            { text: "C2H6", correct: false },
+            { text: "C2H2", correct: false },
+            { text: "C3H6", correct: false }
+        ],
+        explanation: "Ethylene có công thức phân tử là C2H4."
+    },
+    {
+        question: "Câu 18: Công thức phân tử của isopropanol là",
+        answers: [
+            { text: "C3H8O", correct: true },
+            { text: "C3H6O", correct: false },
+            { text: "C4H8O", correct: false },
+            { text: "C3H8O2", correct: false }
+        ],
+        explanation: "Isopropanol có công thức phân tử là C3H8O."
+    },
+    {
+        question: "Câu 19: Công thức phân tử của axit stearic là",
+        answers: [
+            { text: "C18H36O2", correct: true },
+            { text: "C18H34O2", correct: false },
+            { text: "C17H34O2", correct: false },
+            { text: "C16H32O2", correct: false }
+        ],
+        explanation: "Axit stearic có công thức phân tử là C18H36O2."
+    },
+    {
+        question: "Câu 20: Tính số mol của 30 gam axit fumaric (C4H4O4)",
+        answers: [
+            { text: "0,5 mol", correct: true },
+            { text: "0,25 mol", correct: false },
+            { text: "0,75 mol", correct: false },
+            { text: "1 mol", correct: false }
+        ],
+        explanation: "Số mol của axit fumaric: 30 g / 116 g/mol = 0,26 mol."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

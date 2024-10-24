@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="chisoduong.css">
+</head>
+<body>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+    <audio id="introAudio">
+        <source src="chisoduong.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        const introAudio = document.getElementById('introAudio');
+        let isPlaying = false;
+    
+        // Thay thế sự kiện nhấn phím Ctrl bằng nhấn một lần vào màn hình
+        document.addEventListener('click', function(event) {
+            if (isPlaying) {
+                introAudio.pause();
+                introAudio.currentTime = 0; // Optional: Reset to start
+            } else {
+                introAudio.play();
+            }
+            isPlaying = !isPlaying;
+        });
+    
+        // Kiểm tra xem trình duyệt có hỗ trợ webkitSpeechRecognition không
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.");
+        } else {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+    
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                
+                // Tìm kiếm tuổi và chỉ số đường huyết từ transcript
+                let ts = transcript.includes('đã') ? 'type1' : transcript.includes('chưa') ? 'type2' : 'Không xác định';
+                let numbers = transcript.match(/\d+(\.\d+)?/g); // Tìm tất cả các số
+                let age = numbers && numbers.length > 0 ? parseFloat(numbers[0]) : 'Không xác định';
+                let duong = numbers && numbers.length > 1 ? parseFloat(numbers[1]) : 'Không xác định';
+    
+                document.getElementById('age').value = age;
+                document.getElementById('inputValue').value = duong;
+                document.getElementById('tiensu').value = ts;
+    
+                // Gọi hàm xử lý để kiểm tra chỉ số đường huyết
+                processInput();
+            };
+    
+            recognition.onerror = function(event) {
+                console.error('Lỗi nhận diện giọng nói: ', event.error);
+            };
+    
+            // Thay thế sự kiện nhấn phím Space bằng nhấn đúp chuột (double click)
+            document.addEventListener('dblclick', function(event) {
+                recognition.start();
+            });
+        }
+    </script>
+    
+    <section>
+        <img id="chemistry-icon" src="Kok.png" alt="Icon Hoá Học">
+        <img id="righticon" src="iconindex.PNG" alt="Icon Hoá Học">
+        <div class="center-text">
+            <h1 id="first">BioCheX - Hoá Sinh trong đời sống</h1>
+            <marquee behavior="alternate">
+                <marquee style="color:#e60b0b; font-weight:bold" width="700px">BIOCHEX - HOÁ SINH TRONG ĐỜI SỐNG</marquee>
+            </marquee>
+        </div>
+        <p class="luuy">Lưu ý trước khi đo không được ăn quá no, không căng thẳng, không vận động mạnh, đo sau khi ăn trên 2 tiếng</p>
+        <label for="age">Nhập độ tuổi của bạn:</label>
+        <input type="number" id="age">
+        <br>
+        <br>
+        <label for="tiensu">Chọn tiền sử bệnh của bạn trước đây:</label>
+        <select id="tiensu">
+            <option value="type1">Có tiền sử đường trong máu cao hoặc đái tháo đường</option>
+            <option value="type2">Chưa có tiền sử bệnh</option>
+        </select>
+        <br>
+        <label for="inputValue">Nhập chỉ số đường mà bạn mới vừa đo được (mg/dL):</label>
+        <input type="number" id="inputValue">
+        <button onclick="processInput()">Kiểm tra</button>
+
+        <p id="result">Mức độ chỉ số đường: </p>
+        <p id="k">Tình trạng cơ thể dựa trên chỉ số phân tích:</p>
+        <p id="md">Biểu hiện cơ thể:</p>
+        <p id="neutralize">Cách sơ cứu nhanh vời thời điểm đường huyết bị bất ổn </p>
+        <img src="https://medlatec.vn/media/11211/content/20210423_cach-kiem-tra-duong-huyet-tai-nha-1.jpg" alt="Hình ảnh" id="image">
+        <script>
+            function playSound(audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play();
+        }
+            function processInput() {
+                var tiensu = document.getElementById("tiensu").value;
+                var age = parseInt(document.getElementById("age").value);
+                var n = parseFloat(document.getElementById("inputValue").value);
+                var resultElement = document.getElementById("result");
+                var kElement = document.getElementById("k");
+                var mdElement = document.getElementById("md");
+                var neutralizeElement = document.getElementById("neutralize");
+                var imageElement = document.getElementById("image");
+
+                // Kiểm tra nếu chỉ số đường huyết cao hơn 200 hoặc thấp hơn 40
+                if (n > 200 || n < 40) {
+                    alert("Chỉ số đường huyết không hợp lệ. Vui lòng nhập lại (chỉ số phải nằm trong khoảng 40 - 200 mg/dL).");
+                    return; // Dừng lại nếu chỉ số không hợp lệ
+                }
+
+                if (tiensu === 'type1') {
+                    if (age < 18) {
+                        if (n < 70) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Thấp";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Tụt đường huyết";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Đói, lo lắng, run tay chân, buồn nôn, nhìn mờ.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Ăn hoặc uống đồ ngọt, nếu không cải thiện cần đến bệnh viện.";
+                            imageElement.src = "https://phongkhambinhminh.com.vn/media/news/3001_ha-duong-huyet-3.jpg";
+                            playSound('duongthap/mp3');
+                        } else if (n > 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Cao";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Đường huyết cao";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Khát nhiều, mờ mắt, đi tiểu nhiều.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Theo dõi và tuân theo chỉ định của bác sĩ.";
+                            imageElement.src = "https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/04/tang-duong-huyet-o-tre3.jpg";
+                            playSound('duongcao.mp3');
+                        } else {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Bình thường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Ổn định";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Không có dấu hiệu bất thường.";
+                            neutralizeElement.innerHTML = "Duy trì chế độ ăn uống và sinh hoạt lành mạnh.";
+                            imageElement.src = "https://file.hstatic.net/1000253725/file/tre-khoe-manh-dau-chi-nhin-bang-mat_9c6c0455854e4fa09be989e4ed22165b_grande.jpg";
+                            playSound('duongbth.mp3');
+                        }
+                    } else {
+                        if (n < 100) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Thấp";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Tụt đường huyết";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Đói, lo lắng, run tay chân, buồn nôn, nhìn mờ.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Ăn hoặc uống đồ ngọt, nếu không cải thiện cần đến bệnh viện.";
+                            imageElement.src = "http://bvnoitietquangngai.com/upload/1003379/fck/files/ha_duong_huyet_64203.jpg";
+                            playSound('duongthap.mp3');
+                        } else if (n > 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Cao";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Đường huyết cao";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Khát nhiều, mờ mắt, đi tiểu nhiều.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Theo dõi và tuân theo chỉ định của bác sĩ.";
+                            imageElement.src = "https://benhvienthucuc.vn/wp-content/uploads/2017/04/15-dau-hieu-canh-bao-benh-tieu-duong-584x600.jpg";
+                            playSound('duongcao.mp3');
+                        } else if (n >= 100 && n <= 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Tiền đái tháo đường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Cảnh báo";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Mệt mỏi, lo lắng, không tập trung.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Kiểm tra định kỳ và tham khảo ý kiến bác sĩ.";
+                            imageElement.src = "https://media-cdn-v2.laodong.vn/storage/newsportal/2022/4/8/1032059/Untitled-1.jpg?w=526&h=314&crop=auto&scale=both";
+                            playSound('tiendaithao.mp3');
+                        } else {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Bình thường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Ổn định";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Không có dấu hiệu bất thường.";
+                            neutralizeElement.innerHTML = "Duy trì chế độ ăn uống và sinh hoạt lành mạnh.";
+                            imageElement.src = "https://media-cdn-v2.laodong.vn/storage/newsportal/2022/4/8/1032059/Untitled-1.jpg?w=526&h=314&crop=auto&scale=both";
+                            playSound('duongbth.mp3');
+                        }
+                    }
+                }
+                // Kiểm tra với tiền sử type2 hoặc không xác định
+                else {
+                    if (age < 18) {
+                        if (n < 70) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Thấp";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Tụt đường huyết";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Đói, lo lắng, run tay chân, buồn nôn, nhìn mờ.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Ăn hoặc uống đồ ngọt, nếu không cải thiện cần đến bệnh viện.";
+                            imageElement.src = "http://bvnoitietquangngai.com/upload/1003379/fck/files/ha_duong_huyet_64203.jpg";
+                            playSound('duongthap.mp3');
+                        } else if (n > 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Cao";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Đường huyết cao";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Khát nhiều, mờ mắt, đi tiểu nhiều.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Theo dõi và tuân theo chỉ định của bác sĩ.";
+                            imageElement.src = "https://benhvienthucuc.vn/wp-content/uploads/2017/04/15-dau-hieu-canh-bao-benh-tieu-duong-584x600.jpg";
+                            playSound('duongcao.mp3');
+                        } else {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Bình thường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Ổn định";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Không có dấu hiệu bất thường.";
+                            neutralizeElement.innerHTML = "Duy trì chế độ ăn uống và sinh hoạt lành mạnh.";
+                            imageElement.src = "https://media-cdn-v2.laodong.vn/storage/newsportal/2022/4/8/1032059/Untitled-1.jpg?w=526&h=314&crop=auto&scale=both";
+                            playSound('duongbth.mp3');
+                        }
+                    } else {
+                        if (n < 100) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Thấp";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Tụt đường huyết";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Đói, lo lắng, run tay chân, buồn nôn, nhìn mờ.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Ăn hoặc uống đồ ngọt, nếu không cải thiện cần đến bệnh viện.";
+                            imageElement.src = "http://bvnoitietquangngai.com/upload/1003379/fck/files/ha_duong_huyet_64203.jpg";
+                            playSound('duongthap.mp3');
+                        } else if (n > 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Cao";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Đường huyết cao";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Khát nhiều, mờ mắt, đi tiểu nhiều.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Theo dõi và tuân theo chỉ định của bác sĩ.";
+                            imageElement.src = "https://benhvienthucuc.vn/wp-content/uploads/2017/04/15-dau-hieu-canh-bao-benh-tieu-duong-584x600.jpg";
+                            playSound('duongcao.mp3');
+                        } else if (n >= 100 && n <= 140) {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Tiền đái tháo đường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Cảnh báo";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Không rõ ràng.";
+                            neutralizeElement.innerHTML = "Cách xử lý: Kiểm tra định kỳ và tham khảo ý kiến bác sĩ.";
+                            imageElement.src = "https://media-cdn-v2.laodong.vn/storage/newsportal/2022/4/8/1032059/Untitled-1.jpg?w=526&h=314&crop=auto&scale=both";
+                            playSound('tiendaithao.mp3');
+                        } else {
+                            resultElement.innerHTML = "Mức độ chỉ số đường: Bình thường";
+                            kElement.innerHTML = "Tình trạng cơ thể dựa trên chỉ số phân tích: Ổn định";
+                            mdElement.innerHTML = "Biểu hiện cơ thể: Không có dấu hiệu bất thường.";
+                            neutralizeElement.innerHTML = "Duy trì chế độ ăn uống và sinh hoạt lành mạnh.";
+                            imageElement.src = "https://media-cdn-v2.laodong.vn/storage/newsportal/2022/4/8/1032059/Untitled-1.jpg?w=526&h=314&crop=auto&scale=both";
+                            playSound('duongbth');
+                        }
+                    }
+                }
+            }
+        </script>
+    </section>
+</body>
+</html>

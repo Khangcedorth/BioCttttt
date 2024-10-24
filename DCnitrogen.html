@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Phát biểu nào sau đây về nguyên tố nitrogen (7N) là không đúng? ",
+                answers: [
+                    { text: "Nguyên tử nguyên tố nitrogen có cấu hình electron là 1s^2 2s^2 2p^3.", correct: false },
+                    { text: "Nguyên tử nguyên tố nitrogen có 3 electron hoá trị. ", correct: true },
+                    { text: "Nguyên tố nitrogen thuộc chu kì 2, nhóm VA trong bảng tuần. ", correct: false },
+                    { text: "Trong một số hợp chất, nguyên tử nitrogen có thể dùng cặp electron hoả trị riêng để tạo một liên kết cho - nhận với nguyên tử khác. ", correct: false }
+                ],
+                explanation: "số electron hóa trị là số electron lớp ngoài cùng. N có 5 elctron hóa trị."
+            },
+            {
+                question: "Câu 2: Nitơ chiếm bao nhiêu phần trăm thể tích của khí quyển Trái Đất?",
+                answers: [
+                    { text: "78%", correct: true },
+                    { text: "21%", correct: false },
+                    { text: "1%", correct: false},
+                    { text: "0,03%", correct: false }
+                ],
+                explanation: "Khí quyển Trái Đất gồm chủ yếu là nitơ và oxy, với nitơ chiếm khoảng 78% thể tích, còn oxy chiếm khoảng 21%. Các khí khác chỉ chiếm một tỷ lệ rất nhỏ."
+            },
+            {
+                question: "Câu 3: Liên kết giữa hai nguyên tử nitơ trong phân tử N₂ là loại liên kết gì?",
+                answers: [
+                    { text: " Liên kết ba", correct: true },
+                    { text: "Liên kết đơn", correct: false },
+                    { text: "Liên kết đôi", correct: false},
+                    { text: "Liên kết hydro", correct: false }
+                ],
+                explanation: "Hai nguyên tử nitơ trong phân tử N₂ liên kết với nhau bằng liên kết ba (N≡N), một loại liên kết rất bền vững và khó phá vỡ."
+            },
+            {
+                question: "Câu 4: Phản ứng tổng hợp ammonia (NH₃) từ nitơ và hydro xảy ra dưới điều kiện nào?",
+                answers: [
+                    { text: "Nhiệt độ cao, áp suất cao", correct: true },
+                    { text: "Nhiệt độ thấp, áp suất thấp", correct: false },
+                    { text: "Nhiệt độ cao, áp suất thấp", correct: false},
+                    { text: "Nhiệt độ thấp, áp suất cao", correct: false }
+                ],
+                explanation: "Phản ứng tổng hợp ammonia (NH₃) từ nitơ và hydro xảy ra dưới điều kiện nhiệt độ và áp suất cao"
+            },
+            {
+                question: "Câu 5: Phát biểu nào sau đây về đơn chất nitrogen (N2) là không đúng?",
+                answers: [
+                    { text: "Dù phân tử N2 có tính kém hoạt động hoá học, nhưng vẫn hoạt động hoá học mạnh hơn chlorine, Cl2.", correct: true },
+                    { text: "Đơn chất nitrogen không phản ứng với hydrogen, oxygen ở điều kiện thường.", correct: false },
+                    { text: "Do có nhiệt độ rất thấp nên nitrogen lỏng được sử dụng bảo quản một số loại mẫu vật.", correct: false},
+                    { text: "Trong bầu khí quyển, khi có sấm chớp, khí nitrogen tạo các nitrogen oxide, là một nguyên nhân làm cho nước mưa có tính acid.", correct: false }
+                ],
+                explanation: "Phân tử N2 hoạt động hoá học kém hơn Cl2 do năng lượng liên kết của N2 lớn hơn  nhiều so với Cl2."
+            },
+            {
+                question: "Câu 6: Số oxi hóa và hoá trị của nitrogen trong hợp chất nitric acid lần lượt là:",
+                answers: [
+                    { text: "+5 và V ", correct: false },
+                    { text: "+5 và IV.", correct: true },
+                    { text: "+5 và III", correct: false},
+                    { text: "+4 và IV", correct: false }
+                ],
+                explanation: "qua CTCT của HNO3,  N có cộng hóa trị là 4. Số oxi hóa của N là +5 (do trong HNO3 số oxi hóa của H là +1 và O là -2, áp dụng quy tắc xác định số oxi hoá xác định được số oxi hoá của N là +5)."
+            },
+            {
+                question: "Câu 7: Trong công nghiệp, người ta thường điều chế N2 từ",
+                answers: [
+                    { text: "không khí. ", correct: true },
+                    { text: "NH4NO2.", correct: false },
+                    { text: "HNO3.", correct: false},
+                    { text: "NH4NO3.", correct: false }
+                ],
+                explanation: "Trong công nghiệp, nitơ được điều chế bằng phương pháp chưng cất phân đoạn không khí lỏng."
+            },
+            {
+                question: "Câu 8: Khí nitơ có thể được tạo thành bằng phản ứng hoá học nào sau đây ?",
+                answers: [
+                    { text: "Nhiệt phân NH4NO2", correct:true },
+{ text: "Nhiệt phân AgNO3", correct: false },
+{ text: "Nhiệt phân NH4NO3", correct: false},
+{ text: "Đốt cháy NH3 trong oxi khi có mặt chất xúc tác Pt", correct: false }
+],
+explanation: "NH4NO2->N2 + 2H2O."
+},
+{
+question: "Câu 9: Ở nhiệt độ thường, khí nitơ khá trơ về mặt hóa học. Nguyên nhân là do",
+answers: [
+{ text: "trong phân tử N2, mỗi nguyên tử nitơ còn 1 cặp electron chưa tham gia liên kết.", correct: false },
+{ text: "trong phân tử N2 có liên kết ba rất bền.", correct: true },
+{ text: "nguyên tử nitơ có độ âm điện kém hơn oxi.", correct: false},
+{ text: "nguyên tử nitơ có bán kính nhỏ.", correct: false }
+],
+explanation: "Phân tử nitơ gồm hai nguyên tử liên kết với nhau bởi một liên kết ba. Mà liên kết ba thì rất bền, ở 3000oC chưa phân hủy rõ rệt thành các nguyên tử. → Ở nhiệt độ thường, nitơ khá trơ về mặt hóa học."
+},
+{
+question: "Câu 10: Khí N2 tác dụng với dãy chất nào sau đây:",
+answers: [
+{ text: "Li, CuO và O2", correct: false },
+{ text: "Al, H2 và Mg", correct: true },
+{ text: "NaOH, H2 và Cl2 ", correct: false},
+{ text: "HI, O3 và Mg ", correct: false }
+],
+explanation: "Nitơ phản ứng được với một số loại kim mạnh, H2 và O2."
+},
+{
+question: "Câu 11: Có thể thu được nitơ từ phản ứng nào sau đây ?",
+answers: [
+{ text: "Nhiệt phân muối bạc nitrat.", correct: false },
+{ text: "Đun nóng dung dịch bão hòa natri nitrit với amoni clorua.", correct: true },
+{ text: "Cho bột Cu vào dung dịch HNO3 đặc nóng.", correct: false},
+{ text: "Cho muối amoni nitrat  vào dung dịch kiềm. ", correct: false }
+],
+explanation: "NaNO2 + NH4Cl -to→ N2↑ + NaCl + 2H2O"
+},
+{
+question: "Câu 12: Nung nóng 4,8 gam Mg trong bình phản ứng chứa 1 mol khí N2. Sau một thời gian, đưa bình về nhiệt độ ban đầu, thấy áp suất khí trong bình giảm 5% so với áp suất ban đầu. Thành phần phần trăm Mg đã phản ứng là",
+answers: [
+{ text: "75 ", correct: true },
+{ text: "25", correct: false },
+{ text: "37.5", correct: false }
+],
+explanation: "nMg = 0,2 mol, n1/n2 = P1/P2 => 1/n2 = P1/0,95P1 => n1= 0,95 mol -> nN2 p/ư = 1-0,95 = 0,05 mol.-> nMg phản ứng = 0,15 mol -> %mg phản ứng = 75% "
+},
+{
+question: "Câu 13:Thể tích N2 (đktc) thu được khi nhiệt phân 40 gam NH4NO2 là",
+answers: [
+{ text: "22,4 lít ", correct: false },
+{ text: "14 lít", correct: true },
+{ text: "44,8 lít", correct: false },
+{ text: "4,48 lít", correct: false },
+],
+explanation: "NH4NO2 -> N2 + 2H2O. nNH4NO2 = 0,625 mol-> nN2 = 0,625 mol -> VN2 = 0,625.22,4 = 14 lít"
+},
+{
+question: "Câu 14: Kim loại nào sau đây có thể tác dụng với khí N2 ở nhiệt độ thường.",
+answers: [
+{ text: "K", correct: false },
+{ text: "Cs", correct: false },
+{ text: "Li", correct: true},
+{ text: "Ca", correct: false }
+],
+explanation: "Li có thể tác dụng với khí N2 ở nhiệt độ thường. 3Li + N2  → 2Li3N"
+},
+{
+question: "Câu 15: Khi có tia lửa điện hoặc nhiệt độ cao. Nitơ tác dụng trực tiếp với oxi tạo ra hợp chất X. X tiếp tục tác dụng với oxi trong không khí tạo thành hợp chất Y. Công thức của X, Y lần lượt là",
+answers: [
+{ text: "N2O, NO.", correct: false },
+{ text: "NO, NO2.", correct: true },
+{ text: "NO2, N2O5.", correct: false},
+{ text: "N2O5, HNO3.", correct: false }
+],
+explanation: "N2 + O2  (to)⇄2NO; 2NO + O2 → 2NO2"
+},
+{
+question: "Câu 16: Để loại bỏ các khí HCl, Cl2, CO2 và SO2 có lẫn trong khí N2 người ta sử dụng lượng dư dung dịch",
+answers: [
+{ text: "AgNO3. ", correct: false },
+{ text: "Ca(OH)2", correct: true },
+{ text: "H2SO4. ", correct: false},
+{ text: "CuCl2.", correct: false }
+],
+explanation: "Để loại bỏ các khí HCl, Cl2, CO2 và SO2 có lẫn trong khí N2 người ta sử dụng lượng dư dung dịch Ca(OH)2 vì các tạp chất khí tác dụng với Ca(OH)2 bị giữ lại trong dung dịch, N2 không phản ứng sẽ thoát ra."
+},
+{
+question: "Câu 17: Nitơ có số oxi hóa âm trong hợp chất với nguyên tố nào sau đây ?",
+answers: [
+{ text: "Cl", correct: false },
+{ text: " H", correct: true },
+{ text: "O", correct: false},
+{ text: "F", correct: false }
+],
+explanation: "NH3, N có số oxi hóa là -3"
+},
+{
+question: "Câu 18: Trong phản ứng nào sau đây, nitơ thể hiện tính khử ?",
+answers: [
+{ text: "N2 + O2 → 2NO", correct: true },
+{ text: "N2 + 3H2 → 2NH3", correct: false },
+{ text: "N2 + 6Li → 2Li3N", correct: false},
+{ text: "N2 + 3Mg → Mg3N2", correct: false }
+],
+explanation: "nito thể hiện tính khử khi số oxi hóa tăng"
+},
+{
+question: "Câu 19: Hỗn hợp khi X gồm N2 và H2 có tỉ khối hơi so với He bằng 1,8. Đun nóng trong bình kín một thời gian (có bột Fe làm xúc tác) thu được hỗn hợp khí Y có tỉ khối hơn sô với He bằng 2. Hiệu suất phản ứng tổng hợp NH3 là",
+answers: [
+{ text: "5%", correct: false },
+{ text: "10%", correct: false },
+{ text: "20%  ", correct: false},
+{ text: "25%", correct: true }
+],
+explanation: "25%"
+},
+{
+question: "Câu 20: Một bình kín có thể tích là 0,5 lít chứa 0,5 mol H2 và 0,5 mol N2, ở nhiệt độ (toC). Khi ở trạng thái cân bằng có 0,2 mol NH3 tạo thành. Hằng số cân bằng KC của phản ứng tổng hợp NH3 là :",
+answers: [
+{ text: "3,125", correct: true },
+{ text: "1,278", correct: false },
+{ text: "4,125", correct: false},
+{ text: "6,75", correct: false }
+],
+explanation: "3,125"
+}
+]; 
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

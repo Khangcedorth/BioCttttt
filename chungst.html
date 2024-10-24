@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="st.css">
+</head>
+<body>
+    <audio id="Audio" autoplay>
+        <source src="x.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        window.onload = function() {
+            const audio = document.getElementById('Audio');
+            audio.play().catch(function(error) {
+                console.log("Tự động phát bị chặn bởi trình duyệt:", error);
+            });
+        };
+    </script>
+    <div id="header-container">
+        <div class="center-text">
+            <h1 id="first">BioCheX - Hoá Sinh trong đời sống</h1>
+            <marquee behavior="alternate">
+                <marquee style="color:#000000; font-weight:bold" width="700px">BIOCHEX - HOÁ SINH TRONG ĐỜI SỐNG</marquee>
+            </marquee>
+        </div>
+    </div>
+    <audio id="introAudio">
+        <source src="st.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div id="content">
+        <img id="image" src="https://media.istockphoto.com/id/1357303614/vi/vec-to/s%C6%A1-%C4%91%E1%BB%93-infographic-n%E1%BB%99i-t%E1%BA%A1ng-c%C6%A1-th%E1%BB%83-con-ng%C6%B0%E1%BB%9Di-v%E1%BB%9Bi-c%C3%A1c-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-t%C3%AAn-h%C3%ACnh-%E1%BA%A3nh-v%E1%BB%8B-tr%C3%AD-v%C3%A0-%C4%91%E1%BB%8Bnh.jpg?s=612x612&w=0&k=20&c=hWkx4Dbh_SCDWmN1tIxpfx7AjOFwhQtsfZuXKCvgUEs=" alt="Hình ảnh">
+    </div>
+    <div id="button-container">
+        <button class="button" onclick="location.href='HBG.html'">Tìm hiểu về chỉ số huyết cầu (HGB) trong máu</button>
+        <button class="button" onclick="location.href='huyetap.html'">Tìm hiểu về chỉ số huyết áp và nhịp tim trong máu</button>
+        <button class="button" onclick="location.href='chisoduong.html'">Tìm hiểu về nồng độ đường trong máu</button>
+        <button class="button" onclick="location.href='phnuoctieu.html'">Tìm hiểu về nồng độ pH có trong nước tiểu</button>
+    </div>
+
+    <script>
+        const introAudio = document.getElementById('introAudio');
+        let isPlaying = false;
+        let clickCount = 0;
+        let clickTimeout;
+    
+        // Thay thế sự kiện nhấn phím Ctrl bằng nhấp chuột 1 lần
+        function toggleAudio() {
+            if (isPlaying) {
+                introAudio.pause();
+                introAudio.currentTime = 0; // Optional: Đặt lại thời gian phát về đầu
+            } else {
+                introAudio.play();
+            }
+            isPlaying = !isPlaying;
+        }
+    
+        // Thay thế sự kiện nhấn phím Space bằng nhấp chuột 2 lần
+        function startListening() {
+            if (recognition) {
+                recognition.start();
+            }
+        }
+    
+        // Sự kiện nhấp chuột
+        document.addEventListener('click', function() {
+            clickCount++;
+    
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+            }
+    
+            clickTimeout = setTimeout(() => {
+                if (clickCount === 1) {
+                    toggleAudio(); // Nhấp 1 lần để phát/tạm dừng âm thanh
+                } else if (clickCount === 2) {
+                    startListening(); // Nhấp 2 lần để bắt đầu nhận diện giọng nói
+                }
+                clickCount = 0; // Đặt lại đếm số lần nhấp chuột
+            }, 300); // Thời gian chờ giữa các lần nhấp, có thể điều chỉnh nếu cần
+        });
+    
+        // Kiểm tra trình duyệt có hỗ trợ Web Speech API hay không
+        var recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'vi-VN';
+    
+            recognition.onresult = function(event) {
+                var transcript = event.results[0][0].transcript.toLowerCase();
+                if (transcript.includes('huyết cầu')) {
+                    window.location.href = 'HBG.html';
+                } else if (transcript.includes('huyết áp')) {
+                    window.location.href = 'huyetap.html';
+                } else if (transcript.includes('đường')) {
+                    window.location.href = 'chisoduong.html';
+                } else if (transcript.includes('nước tiểu')) {
+                    window.location.href = 'phnuoctieu.html';
+                } else {
+                    alert('Không nhận diện được từ khoá. Vui lòng thử lại.');
+                }
+            };
+    
+            recognition.onerror = function(event) {
+                console.error('Lỗi nhận diện giọng nói: ' + event.error);
+            };
+        } else {
+            alert('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.');
+        }
+    </script>
+    
+</body>
+</html>

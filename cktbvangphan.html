@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Chu kỳ tế bào là quá trình gì?",
+        answers: [
+            { text: "Quá trình mà tế bào trưởng thành và chia đôi để tạo ra các tế bào con", correct: true },
+            { text: "Quá trình tế bào phát triển từng bước", correct: false },
+            { text: "Quá trình tế bào tiêu hóa và hấp thụ dinh dưỡng", correct: false },
+            { text: "Quá trình tế bào tổng hợp protein và axit nucleic", correct: false }
+        ],
+        explanation: "Chu kỳ tế bào là quá trình mà tế bào trưởng thành và chia đôi để tạo ra các tế bào con có cùng bộ di truyền."
+    },
+    {
+        question: "Câu 2: Chu kỳ tế bào bao gồm những giai đoạn nào?",
+        answers: [
+            { text: "G1, S, G2, M", correct: true },
+            { text: "G0, S, G1, M", correct: false },
+            { text: "S, G2, M, G1", correct: false },
+            { text: "G1, G2, M, S", correct: false }
+        ],
+        explanation: "Chu kỳ tế bào bao gồm các giai đoạn: G1 (làn sóng 1), S (tổng hợp DNA), G2 (làn sóng 2), và M (pha mitosis)."
+    },
+    {
+        question: "Câu 3: Giai đoạn nào trong chu kỳ tế bào tế bào tổng hợp DNA?",
+        answers: [
+            { text: "Giai đoạn S", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn G2", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Giai đoạn S trong chu kỳ tế bào là giai đoạn tế bào tổng hợp DNA, sao chép chính xác toàn bộ bộ di truyền."
+    },
+    {
+        question: "Câu 4: Giai đoạn nào trong chu kỳ tế bào là giai đoạn chuẩn bị cho phân chia tế bào?",
+        answers: [
+            { text: "Giai đoạn G2", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn S", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Giai đoạn G2 trong chu kỳ tế bào là giai đoạn chuẩn bị cho phân chia tế bào, kiểm tra và chuẩn bị các thành phần cần thiết cho mitosis."
+    },
+    {
+        question: "Câu 5: Giai đoạn M trong chu kỳ tế bào là giai đoạn gì?",
+        answers: [
+            { text: "Pha mitosis, trong đó tế bào chia thành hai tế bào con", correct: true },
+            { text: "Giai đoạn chuẩn bị cho phân chia tế bào", correct: false },
+            { text: "Giai đoạn tế bào tổng hợp DNA", correct: false },
+            { text: "Giai đoạn nghỉ giữa các chu kỳ tế bào", correct: false }
+        ],
+        explanation: "Giai đoạn M trong chu kỳ tế bào là pha mitosis, trong đó tế bào chia thành hai tế bào con có cùng bộ di truyền."
+    },
+    {
+        question: "Câu 6: Giai đoạn nghỉ giữa các chu kỳ tế bào được gọi là gì?",
+        answers: [
+            { text: "Giai đoạn G0", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn G2", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Giai đoạn nghỉ giữa các chu kỳ tế bào được gọi là giai đoạn G0, trong đó tế bào không tiến hành phân chia và có thể vào trạng thái nghỉ lâu dài."
+    },
+    {
+        question: "Câu 7: Quá trình sinh sản tế bào được gọi là gì?",
+        answers: [
+            { text: "Phân chia tế bào", correct: true },
+            { text: "Tổng hợp protein", correct: false },
+            { text: "Tổng hợp DNA", correct: false },
+            { text: "Tái tổ hợp tế bào", correct: false }
+        ],
+        explanation: "Quá trình sinh sản tế bào được gọi là phân chia tế bào, trong đó tế bào mẹ chia thành hai tế bào con."
+    },
+    {
+        question: "Câu 8: Giai đoạn G1 trong chu kỳ tế bào là giai đoạn gì?",
+        answers: [
+            { text: "Giai đoạn mở đầu, tế bào tăng trưởng và chuẩn bị cho tổng hợp DNA", correct: true },
+            { text: "Giai đoạn tổng hợp DNA", correct: false },
+            { text: "Giai đoạn chuẩn bị cho phân chia tế bào", correct: false },
+            { text: "Giai đoạn phân chia tế bào", correct: false }
+        ],
+        explanation: "Giai đoạn G1 trong chu kỳ tế bào là giai đoạn mở đầu, tế bào tăng trưởng và chuẩn bị cho tổng hợp DNA trong giai đoạn S."
+    },
+    {
+        question: "Câu 9: Quá trình tế bào tổng hợp DNA xảy ra trong giai đoạn nào của chu kỳ tế bào?",
+        answers: [
+            { text: "Giai đoạn S", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn G2", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Quá trình tế bào tổng hợp DNA xảy ra trong giai đoạn S của chu kỳ tế bào, nơi mà tế bào sao chép toàn bộ bộ di truyền."
+    },
+    {
+        question: "Câu 10: Giai đoạn nào trong chu kỳ tế bào được coi là giai đoạn kiểm tra và sửa lỗi của DNA?",
+        answers: [
+            { text: "Giai đoạn G2", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn S", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Giai đoạn G2 trong chu kỳ tế bào được coi là giai đoạn kiểm tra và sửa lỗi của DNA, đảm bảo rằng DNA đã được sao chép chính xác."
+    },
+    {
+        question: "Câu 11: Quá trình phân chia tế bào thường xảy ra trong giai đoạn nào của chu kỳ tế bào?",
+        answers: [
+            { text: "Giai đoạn M", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn S", correct: false },
+            { text: "Giai đoạn G2", correct: false }
+        ],
+        explanation: "Quá trình phân chia tế bào thường xảy ra trong giai đoạn M của chu kỳ tế bào, gồm có mitosis (pha mitosis) và cytokinesis (pha phân hóa)."
+    },
+    {
+        question: "Câu 12: Trong mitosis, giai đoạn nào là giai đoạn tế bào chia thành hai tế bào con?",
+        answers: [
+            { text: "Anaphase", correct: true },
+            { text: "Metaphase", correct: false },
+            { text: "Prophase", correct: false },
+            { text: "Telophase", correct: false }
+        ],
+        explanation: "Trong mitosis, giai đoạn Anaphase là giai đoạn tế bào chia thành hai tế bào con bằng cách kéo các nhiễm sắc thể đến hai phân chia của tế bào."
+    },
+    {
+        question: "Câu 13: Giai đoạn nào của mitosis là giai đoạn các nhiễm sắc thể di chuyển đến phân chia của tế bào?",
+        answers: [
+            { text: "Metaphase", correct: true },
+            { text: "Anaphase", correct: false },
+            { text: "Prophase", correct: false },
+            { text: "Telophase", correct: false }
+        ],
+        explanation: "Giai đoạn Metaphase của mitosis là giai đoạn các nhiễm sắc thể di chuyển đến phân chia của tế bào và sắp xếp thành một bản sao chính xác."
+    },
+    {
+        question: "Câu 14: Giai đoạn nào của mitosis là giai đoạn chuẩn bị cho phân chia tế bào?",
+        answers: [
+            { text: "Prophase", correct: true },
+            { text: "Anaphase", correct: false },
+            { text: "Metaphase", correct: false },
+            { text: "Telophase", correct: false }
+        ],
+        explanation: "Giai đoạn Prophase của mitosis là giai đoạn chuẩn bị cho phân chia tế bào, nơi mà nhiễm sắc thể bắt đầu tụ hợp và chuẩn bị di chuyển."
+    },
+    {
+        question: "Câu 15: Giai đoạn nào của mitosis là giai đoạn tế bào chia thành hai nhân tế bào?",
+        answers: [
+            { text: "Telophase", correct: true },
+            { text: "Anaphase", correct: false },
+            { text: "Metaphase", correct: false },
+            { text: "Prophase", correct: false }
+        ],
+        explanation: "Giai đoạn Telophase của mitosis là giai đoạn tế bào chia thành hai nhân tế bào và hoàn thành quá trình phân chia tế bào."
+    },
+    {
+        question: "Câu 16: Pha phân hóa (cytokinesis) trong tế bào động vật xảy ra như thế nào?",
+        answers: [
+            { text: "Chia nhị động vật lưỡng cư từ cột sống ra", correct: true },
+            { text: "Tế bào giảm một nửa số lượng nhiễm sắc thể", correct: false },
+            { text: "Tế bào phân chia ra thành hai tế bào con", correct: false },
+            { text: "Tế bào gấp đôi một phân đoạn thân tế bào mẹ", correct: false }
+        ],
+        explanation: "Pha phân hóa (cytokinesis) trong tế bào động vật xảy ra khi tế bào chia nhị động vật lưỡng cư từ cột sống ra, hoàn tất quá trình phân chia tế bào."
+    },
+    {
+        question: "Câu 17: Trong pha phân hóa, sự phân bào thường xảy ra cùng với giai đoạn nào của mitosis?",
+        answers: [
+            { text: "Telophase", correct: true },
+            { text: "Anaphase", correct: false },
+            { text: "Metaphase", correct: false },
+            { text: "Prophase", correct: false }
+        ],
+        explanation: "Trong pha phân hóa, sự phân bào thường xảy ra cùng với giai đoạn Telophase của mitosis, khi hai nhân tế bào được hình thành."
+    },
+    {
+        question: "Câu 18: Quá trình tế bào giảm số lượng nhiễm sắc thể gấp đôi gọi là gì?",
+        answers: [
+            { text: "Meiosis", correct: true },
+            { text: "Mitosis", correct: false },
+            { text: "Cytokinesis", correct: false },
+            { text: "Interphase", correct: false }
+        ],
+        explanation: "Quá trình tế bào giảm số lượng nhiễm sắc thể gấp đôi gọi là meiosis, một quá trình quan trọng trong sinh sản giới tính để tạo ra tế bào trứng và tế bào tinh."
+    },
+    {
+        question: "Câu 19: Quá trình tế bào tăng trưởng và tổng hợp protein diễn ra trong giai đoạn nào của chu kỳ tế bào?",
+        answers: [
+            { text: "Giai đoạn G1", correct: true },
+            { text: "Giai đoạn S", correct: false },
+            { text: "Giai đoạn G2", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Quá trình tế bào tăng trưởng và tổng hợp protein diễn ra trong giai đoạn G1 của chu kỳ tế bào, khi tế bào chuẩn bị cho giai đoạn S."
+    },
+    {
+        question: "Câu 20: Giai đoạn nào trong chu kỳ tế bào là giai đoạn mà tế bào kiểm tra và sửa lỗi của DNA?",
+        answers: [
+            { text: "Giai đoạn G2", correct: true },
+            { text: "Giai đoạn G1", correct: false },
+            { text: "Giai đoạn S", correct: false },
+            { text: "Giai đoạn M", correct: false }
+        ],
+        explanation: "Giai đoạn G2 trong chu kỳ tế bào là giai đoạn mà tế bào kiểm tra và sửa lỗi của DNA, đảm bảo rằng DNA đã được sao chép chính xác."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p> 
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+        {
+        question: "Câu 1: Nguyên tử khối của nguyên tố Oxy (O) là",
+        answers: [
+            { text: "16", correct: true },
+            { text: "12", correct: false },
+            { text: "14", correct: false },
+            { text: "18", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Oxy (O) là 16."
+    },
+    {
+        question: "Câu 2: Số hiệu nguyên tử của nguyên tố Carbon (C) là",
+        answers: [
+            { text: "6", correct: true },
+            { text: "8", correct: false },
+            { text: "12", correct: false },
+            { text: "4", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Carbon (C) là 6."
+    },
+    {
+        question: "Câu 3: Nguyên tử khối của nguyên tố Natri (Na) là",
+        answers: [
+            { text: "23", correct: true },
+            { text: "11", correct: false },
+            { text: "21", correct: false },
+            { text: "19", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Natri (Na) là 23."
+    },
+    {
+        question: "Câu 4: Số hiệu nguyên tử của nguyên tố Lưu huỳnh (S) là",
+        answers: [
+            { text: "16", correct: true },
+            { text: "18", correct: false },
+            { text: "14", correct: false },
+            { text: "12", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Lưu huỳnh (S) là 16."
+    },
+    {
+        question: "Câu 5: Nguyên tử khối của nguyên tố Kali (K) là",
+        answers: [
+            { text: "39", correct: true },
+            { text: "35", correct: false },
+            { text: "40", correct: false },
+            { text: "36", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Kali (K) là 39."
+    },
+    {
+        question: "Câu 6: Số hiệu nguyên tử của nguyên tố Flo (F) là",
+        answers: [
+            { text: "9", correct: true },
+            { text: "10", correct: false },
+            { text: "8", correct: false },
+            { text: "7", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Flo (F) là 9."
+    },
+    {
+        question: "Câu 7: Nguyên tử khối của nguyên tố Magie (Mg) là",
+        answers: [
+            { text: "24", correct: true },
+            { text: "22", correct: false },
+            { text: "26", correct: false },
+            { text: "28", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Magie (Mg) là 24."
+    },
+    {
+        question: "Câu 8: Số hiệu nguyên tử của nguyên tố Nhôm (Al) là",
+        answers: [
+            { text: "13", correct: true },
+            { text: "14", correct: false },
+            { text: "12", correct: false },
+            { text: "15", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Nhôm (Al) là 13."
+    },
+    {
+        question: "Câu 9: Nguyên tử khối của nguyên tố Silic (Si) là",
+        answers: [
+            { text: "28", correct: true },
+            { text: "30", correct: false },
+            { text: "26", correct: false },
+            { text: "32", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Silic (Si) là 28."
+    },
+    {
+        question: "Câu 10: Số hiệu nguyên tử của nguyên tố Photpho (P) là",
+        answers: [
+            { text: "15", correct: true },
+            { text: "14", correct: false },
+            { text: "16", correct: false },
+            { text: "13", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Photpho (P) là 15."
+    },
+    {
+        question: "Câu 11: Nguyên tử khối của nguyên tố Clo (Cl) là",
+        answers: [
+            { text: "35.5", correct: true },
+            { text: "35", correct: false },
+            { text: "36", correct: false },
+            { text: "34.5", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Clo (Cl) là 35.5."
+    },
+    {
+        question: "Câu 12: Số hiệu nguyên tử của nguyên tố Aragon (Ar) là",
+        answers: [
+            { text: "18", correct: true },
+            { text: "17", correct: false },
+            { text: "16", correct: false },
+            { text: "19", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Aragon (Ar) là 18."
+    },
+    {
+        question: "Câu 13: Nguyên tử khối của nguyên tố Canxi (Ca) là",
+        answers: [
+            { text: "40", correct: true },
+            { text: "38", correct: false },
+            { text: "42", correct: false },
+            { text: "39", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Canxi (Ca) là 40."
+    },
+    {
+        question: "Câu 14: Số hiệu nguyên tử của nguyên tố Sắt (Fe) là",
+        answers: [
+            { text: "26", correct: true },
+            { text: "24", correct: false },
+            { text: "28", correct: false },
+            { text: "30", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Sắt (Fe) là 26."
+    },
+    {
+        question: "Câu 15: Nguyên tử khối của nguyên tố Đồng (Cu) là",
+        answers: [
+            { text: "63.5", correct: true },
+            { text: "63", correct: false },
+            { text: "64", correct: false },
+            { text: "62.5", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Đồng (Cu) là 63.5."
+    },
+    {
+        question: "Câu 16: Số hiệu nguyên tử của nguyên tố Kẽm (Zn) là",
+        answers: [
+            { text: "30", correct: true },
+            { text: "28", correct: false },
+            { text: "32", correct: false },
+            { text: "26", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Kẽm (Zn) là 30."
+    },
+    {
+        question: "Câu 17: Nguyên tử khối của nguyên tố Brom (Br) là",
+        answers: [
+            { text: "80", correct: true },
+            { text: "78", correct: false },
+            { text: "82", correct: false },
+            { text: "79", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Brom (Br) là 80."
+    },
+    {
+        question: "Câu 18: Số hiệu nguyên tử của nguyên tố Krypton (Kr) là",
+        answers: [
+            { text: "36", correct: true },
+            { text: "34", correct: false },
+            { text: "38", correct: false },
+            { text: "32", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Krypton (Kr) là 36."
+    },
+    {
+        question: "Câu 19: Nguyên tử khối của nguyên tố Stronti (Sr) là",
+        answers: [
+            { text: "88", correct: true },
+            { text: "85", correct: false },
+            { text: "90", correct: false },
+            { text: "87", correct: false }
+        ],
+        explanation: "Nguyên tử khối của Stronti (Sr) là 88."
+    },
+    {
+        question: "Câu 20: Số hiệu nguyên tử của nguyên tố Bạc (Ag) là",
+        answers: [
+            { text: "47", correct: true },
+            { text: "46", correct: false },
+            { text: "48", correct: false },
+            { text: "45", correct: false }
+        ],
+        explanation: "Số hiệu nguyên tử của Bạc (Ag) là 47."
+    }
+];
+
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

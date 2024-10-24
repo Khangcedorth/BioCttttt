@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Đột biến nhiễm sắc thể là gì?",
+        answers: [
+            { text: "Sự thay đổi số lượng hoặc cấu trúc của nhiễm sắc thể", correct: true },
+            { text: "Sự thay đổi trong chuỗi nucleotide của gene", correct: false },
+            { text: "Sự phân chia tế bào không đều", correct: false },
+            { text: "Sự biến đổi các protein trong tế bào", correct: false }
+        ],
+        explanation: "Đột biến nhiễm sắc thể là sự thay đổi số lượng hoặc cấu trúc của nhiễm sắc thể."
+    },
+    {
+        question: "Câu 2: Có bao nhiêu loại đột biến nhiễm sắc thể chính?",
+        answers: [
+            { text: "2 loại: đột biến số lượng và đột biến cấu trúc", correct: true },
+            { text: "3 loại: đột biến số lượng, đột biến cấu trúc, và đột biến gene", correct: false },
+            { text: "1 loại: đột biến cấu trúc", correct: false },
+            { text: "4 loại: đột biến số lượng, đột biến cấu trúc, đột biến gene, và đột biến chuyển vị", correct: false }
+        ],
+        explanation: "Có 2 loại đột biến nhiễm sắc thể chính là đột biến số lượng và đột biến cấu trúc."
+    },
+    {
+        question: "Câu 3: Đột biến số lượng nhiễm sắc thể xảy ra khi nào?",
+        answers: [
+            { text: "Khi có sự thay đổi về số lượng nhiễm sắc thể trong tế bào", correct: true },
+            { text: "Khi có sự thay đổi về cấu trúc của nhiễm sắc thể", correct: false },
+            { text: "Khi gene bị đột biến", correct: false },
+            { text: "Khi tế bào phân chia không đều", correct: false }
+        ],
+        explanation: "Đột biến số lượng nhiễm sắc thể xảy ra khi có sự thay đổi về số lượng nhiễm sắc thể trong tế bào."
+    },
+    {
+        question: "Câu 4: Đột biến cấu trúc nhiễm sắc thể là gì?",
+        answers: [
+            { text: "Sự thay đổi về cấu trúc của một hoặc nhiều nhiễm sắc thể", correct: true },
+            { text: "Sự thay đổi về số lượng nhiễm sắc thể trong tế bào", correct: false },
+            { text: "Sự phân chia tế bào không đều", correct: false },
+            { text: "Sự thay đổi trong chuỗi nucleotide của gene", correct: false }
+        ],
+        explanation: "Đột biến cấu trúc nhiễm sắc thể là sự thay đổi về cấu trúc của một hoặc nhiều nhiễm sắc thể."
+    },
+    {
+        question: "Câu 5: Một loại đột biến cấu trúc nhiễm sắc thể là gì?",
+        answers: [
+            { text: "Mất đoạn", correct: true },
+            { text: "Đa bội", correct: false },
+            { text: "Lệch bội", correct: false },
+            { text: "Thể ba", correct: false }
+        ],
+        explanation: "Mất đoạn là một loại đột biến cấu trúc nhiễm sắc thể."
+    },
+    {
+        question: "Câu 6: Đột biến mất đoạn là gì?",
+        answers: [
+            { text: "Sự mất đi một đoạn của nhiễm sắc thể", correct: true },
+            { text: "Sự thêm vào một đoạn của nhiễm sắc thể", correct: false },
+            { text: "Sự di chuyển đoạn giữa các nhiễm sắc thể", correct: false },
+            { text: "Sự đảo ngược vị trí của đoạn nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Đột biến mất đoạn là sự mất đi một đoạn của nhiễm sắc thể."
+    },
+    {
+        question: "Câu 7: Đột biến thêm đoạn là gì?",
+        answers: [
+            { text: "Sự thêm vào một đoạn của nhiễm sắc thể", correct: true },
+            { text: "Sự mất đi một đoạn của nhiễm sắc thể", correct: false },
+            { text: "Sự di chuyển đoạn giữa các nhiễm sắc thể", correct: false },
+            { text: "Sự đảo ngược vị trí của đoạn nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Đột biến thêm đoạn là sự thêm vào một đoạn của nhiễm sắc thể."
+    },
+    {
+        question: "Câu 8: Đột biến đảo đoạn là gì?",
+        answers: [
+            { text: "Sự đảo ngược vị trí của một đoạn trên nhiễm sắc thể", correct: true },
+            { text: "Sự di chuyển đoạn giữa các nhiễm sắc thể", correct: false },
+            { text: "Sự mất đi một đoạn của nhiễm sắc thể", correct: false },
+            { text: "Sự thêm vào một đoạn của nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Đột biến đảo đoạn là sự đảo ngược vị trí của một đoạn trên nhiễm sắc thể."
+    },
+    {
+        question: "Câu 9: Đột biến chuyển đoạn là gì?",
+        answers: [
+            { text: "Sự di chuyển một đoạn của nhiễm sắc thể này sang nhiễm sắc thể khác", correct: true },
+            { text: "Sự mất đi một đoạn của nhiễm sắc thể", correct: false },
+            { text: "Sự đảo ngược vị trí của đoạn nhiễm sắc thể", correct: false },
+            { text: "Sự thêm vào một đoạn của nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Đột biến chuyển đoạn là sự di chuyển một đoạn của nhiễm sắc thể này sang nhiễm sắc thể khác."
+    },
+    {
+        question: "Câu 10: Thể ba (trisomy) là gì?",
+        answers: [
+            { text: "Sự hiện diện của ba bản sao của một nhiễm sắc thể", correct: true },
+            { text: "Sự hiện diện của hai bản sao của một nhiễm sắc thể", correct: false },
+            { text: "Sự mất đi một nhiễm sắc thể", correct: false },
+            { text: "Sự thêm vào một đoạn của nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Thể ba (trisomy) là sự hiện diện của ba bản sao của một nhiễm sắc thể."
+    },
+    {
+        question: "Câu 11: Hội chứng Down là kết quả của loại đột biến nào?",
+        answers: [
+            { text: "Thể ba nhiễm sắc thể 21", correct: true },
+            { text: "Thể ba nhiễm sắc thể 18", correct: false },
+            { text: "Mất đoạn trên nhiễm sắc thể 5", correct: false },
+            { text: "Đột biến gene", correct: false }
+        ],
+        explanation: "Hội chứng Down là kết quả của thể ba nhiễm sắc thể 21."
+    },
+    {
+        question: "Câu 12: Đột biến lệch bội là gì?",
+        answers: [
+            { text: "Sự thay đổi số lượng của một hoặc vài nhiễm sắc thể", correct: true },
+            { text: "Sự thay đổi toàn bộ bộ nhiễm sắc thể", correct: false },
+            { text: "Sự thay đổi trong chuỗi nucleotide của gene", correct: false },
+            { text: "Sự thay đổi trong cấu trúc của protein", correct: false }
+        ],
+        explanation: "Đột biến lệch bội là sự thay đổi số lượng của một hoặc vài nhiễm sắc thể."
+    },
+    {
+        question: "Câu 13: Đột biến đa bội là gì?",
+        answers: [
+            { text: "Sự thay đổi số lượng của toàn bộ bộ nhiễm sắc thể", correct: true },
+            { text: "Sự thay đổi số lượng của một hoặc vài nhiễm sắc thể", correct: false },
+            { text: "Sự thay đổi trong chuỗi nucleotide của gene", correct: false },
+            { text: "Sự thay đổi trong cấu trúc của protein", correct: false }
+        ],
+        explanation: "Đột biến đa bội là sự thay đổi số lượng của toàn bộ bộ nhiễm sắc thể."
+    },
+    {
+        question: "Câu 14: Đột biến lệch bội gây ra những hậu quả gì?",
+        answers: [
+            { text: "Gây ra các rối loạn về di truyền và sức khỏe", correct: true },
+            { text: "Gây ra sự phát triển bình thường của cơ thể", correct: false },
+            { text: "Gây ra sự ổn định di truyền", correct: false },
+            { text: "Gây ra sự biến đổi trong cấu trúc của protein", correct: false }
+        ],
+        explanation: "Đột biến lệch bội gây ra các rối loạn về di truyền và sức khỏe."
+    },
+    {
+        question: "Câu 15: Đột biến đa bội thường gặp ở loài nào?",
+        answers: [
+            { text: "Thực vật", correct: true },
+            { text: "Động vật", correct: false },
+            { text: "Con người", correct: false },
+            { text: "Vi khuẩn", correct: false }
+        ],
+        explanation: "Đột biến đa bội thường gặp ở thực vật."
+    },
+    {
+        question: "Câu 16: Đột biến đảo đoạn có thể dẫn đến hiện tượng gì?",
+        answers: [
+            { text: "Gen không hoạt động hoặc hoạt động sai lệch", correct: true },
+            { text: "Gen hoạt động bình thường", correct: false },
+            { text: "Không có bất kỳ thay đổi nào", correct: false },
+            { text: "Thay đổi số lượng nhiễm sắc thể", correct: false }
+        ],
+        explanation: "Đột biến đảo đoạn có thể dẫn đến gen không hoạt động hoặc hoạt động sai lệch."
+    },
+    {
+        question: "Câu 17: Đột biến chuyển đoạn có thể dẫn đến hiện tượng gì?",
+        answers: [
+            { text: "Sự tạo thành các giao tử không bình thường", correct: true },
+            { text: "Sự ổn định của bộ nhiễm sắc thể", correct: false },
+            { text: "Sự giảm tần số đột biến", correct: false },
+            { text: "Sự tăng cường hoạt động của gen", correct: false }
+        ],
+        explanation: "Đột biến chuyển đoạn có thể dẫn đến sự tạo thành các giao tử không bình thường."
+    },
+    {
+        question: "Câu 18: Đột biến nhiễm sắc thể thường xảy ra trong quá trình nào?",
+        answers: [
+            { text: "Phân chia tế bào", correct: true },
+            { text: "Tổng hợp protein", correct: false },
+            { text: "Sao chép DNA", correct: false },
+            { text: "Dịch mã", correct: false }
+        ],
+        explanation: "Đột biến nhiễm sắc thể thường xảy ra trong quá trình phân chia tế bào."
+    },
+    {
+        question: "Câu 19: Đột biến mất đoạn có thể dẫn đến hiện tượng gì?",
+        answers: [
+            { text: "Thiếu hụt một số gen quan trọng", correct: true },
+            { text: "Thêm vào một số gen không cần thiết", correct: false },
+            { text: "Không có bất kỳ thay đổi nào", correct: false },
+            { text: "Tạo ra các gen mới", correct: false }
+        ],
+        explanation: "Đột biến mất đoạn có thể dẫn đến thiếu hụt một số gen quan trọng."
+    },
+    {
+        question: "Câu 20: Đột biến nhiễm sắc thể có thể ảnh hưởng đến sinh vật như thế nào?",
+        answers: [
+            { text: "Gây ra các rối loạn di truyền hoặc bệnh tật", correct: true },
+            { text: "Không có bất kỳ ảnh hưởng nào", correct: false },
+            { text: "Gây ra sự phát triển bình thường", correct: false },
+            { text: "Gây ra sự tăng cường sức khỏe", correct: false }
+        ],
+        explanation: "Đột biến nhiễm sắc thể có thể gây ra các rối loạn di truyền hoặc bệnh tật."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

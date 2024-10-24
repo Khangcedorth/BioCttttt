@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+                <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Sinh quyển là gì?",
+        answers: [
+            { text: "Tổng hợp của tất cả các hệ sinh thái trên Trái Đất.", correct: true },
+            { text: "Khu vực chỉ chứa các loài động vật.", correct: false },
+            { text: "Một khu vực cụ thể trong đại dương.", correct: false },
+            { text: "Tầng khí quyển nơi có các khí sinh học.", correct: false }
+        ],
+        explanation: "Sinh quyển là tổng hợp của tất cả các hệ sinh thái trên Trái Đất, bao gồm tất cả các vùng đất, nước và khí quyển nơi sinh sống của sinh vật."
+    },
+    {
+        question: "Câu 2: Khu sinh học là gì?",
+        answers: [
+            { text: "Một khu vực rộng lớn với đặc điểm sinh thái và khí hậu tương tự.", correct: true },
+            { text: "Một loại hệ sinh thái nhỏ trong một khu vực cụ thể.", correct: false },
+            { text: "Một cộng đồng sinh vật đặc biệt trong một khu vực đô thị.", correct: false },
+            { text: "Một đơn vị phân loại sinh vật trong sinh quyển.", correct: false }
+        ],
+        explanation: "Khu sinh học là một khu vực rộng lớn với đặc điểm sinh thái và khí hậu tương tự, chẳng hạn như rừng nhiệt đới hay hoang mạc."
+    },
+    {
+        question: "Câu 3: Chu trình sinh - địa - hóa bao gồm các yếu tố nào?",
+        answers: [
+            { text: "Sinh học, địa chất và hóa học.", correct: true },
+            { text: "Sinh học, vật lý và khí quyển.", correct: false },
+            { text: "Địa chất, khí quyển và thủy học.", correct: false },
+            { text: "Hóa học, khí quyển và sinh học.", correct: false }
+        ],
+        explanation: "Chu trình sinh - địa - hóa bao gồm các yếu tố sinh học, địa chất và hóa học, phản ánh sự tuần hoàn của các chất qua các thành phần của Trái Đất."
+    },
+    {
+        question: "Câu 4: Chu trình carbon trong sinh quyển liên quan đến quá trình nào?",
+        answers: [
+            { text: "Quá trình quang hợp và hô hấp.", correct: true },
+            { text: "Quá trình xâm thực và phân hủy.", correct: false },
+            { text: "Quá trình tạo ra mưa và bay hơi.", correct: false },
+            { text: "Quá trình trầm tích và phân bố khoáng chất.", correct: false }
+        ],
+        explanation: "Chu trình carbon trong sinh quyển chủ yếu liên quan đến quá trình quang hợp của thực vật và hô hấp của động vật và vi sinh vật."
+    },
+    {
+        question: "Câu 5: Quá trình nào là phần của chu trình nitơ trong sinh quyển?",
+        answers: [
+            { text: "Nitrate hóa và khử nitrate.", correct: true },
+            { text: "Quang hợp và hô hấp.", correct: false },
+            { text: "Trầm tích và phân hủy.", correct: false },
+            { text: "Sự bốc hơi và ngưng tụ.", correct: false }
+        ],
+        explanation: "Chu trình nitơ bao gồm các quá trình như nitrate hóa và khử nitrate, liên quan đến sự chuyển hóa của nitơ trong môi trường."
+    },
+    {
+        question: "Câu 6: Khu sinh học nào chủ yếu bao gồm các vùng rừng mưa nhiệt đới?",
+        answers: [
+            { text: "Khu sinh học nhiệt đới.", correct: true },
+            { text: "Khu sinh học ôn đới.", correct: false },
+            { text: "Khu sinh học hàn đới.", correct: false },
+            { text: "Khu sinh học sa mạc.", correct: false }
+        ],
+        explanation: "Khu sinh học nhiệt đới chủ yếu bao gồm các vùng rừng mưa nhiệt đới, nơi có lượng mưa cao và đa dạng sinh học phong phú."
+    },
+    {
+        question: "Câu 7: Quá trình nào là một phần của chu trình nước trong sinh quyển?",
+        answers: [
+            { text: "Bay hơi và ngưng tụ.", correct: true },
+            { text: "Quá trình quang hợp.", correct: false },
+            { text: "Nitrate hóa.", correct: false },
+            { text: "Trầm tích.", correct: false }
+        ],
+        explanation: "Chu trình nước trong sinh quyển bao gồm các quá trình như bay hơi và ngưng tụ, liên quan đến sự chuyển động của nước trong các trạng thái khác nhau."
+    },
+    {
+        question: "Câu 8: Khu sinh học nào thường gặp trong các vùng có khí hậu khô và ít mưa?",
+        answers: [
+            { text: "Khu sinh học sa mạc.", correct: true },
+            { text: "Khu sinh học rừng nhiệt đới.", correct: false },
+            { text: "Khu sinh học đồng cỏ.", correct: false },
+            { text: "Khu sinh học rừng ôn đới.", correct: false }
+        ],
+        explanation: "Khu sinh học sa mạc thường gặp ở các vùng có khí hậu khô và ít mưa, với sự đa dạng sinh học hạn chế nhưng đã thích nghi tốt với điều kiện khắc nghiệt."
+    },
+    {
+        question: "Câu 9: Chu trình nào liên quan đến sự chuyển hóa của lưu huỳnh trong môi trường?",
+        answers: [
+            { text: "Chu trình lưu huỳnh.", correct: true },
+            { text: "Chu trình carbon.", correct: false },
+            { text: "Chu trình nitơ.", correct: false },
+            { text: "Chu trình nước.", correct: false }
+        ],
+        explanation: "Chu trình lưu huỳnh liên quan đến sự chuyển hóa của lưu huỳnh trong môi trường, bao gồm sự chuyển hóa từ lưu huỳnh hữu cơ sang dạng vô cơ và ngược lại."
+    },
+    {
+        question: "Câu 10: Quá trình nào là một phần của chu trình phốt pho trong sinh quyển?",
+        answers: [
+            { text: "Sự phân hủy và tạo ra phosphat.", correct: true },
+            { text: "Quá trình quang hợp.", correct: false },
+            { text: "Sự bốc hơi và ngưng tụ.", correct: false },
+            { text: "Sự nitrate hóa.", correct: false }
+        ],
+        explanation: "Chu trình phốt pho bao gồm quá trình phân hủy và tạo ra phosphat, liên quan đến sự chuyển hóa phốt pho từ dạng hữu cơ sang dạng vô cơ và ngược lại."
+    },
+    {
+        question: "Câu 11: Khu sinh học nào có đặc trưng bởi các đồng cỏ rộng lớn và các loài động vật ăn cỏ?",
+        answers: [
+            { text: "Khu sinh học đồng cỏ.", correct: true },
+            { text: "Khu sinh học rừng mưa nhiệt đới.", correct: false },
+            { text: "Khu sinh học sa mạc.", correct: false },
+            { text: "Khu sinh học rừng ôn đới.", correct: false }
+        ],
+        explanation: "Khu sinh học đồng cỏ đặc trưng bởi các đồng cỏ rộng lớn và các loài động vật ăn cỏ, thích nghi với điều kiện khí hậu ấm áp và mưa vừa."
+    },
+    {
+        question: "Câu 12: Sinh quyển bao gồm các thành phần nào của Trái Đất?",
+        answers: [
+            { text: "Lớp đất, nước và khí quyển.", correct: true },
+            { text: "Lớp vỏ trái đất và lõi.", correct: false },
+            { text: "Khí quyển và các hiện tượng địa chất.", correct: false },
+            { text: "Tầng ozon và các lớp mây.", correct: false }
+        ],
+        explanation: "Sinh quyển bao gồm tất cả các thành phần của Trái Đất có sự sống, bao gồm lớp đất, nước và khí quyển."
+    },
+    {
+        question: "Câu 13: Khu sinh học nào có khí hậu lạnh và thường xuyên có tuyết?",
+        answers: [
+            { text: "Khu sinh học hàn đới.", correct: true },
+            { text: "Khu sinh học ôn đới.", correct: false },
+            { text: "Khu sinh học nhiệt đới.", correct: false },
+            { text: "Khu sinh học đồng cỏ.", correct: false }
+        ],
+        explanation: "Khu sinh học hàn đới có khí hậu lạnh và thường xuyên có tuyết, với các loài thực vật và động vật đã thích nghi với điều kiện khắc nghiệt."
+    },
+    {
+        question: "Câu 14: Sự chuyển hóa của nitơ trong sinh quyển ảnh hưởng đến quá trình nào?",
+        answers: [
+            { text: "Sự phát triển của thực vật và sản xuất nông nghiệp.", correct: true },
+            { text: "Sự phân hủy của chất hữu cơ.", correct: false },
+            { text: "Sự hình thành các khoáng chất trong đất.", correct: false },
+            { text: "Sự bay hơi của nước.", correct: false }
+        ],
+        explanation: "Sự chuyển hóa của nitơ ảnh hưởng đến sự phát triển của thực vật và sản xuất nông nghiệp, vì nitơ là yếu tố dinh dưỡng quan trọng cho thực vật."
+    },
+    {
+        question: "Câu 15: Chu trình sinh - địa - hóa nào liên quan đến việc chuyển hóa các chất dinh dưỡng trong hệ sinh thái?",
+        answers: [
+            { text: "Chu trình biogeochemical.", correct: true },
+            { text: "Chu trình quang hợp.", correct: false },
+            { text: "Chu trình hô hấp.", correct: false },
+            { text: "Chu trình phân hủy.", correct: false }
+        ],
+        explanation: "Chu trình biogeochemical liên quan đến việc chuyển hóa các chất dinh dưỡng trong hệ sinh thái, bao gồm các chu trình carbon, nitơ, phốt pho, và lưu huỳnh."
+    },
+    {
+        question: "Câu 16: Khu sinh học nào có sự đa dạng sinh học cao nhất trên Trái Đất?",
+        answers: [
+            { text: "Khu sinh học rừng mưa nhiệt đới.", correct: true },
+            { text: "Khu sinh học hoang mạc.", correct: false },
+            { text: "Khu sinh học đồng cỏ.", correct: false },
+            { text: "Khu sinh học sa mạc.", correct: false }
+        ],
+        explanation: "Khu sinh học rừng mưa nhiệt đới có sự đa dạng sinh học cao nhất trên Trái Đất, với hàng triệu loài thực vật và động vật."
+    },
+    {
+        question: "Câu 17: Chu trình nào liên quan đến việc chuyển hóa canxi trong môi trường?",
+        answers: [
+            { text: "Chu trình canxi.", correct: true },
+            { text: "Chu trình carbon.", correct: false },
+            { text: "Chu trình nitơ.", correct: false },
+            { text: "Chu trình phốt pho.", correct: false }
+        ],
+        explanation: "Chu trình canxi liên quan đến việc chuyển hóa canxi trong môi trường, ảnh hưởng đến cấu trúc đất và sự phát triển của sinh vật."
+    },
+    {
+        question: "Câu 18: Sự phân hủy trong chu trình sinh - địa - hóa ảnh hưởng đến quá trình nào?",
+        answers: [
+            { text: "Cung cấp chất dinh dưỡng cho đất.", correct: true },
+            { text: "Sự hình thành của khí quyển.", correct: false },
+            { text: "Quá trình quang hợp.", correct: false },
+            { text: "Sự tạo thành của các khoáng chất.", correct: false }
+        ],
+        explanation: "Sự phân hủy trong chu trình sinh - địa - hóa cung cấp chất dinh dưỡng cho đất, giúp duy trì độ màu mỡ của đất và hỗ trợ sự phát triển của thực vật."
+    },
+    {
+        question: "Câu 19: Khu sinh học nào có sự hiện diện của các rừng cây thông và khí hậu ôn hòa?",
+        answers: [
+            { text: "Khu sinh học rừng ôn đới.", correct: true },
+            { text: "Khu sinh học rừng mưa nhiệt đới.", correct: false },
+            { text: "Khu sinh học đồng cỏ.", correct: false },
+            { text: "Khu sinh học sa mạc.", correct: false }
+        ],
+        explanation: "Khu sinh học rừng ôn đới có sự hiện diện của các rừng cây thông và khí hậu ôn hòa, với các mùa rõ rệt và nhiệt độ vừa phải."
+    },
+    {
+        question: "Câu 20: Chu trình sinh - địa - hóa nào đóng vai trò quan trọng trong việc duy trì sự cân bằng của khí quyển?",
+        answers: [
+            { text: "Chu trình carbon.", correct: true },
+            { text: "Chu trình nước.", correct: false },
+            { text: "Chu trình lưu huỳnh.", correct: false },
+            { text: "Chu trình phốt pho.", correct: false }
+        ],
+        explanation: "Chu trình carbon đóng vai trò quan trọng trong việc duy trì sự cân bằng của khí quyển, ảnh hưởng đến mức độ carbon dioxide và khí hậu toàn cầu."
+    }
+];
+let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

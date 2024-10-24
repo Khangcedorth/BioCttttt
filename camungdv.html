@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+    {
+        question: "Câu 1: Cảm ứng ở động vật là gì?",
+        answers: [
+            { text: "Phản ứng với ánh sáng", correct: false },
+            { text: "Khả năng phát hiện mùi vị", correct: false },
+            { text: "Khả năng phản ứng với kích thích từ môi trường", correct: true },
+            { text: "Sự nhạy cảm với nhiệt độ", correct: false }
+        ],
+        explanation: "Cảm ứng ở động vật là khả năng phản ứng với các kích thích từ môi trường xung quanh."
+    },
+    {
+        question: "Câu 2: Động vật có thể cảm nhận ánh sáng như thế nào?",
+        answers: [
+            { text: "Bằng cách phản ứng với hồng ngoại", correct: false },
+            { text: "Bằng cách nhìn thấy màu sắc", correct: false },
+            { text: "Bằng cách phản ứng với ánh sáng nhìn thấy và không nhìn thấy", correct: true },
+            { text: "Bằng cách phản ứng với sóng âm thanh", correct: false }
+        ],
+        explanation: "Động vật có thể cảm nhận ánh sáng bằng cách phản ứng với các dạng ánh sáng nhìn thấy và không nhìn thấy."
+    },
+    {
+        question: "Câu 3: Hệ thần kinh của động vật phản ứng với kích thích từ môi trường ra sao?",
+        answers: [
+            { text: "Chỉ bằng cách phản ứng với mùi vị", correct: false },
+            { text: "Chỉ bằng cách phản ứng với ánh sáng", correct: false },
+            { text: "Bằng cách phản ứng với các giác quan như thính giác, thị giác, xúc giác, và vị giác", correct: true },
+            { text: "Bằng cách phản ứng với các loại virus", correct: false }
+        ],
+        explanation: "Hệ thần kinh của động vật phản ứng với kích thích từ môi trường bằng cách sử dụng các giác quan như thính giác, thị giác, xúc giác, và vị giác."
+    },
+    {
+        question: "Câu 4: Hệ thần kinh cảm giác của động vật bao gồm những phần nào?",
+        answers: [
+            { text: "Chỉ bao gồm hệ thần kinh trung ương", correct: false },
+            { text: "Bao gồm hệ thần kinh trung ương và hệ thần kinh ngoại biên", correct: true },
+            { text: "Chỉ bao gồm hệ thần kinh ngoại biên", correct: false },
+            { text: "Bao gồm hệ thần kinh ngoại biên và hệ thần kinh xương sống", correct: false }
+        ],
+        explanation: "Hệ thần kinh cảm giác của động vật bao gồm hệ thần kinh trung ương và hệ thần kinh ngoại biên, giúp chúng cảm nhận và phản ứng với các kích thích từ môi trường."
+    },
+    {
+        question: "Câu 5: Động vật có khả năng phản ứng với âm thanh không?",
+        answers: [
+            { text: "Có, động vật có thể nghe và phản ứng với âm thanh", correct: true },
+            { text: "Không, động vật không có giác quan thính giác", correct: false }
+        ],
+        explanation: "Động vật có khả năng phản ứng với âm thanh, chúng có giác quan thính giác để cảm nhận âm thanh từ môi trường xung quanh."
+    },
+    {
+        question: "Câu 6: Sự nhạy cảm với nhiệt độ của động vật phụ thuộc vào yếu tố nào?",
+        answers: [
+            { text: "Chỉ phụ thuộc vào loài động vật", correct: false },
+            { text: "Chỉ phụ thuộc vào môi trường sống của chúng", correct: false },
+            { text: "Phụ thuộc vào cấu trúc và chức năng của hệ thần kinh ngoại biên", correct: true },
+            { text: "Phụ thuộc vào mức độ nhiễm độc của môi trường", correct: false }
+        ],
+        explanation: "Sự nhạy cảm với nhiệt độ của động vật phụ thuộc vào cấu trúc và chức năng của hệ thần kinh ngoại biên, giúp chúng phản ứng với các biến đổi nhiệt độ môi trường."
+    },
+    {
+        question: "Câu 7: Hệ thần kinh hương vị của động vật hoạt động như thế nào?",
+        answers: [
+            { text: "Phản ứng với các phân tử hóa học trong không khí", correct: false },
+            { text: "Phản ứng với ánh sáng", correct: false },
+            { text: "Phản ứng với các chất hóa học trong môi trường", correct: false },
+            { text: "Phản ứng với hương vị của các chất thức ăn", correct: true }
+        ],
+        explanation: "Hệ thần kinh hương vị của động vật hoạt động bằng cách phản ứng với các hương vị của các chất thức ăn, giúp chúng xác định và lựa chọn thức ăn phù hợp."
+    },
+    {
+        question: "Câu 8: Động vật có cảm nhận được sự chạm vào không?",
+        answers: [
+            { text: "Không, động vật không có giác quan xúc giác", correct: false },
+            { text: "Có, động vật có giác quan xúc giác để cảm nhận sự chạm vào", correct: true }
+        ],
+        explanation: "Động vật có cảm nhận được sự chạm vào bằng cách sử dụng giác quan xúc giác, giúp chúng phản ứng và đáp ứng với sự tiếp xúc với môi trường."
+    },
+    {
+        question: "Câu 9: Hệ thần kinh của động vật phản ứng với mùi vị như thế nào?",
+        answers: [
+            { text: "Phản ứng với ánh sáng màu sắc", correct: false },
+            { text: "Phản ứng với các giác quan như thính giác, thị giác, xúc giác, và vị giác", correct: false },
+            { text: "Phản ứng với các chất hóa học trong không khí", correct: true },
+            { text: "Phản ứng với sự thay đổi nhiệt độ", correct: false },
+],
+explanation: "Hệ thần kinh của động vật phản ứng với mùi vị bằng cách phản ứng với các chất hóa học có mặt trong không khí, giúp chúng phát hiện và phản ứng với các mùi vị khác nhau."
+},
+{
+question: "Câu 10: Cảm ứng thích nghi của động vật là gì?",
+answers: [
+{ text: "Khả năng thích ứng với các tình huống mới", correct: false },
+{ text: "Khả năng thích ứng với sự thay đổi môi trường sống", correct: false },
+{ text: "Khả năng thích ứng với các kích thích từ môi trường sau một thời gian phản ứng ban đầu", correct: true },
+{ text: "Khả năng thích ứng với các môi trường sống khác nhau", correct: false }
+],
+explanation: "Cảm ứng thích nghi của động vật là khả năng thích ứng với các kích thích từ môi trường sau một thời gian phản ứng ban đầu, giúp chúng thích ứng và tồn tại trong môi trường sống."
+},
+{
+question: "Câu 11: Cơ chế cảm ứng nhiệt của động vật như thế nào?",
+answers: [
+{ text: "Chỉ phản ứng với nhiệt độ cao", correct: false },
+{ text: "Chỉ phản ứng với nhiệt độ thấp", correct: false },
+{ text: "Phản ứng với các biến đổi nhiệt độ môi trường", correct: true },
+{ text: "Phản ứng với nhiệt độ cơ thể", correct: false }
+],
+explanation: "Cơ chế cảm ứng nhiệt của động vật là phản ứng với các biến đổi nhiệt độ môi trường, giúp chúng duy trì nhiệt độ cơ thể ổn định và phản ứng với môi trường xung quanh."
+},
+{
+question: "Câu 12: Hệ thần kinh của động vật có phản ứng với các kích thích điện từ không?",
+answers: [
+{ text: "Không, hệ thần kinh không có giác quan này", correct: false },
+{ text: "Có, hệ thần kinh có giác quan phản ứng với các kích thích điện từ", correct: true }
+],
+explanation: "Hệ thần kinh của động vật có phản ứng với các kích thích điện từ, giúp chúng phản ứng và đáp ứng với các biến đổi điện từ trong môi trường sống."
+},
+{
+question: "Câu 13: Động vật có khả năng cảm nhận được cảm xúc của con người không?",
+answers: [
+{ text: "Có, động vật có khả năng cảm nhận cảm xúc của con người", correct: false },
+{ text: "Không, động vật không có khả năng này", correct: true }
+],
+explanation: "Động vật không có khả năng cảm nhận và hiểu được cảm xúc như con người do thiếu các yếu tố nhận thức phức tạp như ngôn ngữ và nền văn hóa."
+},
+{
+question: "Câu 14: Các loại cảm ứng đặc biệt của động vật bao gồm những gì?",
+answers: [
+{ text: "Cảm ứng với các tia X và tia gamma", correct: false },
+{ text: "Cảm ứng với các loại phát xạ", correct: false },
+{ text: "Cảm ứng với ánh sáng và nhiệt", correct: false },
+{ text: "Cảm ứng với các năng lượng và biến đổi môi trường", correct: true }
+],
+explanation: "Các loại cảm ứng đặc biệt của động vật bao gồm cảm ứng với các năng lượng và biến đổi môi trường, giúp chúng thích ứng và sống sót trong môi trường khắc nghiệt."
+},
+{
+question: "Câu 15: Cơ chế cảm ứng với áp lực của động vật hoạt động như thế nào?",
+answers: [
+{ text: "Phản ứng với áp lực hơi nước", correct: false },
+{ text: "Phản ứng với áp suất không khí", correct: false },
+{ text: "Phản ứng với áp lực nước", correct: false },
+{ text: "Phản ứng với áp lực ngoài cơ thể", correct: true }
+],
+explanation: "Cơ chế cảm ứng với áp lực của động vật là phản ứng với áp lực ngoài cơ thể, giúp chúng điều chỉnh hành vi và sinh tồn trong môi trường nước."
+},
+{
+question: "Câu 16: Hệ thần kinh của động vật có ảnh hưởng bởi môi trường sống không?",
+answers: [
+{ text: "Không, hệ thần kinh chỉ phản ứng với yếu tố di truyền", correct: false },
+{ text: "Có, hệ thần kinh phản ứng và thích ứng với môi trường sống", correct: true }
+],
+explanation: "Hệ thần kinh của động vật có ảnh hưởng bởi môi trường sống, chúng có khả năng thích ứng và phản ứng với biến đổi môi trường để tồn tại."
+},
+{
+question: "Câu 17: Các loại cảm ứng thích ứng của động vật là gì?",
+answers: [
+{ text: "Cảm ứng với các loài vi khuẩn và virus", correct: false },
+{ text: "Cảm ứng với các dạng năng lượng khác nhau", correct: false },
+{ text: "Cảm ứng với các điều kiện môi trường khác nhau", correct: false },
+{ text: "Cảm ứng với các kích thích từ môi trường sau một thời gian phản ứng ban đầu", correct: true }
+],
+explanation: "Các loại cảm ứng thích ứng của động vật bao gồm cảm ứng với các kích thích từ môi trường sau một thời gian phản ứng ban đầu, giúp chúng thích ứng và sống sót trong môi trường biến đổi."
+},
+{
+question: "Câu 18: Hệ thần kinh của động vật có phản ứng với sự thay đổi màu sắc không?",
+answers: [
+{ text: "Có, hệ thần kinh có giác quan phản ứng với sự thay đổi màu sắc", correct: false },
+{ text: "Không, hệ thần kinh không có giác quan này", correct: true }
+],
+explanation: "Hệ thần kinh của động vật không có khả năng phản ứng trực tiếp với sự thay đổi màu sắc. Động vật có thể nhìn thấy màu sắc nhưng sự phản ứng với màu sắc chủ yếu là qua giác quan thị giác."
+},
+{
+question: "Câu 19: Cơ chế cảm ứng với độ sâu của động vật hoạt động như thế nào?",
+answers: [
+{ text: "Phản ứng với chiều cao của động vật", correct: false },
+{ text: "Phản ứng với sự sâu trong đất", correct: true },
+{ text: "Phản ứng với độ sâu dưới nước", correct: false },
+{ text: "Phản ứng với độ sâu của mặt đất", correct: false }
+],
+explanation: "Cơ chế cảm ứng với độ sâu của động vật là phản ứng với sự sâu trong đất, giúp chúng tìm kiếm thức ăn và bảo vệ mình trong môi trường sống."
+},
+{
+question: "Câu 20: Động vật có phản ứng với các biến đổi trong hệ thống điện không?",
+answers: [
+{ text: "Không, hệ thần kinh của động vật không có khả năng phản ứng với điện", correct: false },
+{ text: "Có, hệ thần kinh của động vật có giác quan phản ứng với các biến đổi điện trong môi trường", correct: true }
+],
+explanation: "Động vật có khả năng phản ứng với các biến đổi trong hệ thống điện của môi trường, giúp chúng cảm nhận và phản ứng với các điện trường xung quanh."
+}
+];
+
+        // Hàm kiểm tra đáp án
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

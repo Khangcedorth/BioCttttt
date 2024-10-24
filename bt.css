@@ -1,0 +1,140 @@
+/* Đặt lại mặc định cho một số yếu tố */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Phông chữ chung */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f4f4f4;
+}
+
+/* Đầu trang */
+header {
+    background: linear-gradient(135deg, #fc4d3ee5, #e62727);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Chính */
+main {
+    padding: 20px;
+    margin-top: 80px; /* Thêm khoảng cách giữa đầu trang và nội dung chính */
+}
+
+/* Container cho hai cột */
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px; /* Thêm khoảng cách dưới container */
+}
+
+/* Định dạng cho mỗi cột */
+.column {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    flex: 1;
+}
+
+.column h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #f54f3f;
+}
+
+.column p {
+    font-size: 1.1em;
+    margin-bottom: 20px; /* Thêm khoảng cách dưới đoạn văn */
+}
+
+.column-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    border: 4px solid #333;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.custom-button {
+    font-weight: lighter;
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 20px;
+    border: 2px solid #00000069;
+    background: linear-gradient(135deg, #fc4d3ee5, #e62727);
+    text-decoration: none;
+    font-size: 18px;
+    color: #ffffff;
+    margin: 10px;
+    transition: background-color 0.3s, transform 0.3s;
+    transform: scale(1.05);
+    font-size-adjust: inherit;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+
+}
+
+/* Chân trang */
+footer {
+    background: #333333b6;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+
+footer ul {
+    list-style: none;
+}
+
+footer ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+footer ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer ul li a:hover {
+    text-decoration: underline;
+}

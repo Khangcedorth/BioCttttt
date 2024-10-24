@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="btester.css">
+</head>
+<body>
+    <header>
+        <h1>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+            </ul>
+            <marquee behavior="alternate">
+                <marquee style="color:#ffffff; font-weight:bold" width="700px">I LOVE CHEMISTRY - HOÁ HỌC ĐƯA ĐẾN TƯƠNG LAI</marquee>
+            </marquee>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="quiz">
+            <h2>Câu hỏi</h2>
+            <form id="quiz-form">
+                <!-- Câu hỏi sẽ được hiển thị ở đây -->
+            </form>
+            <button id="next-submit-btn" onclick="submitAnswer()">Nộp bài</button>
+        </section>
+
+        <section id="question-list">
+            <h2>Danh sách câu hỏi</h2>
+            <ul id="question-navigation">
+                <!-- Số câu hỏi sẽ được thêm vào đây -->
+            </ul>
+        </section>
+
+        <section id="results" style="display: none;">
+            <h2>Kết quả</h2>
+            <div id="score"></div>
+            <div id="correct-answers"></div>
+            <div id="incorrect-answers"></div>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhkNvC9P6pIqkHU2tDhRbPnV3Y36m7NdjiR5GVopADP9PkCHn7E0Mxs2grIyEZ7R66txHJFlQsEg1cNMsuubQ-h0EBUoUtQJ_nlHLc6MAPOiUeZSuDmPATHgLcFG-w3989IWawhrEwoV7bMrRSMmJQmmvcWs0Gdt7nZ2fQmBBRbdFQO7CTOO4XK9Tj7dA/s940/B%E1%BA%A3n%20sao%20c%E1%BB%A7a%20Ngh%C4%A9%20kh%C3%A1c%20%C4%91i%20(B%C3%A0i%20%C4%91%C4%83ng%20Facebook)%20(16).png" alt="Congratulations Image" id="congratulations-image">
+
+            <button onclick="restartQuiz()">Làm lại</button>
+        </section>
+    </main>
+
+    <footer>
+        <ul>
+            <p>BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+        </ul>
+    </footer>
+    <script>
+        // Dữ liệu về các câu hỏi và đáp án
+        const questions = [
+            {
+                question: "Câu 1: Công nghệ di truyền là gì?",
+                answers: [
+                    { text: "Sử dụng các kỹ thuật sinh học để thay đổi cấu trúc gene", correct: true },
+                    { text: "Sử dụng các kỹ thuật vật lý để thay đổi cấu trúc gene", correct: false },
+                    { text: "Sử dụng các kỹ thuật hóa học để thay đổi cấu trúc gene", correct: false },
+                    { text: "Sử dụng các kỹ thuật sinh học để thay đổi protein", correct: false }
+                ],
+                explanation: "Công nghệ di truyền là sử dụng các kỹ thuật sinh học để thay đổi cấu trúc gene của sinh vật."
+            },
+            {
+                question: "Câu 2: Plasmid là gì?",
+                answers: [
+                    { text: "Phân tử DNA vòng nhỏ trong tế bào vi khuẩn", correct: true },
+                    { text: "Phân tử RNA vòng nhỏ trong tế bào vi khuẩn", correct: false },
+                    { text: "Phân tử protein trong tế bào vi khuẩn", correct: false },
+                    { text: "Phân tử lipid trong tế bào vi khuẩn", correct: false }
+                ],
+                explanation: "Plasmid là phân tử DNA vòng nhỏ tồn tại độc lập trong tế bào vi khuẩn."
+            },
+            {
+                question: "Câu 3: Enzyme cắt giới hạn (restriction enzyme) dùng để làm gì trong công nghệ di truyền?",
+                answers: [
+                    { text: "Cắt DNA tại các vị trí cụ thể", correct: true },
+                    { text: "Nối các đoạn DNA với nhau", correct: false },
+                    { text: "Tổng hợp DNA từ RNA", correct: false },
+                    { text: "Phân giải protein thành các đoạn peptide", correct: false }
+                ],
+                explanation: "Enzyme cắt giới hạn được sử dụng để cắt DNA tại các vị trí cụ thể."
+            },
+            {
+                question: "Câu 4: PCR (Polymerase Chain Reaction) là kỹ thuật gì?",
+                answers: [
+                    { text: "Nhân đôi một đoạn DNA cụ thể trong ống nghiệm", correct: true },
+                    { text: "Cắt DNA tại các vị trí cụ thể", correct: false },
+                    { text: "Nối các đoạn DNA với nhau", correct: false },
+                    { text: "Biến đổi RNA thành DNA", correct: false }
+                ],
+                explanation: "PCR là kỹ thuật nhân đôi một đoạn DNA cụ thể trong ống nghiệm."
+            },
+            {
+                question: "Câu 5: Cloning (nhân bản) là quá trình gì?",
+                answers: [
+                    { text: "Tạo ra nhiều bản sao giống hệt của một đoạn DNA", correct: true },
+                    { text: "Tạo ra các đoạn DNA ngẫu nhiên", correct: false },
+                    { text: "Thay đổi cấu trúc của một đoạn DNA", correct: false },
+                    { text: "Phân giải DNA thành các đoạn nhỏ", correct: false }
+                ],
+                explanation: "Cloning là quá trình tạo ra nhiều bản sao giống hệt của một đoạn DNA."
+            },
+            {
+                question: "Câu 6: Gene nào được chỉnh sửa để tạo ra cây trồng kháng sâu bọ?",
+                answers: [
+                    { text: "Gene Bt", correct: true },
+                    { text: "Gene GFP", correct: false },
+                    { text: "Gene LacZ", correct: false },
+                    { text: "Gene P53", correct: false }
+                ],
+                explanation: "Gene Bt từ vi khuẩn Bacillus thuringiensis được sử dụng để tạo ra cây trồng kháng sâu bọ."
+            },
+            {
+                question: "Câu 7: Vector tái tổ hợp là gì?",
+                answers: [
+                    { text: "Một đoạn DNA được sử dụng để chuyển gene vào tế bào chủ", correct: true },
+                    { text: "Một đoạn RNA được sử dụng để tổng hợp protein", correct: false },
+                    { text: "Một protein được sử dụng để cắt DNA", correct: false },
+                    { text: "Một đoạn DNA được sử dụng để nhân đôi RNA", correct: false }
+                ],
+                explanation: "Vector tái tổ hợp là một đoạn DNA được sử dụng để chuyển gene vào tế bào chủ trong công nghệ di truyền."
+            },
+            {
+                question: "Câu 8: Thực phẩm GMO là gì?",
+                answers: [
+                    { text: "Thực phẩm biến đổi gene", correct: true },
+                    { text: "Thực phẩm không qua chế biến", correct: false },
+                    { text: "Thực phẩm không chứa gene", correct: false },
+                    { text: "Thực phẩm chứa gene đột biến tự nhiên", correct: false }
+                ],
+                explanation: "Thực phẩm GMO (Genetically Modified Organism) là thực phẩm biến đổi gene để có những đặc tính mong muốn."
+            },
+            {
+                question: "Câu 9: Ứng dụng của công nghệ di truyền trong y học là gì?",
+                answers: [
+                    { text: "Chữa bệnh di truyền", correct: true },
+                    { text: "Tăng năng suất cây trồng", correct: false },
+                    { text: "Sản xuất thực phẩm", correct: false },
+                    { text: "Thay đổi khí hậu", correct: false }
+                ],
+                explanation: "Công nghệ ditruyền trong y học được ứng dụng để chữa bệnh di truyền thông qua việc chỉnh sửa hoặc thay thế các gene bị lỗi."
+            },
+            {
+                question: "Câu 10: CRISPR-Cas9 là công cụ gì trong công nghệ di truyền?",
+                answers: [
+                    { text: "Công cụ chỉnh sửa gene", correct: true },
+                    { text: "Công cụ nhân bản DNA", correct: false },
+                    { text: "Công cụ tổng hợp protein", correct: false },
+                    { text: "Công cụ phân giải RNA", correct: false }
+                ],
+                explanation: "CRISPR-Cas9 là một công cụ mạnh mẽ để chỉnh sửa gene chính xác và hiệu quả."
+            },
+            {
+                question: "Câu 11: Phương pháp nào được sử dụng để chèn gene ngoại lai vào tế bào thực vật?",
+                answers: [
+                    { text: "Sử dụng vi khuẩn Agrobacterium tumefaciens", correct: true },
+                    { text: "Sử dụng enzyme restriction", correct: false },
+                    { text: "Sử dụng enzyme ligase", correct: false },
+                    { text: "Sử dụng tia X", correct: false }
+                ],
+                explanation: "Vi khuẩn Agrobacterium tumefaciens được sử dụng để chèn gene ngoại lai vào tế bào thực vật trong công nghệ di truyền."
+            },
+            {
+                question: "Câu 12: Gene knock-out là gì?",
+                answers: [
+                    { text: "Loại bỏ hoặc vô hiệu hóa một gene trong genome", correct: true },
+                    { text: "Chèn một gene mới vào genome", correct: false },
+                    { text: "Thay đổi biểu hiện của một gene mà không thay đổi DNA", correct: false },
+                    { text: "Nhân đôi một đoạn DNA cụ thể", correct: false }
+                ],
+                explanation: "Gene knock-out là kỹ thuật loại bỏ hoặc vô hiệu hóa một gene cụ thể trong genome để nghiên cứu chức năng của nó."
+            },
+            {
+                question: "Câu 13: Ứng dụng của công nghệ di truyền trong nông nghiệp là gì?",
+                answers: [
+                    { text: "Tạo ra cây trồng kháng sâu bệnh", correct: true },
+                    { text: "Tạo ra các loài động vật mới", correct: false },
+                    { text: "Chữa bệnh di truyền ở người", correct: false },
+                    { text: "Thay đổi cấu trúc của đất", correct: false }
+                ],
+                explanation: "Công nghệ di truyền được ứng dụng trong nông nghiệp để tạo ra cây trồng kháng sâu bệnh, cải thiện năng suất và chất lượng sản phẩm."
+            },
+            {
+                question: "Câu 14: Phage lambda được sử dụng trong công nghệ di truyền để làm gì?",
+                answers: [
+                    { text: "Vector chuyển gene", correct: true },
+                    { text: "Tổng hợp protein", correct: false },
+                    { text: "Nhân đôi RNA", correct: false },
+                    { text: "Cắt DNA tại các vị trí cụ thể", correct: false }
+                ],
+                explanation: "Phage lambda là một loại vector chuyển gene được sử dụng trong công nghệ di truyền."
+            },
+            {
+                question: "Câu 15: Kỹ thuật nào dùng để xác định trình tự nucleotide của DNA?",
+                answers: [
+                    { text: "Kỹ thuật giải trình tự Sanger", correct: true },
+                    { text: "Kỹ thuật PCR", correct: false },
+                    { text: "Kỹ thuật Southern Blot", correct: false },
+                    { text: "Kỹ thuật Northern Blot", correct: false }
+                ],
+                explanation: "Kỹ thuật giải trình tự Sanger là phương pháp phổ biến để xác định trình tự nucleotide của DNA."
+            },
+            {
+                question: "Câu 16: Tế bào gốc phôi (embryonic stem cells) có khả năng gì đặc biệt?",
+                answers: [
+                    { text: "Biến đổi thành bất kỳ loại tế bào nào trong cơ thể", correct: true },
+                    { text: "Chỉ biến đổi thành tế bào thần kinh", correct: false },
+                    { text: "Chỉ biến đổi thành tế bào da", correct: false },
+                    { text: "Không thể biến đổi thành loại tế bào nào khác", correct: false }
+                ],
+                explanation: "Tế bào gốc phôi có khả năng biến đổi thành bất kỳ loại tế bào nào trong cơ thể, làm cho chúng có tiềm năng lớn trong nghiên cứu y học và điều trị bệnh."
+            },
+            {
+                question: "Câu 17: Enzyme nào được sử dụng để nối các đoạn DNA với nhau?",
+                answers: [
+                    { text: "DNA ligase", correct: true },
+                    { text: "DNA polymerase", correct: false },
+                    { text: "Reverse transcriptase", correct: false },
+                    { text: "Restriction enzyme", correct: false }
+                ],
+                explanation: "DNA ligase là enzyme được sử dụng để nối các đoạn DNA với nhau."
+            },
+            {
+                question: "Câu 18: Kỹ thuật nào giúp tăng cường biểu hiện gene mục tiêu trong tế bào?",
+                answers: [
+                    { text: "Transfection", correct: true },
+                    { text: "Southern Blot", correct: false },
+                    { text: "PCR", correct: false },
+                    { text: "Western Blot", correct: false }
+                ],
+                explanation: "Transfection là kỹ thuật giúp chèn DNA hoặc RNA vào tế bào để tăng cường biểu hiện gene mục tiêu."
+            },
+            {
+                question: "Câu 19: Sự khác biệt giữa biến đổi gene (genetic modification) và chỉnh sửa gene (gene editing) là gì?",
+                answers: [
+                    { text: "Biến đổi gene là thay đổi toàn bộ genome, trong khi chỉnh sửa gene là thay đổi cụ thể một gene", correct: true },
+                    { text: "Biến đổi gene là thay đổi RNA, trong khi chỉnh sửa gene là thay đổi DNA", correct: false },
+                    { text: "Biến đổi gene là thay đổi protein, trong khi chỉnh sửa gene là thay đổi DNA", correct: false },
+                    { text: "Biến đổi gene là kỹ thuật cổ điển, trong khi chỉnh sửa gene là kỹ thuật hiện đại", correct: false }
+                ],
+                explanation: "Biến đổi gene thường liên quan đến việc thêm, loại bỏ hoặc thay đổi một số lượng lớn các gene, trong khi chỉnh sửa gene là thay đổi cụ thể một gene hoặc một vị trí trên DNA."
+            },
+            {
+                question: "Câu 20: Công nghệ di truyền có thể được sử dụng để làm gì?",
+                answers: [
+                    { text: "Tất cả các ý trên", correct: true },
+                    { text: "Chữa bệnh di truyền", correct: false },
+                    { text: "Tạo ra cây trồng biến đổi gene", correct: false },
+                    { text: "Phát triển liệu pháp gene", correct: false }
+                ],
+                explanation: "Công nghệ di truyền có thể được sử dụng trong nhiều lĩnh vực khác nhau như chữa bệnh di truyền, tạo ra cây trồng biến đổi gene, và phát triển liệu pháp gene."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = [];
+
+        const quizForm = document.getElementById('quiz-form');
+        const resultsSection = document.getElementById('results');
+        const scoreDisplay = document.getElementById('score');
+        const correctAnswersDisplay = document.getElementById('correct-answers');
+        const incorrectAnswersDisplay = document.getElementById('incorrect-answers');
+        const nextSubmitBtn = document.getElementById('next-submit-btn');
+        const questionNavigation = document.getElementById('question-navigation');
+
+        function startQuiz() {
+            showQuestion();
+            createQuestionNavigation();
+        }
+
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            quizForm.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                ${currentQuestion.answers.map((answer, index) => `
+                    <p><input type="radio" id="option${index + 1}" name="question" value="${answer.text}">
+                    <label for="option${index + 1}">${answer.text}</label></p>
+                `).join('')}`;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextSubmitBtn.textContent = "Nộp bài";
+            } else {
+                nextSubmitBtn.textContent = "Tiếp theo";
+            }
+
+            updateQuestionNavigation();
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="question"]:checked');
+    if (selectedAnswer) {
+        const currentQuestion = questions[currentQuestionIndex];
+        userAnswers[currentQuestionIndex] = selectedAnswer.value;
+
+        if (currentQuestion.answers.find(answer => answer.text === selectedAnswer.value && answer.correct)) {
+            score++;
+        }
+
+        updateQuestionNavigation();  // Cập nhật màu sắc nút khi đã trả lời xong
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    } else {
+        alert('Vui lòng chọn một đáp án.');
+    }
+}
+
+        function showResults() {
+            quizForm.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            scoreDisplay.textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu.`;
+
+            correctAnswersDisplay.innerHTML = '<h3>Các câu trả lời đúng:</h3>' + questions.map((question, index) => {
+                const correctAnswer = question.answers.find(answer => answer.correct).text;
+                return `<p><strong>${index + 1}. ${question.question}</strong><br>Đáp án chi tiết: ${correctAnswer}<br>${question.explanation}</p>`;
+            }).join('');
+
+            incorrectAnswersDisplay.innerHTML = '<h3>Các câu trả lời sai:</h3>' + questions.map((question, index) => {
+                if (!question.answers.find(answer => answer.text === userAnswers[index] && answer.correct)) {
+                    const correctAnswer = question.answers.find(answer => answer.correct).text;
+                    return `<p style="color: red;"><strong>${index + 1}. ${question.question}</strong><br>Đáp án của bạn: ${userAnswers[index]}<br>Đáp án đúng: ${correctAnswer}<br>${question.explanation}</p>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        function createQuestionNavigation() {
+            questionNavigation.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const questionLink = document.createElement('li');
+                questionLink.textContent = i + 1;
+                questionLink.onclick = () => goToQuestion(i);
+                questionNavigation.appendChild(questionLink);
+            }
+        }
+
+        function updateQuestionNavigation() {
+            const questionLinks = questionNavigation.children;
+            for (let i = 0; i < questionLinks.length; i++) {
+                if (userAnswers[i] !== undefined) {
+                    questionLinks[i].style.backgroundColor = 'green';
+                    questionLinks[i].style.color = 'white';
+                } else {
+                    questionLinks[i].style.backgroundColor = 'transparent';
+                    questionLinks[i].style.color = 'black';
+                }
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.length = 0;
+            resultsSection.style.display = 'none';
+            quizForm.style.display = 'block';
+            startQuiz();
+        }
+
+        // Bắt đầu quiz khi trang tải
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

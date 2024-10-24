@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="BioCheX.png" type="image/x-icon">
+    <title>BioCheX - Khám Phá Thế Giới qua Hoá Sinh</title>
+    <link rel="stylesheet" href="moitruongpH.css">
+</head>
+<body>
+    <section>
+        <img id="chemistry-icon" src="BioCheX.png" alt="Icon Hoá Học">
+        <img id="righticon" src="iconindex.PNG" alt="Icon Hoá Học">
+    <div class="center-text">
+        <h1 id="first">BioCheX - Hoá Sinh trong đời sống</h1>
+        <marquee behavior="alternate">
+            <marquee style="color:#ffffff; font-weight:bold" width="700px">BIOCHEX - HOÁ SINH TRONG ĐỜI SỐNG</marquee>
+        </marquee>
+    </div>
+    <label for="inputValue">Nhập cân nặng mà bạn đo được (kg):</label>
+    <input type="number" id="inputValue">
+    <label for="cao">Nhập chiều cao của bạn (m):</label>
+    <input type="m" id="cao">
+    <button onclick="processInput()">Kiểm tra</button>
+    <p id="tile">Tỉ lệ cơ thể của bạn hiện tại: </p>
+    <img src="" alt="Hình ảnh" id="image">
+    <script>
+        function processInput() {
+            var tile = document.getElementById("tile").value;
+            var imageElement = document.getElementById("image");
+            var k = number/(m*m);
+            if(k>0){
+                tile.innerHTML = "Cao ";
+            }
+            
+        }
+    </script>
+
+    
+</section>
+<footer>
+    <p>&copy; BioCheX - Hoá Sinh trong đời sống. HVT-TNK</p>
+</footer>
+</body>
+</html>
