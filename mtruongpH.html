@@ -170,76 +170,67 @@
             });
         }
 
+        var recognition;
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = "vi-VN";
+
+            recognition.onresult = function(event) {
+                document.getElementById('inputValue').value = event.results[0][0].transcript;
+                recognition.stop();
+                processInput();
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Lỗi nhận dạng giọng nói:", event.error);
+                recognition.stop();
+                alert("Lỗi nhận dạng giọng nói: " + event.error);
+            };
+        }
+
         function startDictation() {
-    if (window.hasOwnProperty('webkitSpeechRecognition')) {
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = "vi-VN";
-        recognition.start();
-
-        recognition.onresult = function(event) {
-            document.getElementById('inputValue').value = event.results[0][0].transcript;
-            recognition.stop();
-            processInput();
-        };
-
-        recognition.onerror = function(event) {
-            console.error("Lỗi nhận dạng giọng nói:", event.error);
-            recognition.stop();
-            alert("Lỗi nhận dạng giọng nói: " + event.error);
-        };
-    } else {
-        alert("Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.");
-    }
-}
-
+            if (recognition) {
+                recognition.start();
+            } else {
+                alert("Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.");
+            }
+        }
 
         // Khởi tạo sự kiện cho nhấp chuột 1 và 2 lần
-let clickCount = 0;
-let clickTimeout;
+        let clickCount = 0;
+        let clickTimeout;
 
-// Hàm phát/tạm dừng âm thanh
-function toggleAudio() {
-    if (introAudio.paused) {
-        introAudio.play(); // Phát âm thanh nếu đang dừng
-    } else {
-        introAudio.pause(); // Tạm dừng nếu đang phát
-        introAudio.currentTime = 0; // Đặt lại thời gian phát
-    }
-}
-
-// Hàm bắt đầu nhận diện giọng nói
-function startDictation() {
-    recognition.start(); // Bắt đầu thu âm
-}
-
-// Sự kiện nhấp chuột
-document.addEventListener("click", function () {
-    clickCount++;
-
-    if (clickTimeout) {
-        clearTimeout(clickTimeout);
-    }
-
-    clickTimeout = setTimeout(() => {
-        if (clickCount === 1) {
-            toggleAudio(); // Nhấp 1 lần để phát hoặc dừng âm thanh
-        } else if (clickCount === 2) {
-            startDictation(); // Nhấp 2 lần để bắt đầu thu âm
-        }
-        
-        clickCount = 0; // Đặt lại đếm số lần nhấp chuột
-    }, 300); // Thời gian chờ giữa các lần nhấp, bạn có thể điều chỉnh nếu cần
-});
+        // Hàm phát/tạm dừng âm thanh
         function toggleAudio() {
             var audio = document.getElementById("introAudio");
             if (audio.paused) {
                 audio.play();
             } else {
                 audio.pause();
+                audio.currentTime = 0;
             }
         }
+
+        // Sự kiện nhấp chuột
+        document.addEventListener("click", function () {
+            clickCount++;
+
+            if (clickTimeout) {
+                clearTimeout(clickTimeout);
+            }
+
+            clickTimeout = setTimeout(() => {
+                if (clickCount === 1) {
+                    toggleAudio(); // Nhấp 1 lần để phát hoặc dừng âm thanh
+                } else if (clickCount === 2) {
+                    startDictation(); // Nhấp 2 lần để bắt đầu thu âm
+                }
+
+                clickCount = 0; // Đặt lại đếm số lần nhấp chuột
+            }, 300); // Thời gian chờ giữa các lần nhấp, bạn có thể điều chỉnh nếu cần
+        });
     </script>
 </body>
 </html>
